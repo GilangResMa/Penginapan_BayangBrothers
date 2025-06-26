@@ -9,5 +9,6 @@
 <body>
     <p>Homepage</p>
     <p>Welcome to the homepage of our application!</p>
+    <p>Here you can find various resources and links to help you navigate through the application.</p>
 </body>
 </html>

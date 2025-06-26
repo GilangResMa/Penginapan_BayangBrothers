@@ -12,6 +12,7 @@
 
 <body>
     <p class="homepage">Homepage</p>
+    <p class="test">This is the homepage of the PBB project.</p>
     <div x-data="{ open: false }" class="dropdown">
         <button @click="open = ! open">Toggle</button>
 

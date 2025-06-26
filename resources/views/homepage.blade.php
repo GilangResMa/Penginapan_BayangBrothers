@@ -13,7 +13,7 @@
 <body>
     <p class="homepage">Homepage</p>
     <p class="test">This is the homepage of the PBB project.</p>
-    <div x-data="{ open: false }" class="dropdown">
+    <div x-data="{ open: false }">
         <button @click="open = ! open">Toggle</button>
 
         <div x-show="open" @click.outside="open = false">Contents...</div>

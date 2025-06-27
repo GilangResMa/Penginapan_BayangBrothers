@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Homepage</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    @vite(['resources/css/homepage.css'])
+    @vite(['resources/css/login.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
 
@@ -40,43 +40,43 @@
                     <i class="fas fa-question-circle"></i>
                     <span>FAQ</span>
                 </a>
-                <a href="login" class="login-button">
-                    Login
-                </a>
             </nav>
         </div>
     </header>
-    <main class="main-container">
-        <div class="content-grid">
+    <main class="login-main">
+        <div class="login-container">
+            <h2 class="login-title">Login</h2>
 
-            <!-- Left Content -->
-            <div class="content-card">
-                <p class="content-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
+            <form class="login-form">
+                @csrf
+                <!-- Email Field -->
+                <div>
+                    <input name="email" type="email" placeholder="Email" class="input-field" required>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <input name="password" type="password" placeholder="Password" class="input-field" required>
+                </div>
+
+                <!-- Forgot Password Link -->
+                <div class="forgot-password">
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <!-- Sign In Button -->
+                <button type="submit" class="signin-button">
+                    Sign In
+                </button>
+
+                <!-- Sign Up Link -->
+                <p class="signup-text">
+                    Don't Have an Account?
+                    <a href="register" class="signup-link">Sign Up</a>
                 </p>
-
-                <!-- Go to Room Button -->
-                <div class="button-container">
-                    <a href="detailkamar" class="go-to-room-button">
-                        Go to Room
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right Content - Images -->
-            <div class="image-container">
-                <div class="image-wrapper">
-                    <img src="{{ asset('img/home.jpg') }}" alt="Home" class="home-image">
-                </div>
-            </div>
+            </form>
         </div>
     </main>
-
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <h3 class="footer-title">Bayang Brothers</h3>

@@ -63,10 +63,6 @@ body {
     color: #fecaca; /* hover:text-red-200 */
 }
 
-.nav-link.active {
-    border-bottom: 2px solid white; /* border-b-2 border-white */
-}
-
 /* Footer Styles */
 .footer {
     background-color: #dc2626; /* bg-red-600 */

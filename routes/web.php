@@ -13,3 +13,15 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('register');
 });
+
+Route::get('/room', function () {
+    return view('room');
+});
+
+Route::get('/about', function () {
+    return view('about');
+});
+
+Route::get('/faq', function () {
+    return view('faq');
+});

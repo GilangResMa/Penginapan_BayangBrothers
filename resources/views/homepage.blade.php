@@ -28,15 +28,15 @@
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="room" class="nav-link">
                     <i class="fas fa-bed"></i>
                     <span>Room</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="about" class="nav-link">
                     <i class="fas fa-info-circle"></i>
                     <span>About</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="faq" class="nav-link">
                     <i class="fas fa-question-circle"></i>
                     <span>FAQ</span>
                 </a>

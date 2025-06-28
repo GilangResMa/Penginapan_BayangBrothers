@@ -171,6 +171,7 @@ body {
     color: #374151; /* text-gray-700 */
     outline: none;
     transition: box-shadow 0.2s ease;
+    margin-bottom: 1rem;
 }
 
 .input-field::placeholder {

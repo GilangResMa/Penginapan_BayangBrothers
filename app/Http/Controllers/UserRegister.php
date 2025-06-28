@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserRegister extends Controller
@@ -16,7 +16,7 @@ class UserRegister extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $users = Users::create([
+        $users = User::create([
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Users;
 
 class LoginController extends Controller
 {
     public function login()
     {
-        if (Users::check()) {
+        if (Auth::check()) {
             return redirect('homepage');
         } else {
             return view('login');
@@ -23,7 +24,7 @@ class LoginController extends Controller
             'password' => $request->input('password'),
         ];
 
-        if (Users::Attempt($data)) {
+        if (Auth::Attempt($data)) {
             return redirect('homepage');
         } else {
             return redirect('login');
@@ -32,7 +33,7 @@ class LoginController extends Controller
 
     public function actionlogout()
     {
-        Users::logout();
+        Auth::logout();
         return redirect('login');
     }
 }

@@ -24,30 +24,54 @@
 
             <!-- Navigation -->
             <nav class="navigation">
-                <a href="/" class="nav-link">
+                <a href="{{ route('homepage') }}" class="nav-link">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </a>
-                <a href="#" class="nav-link active">
+                <a href="{{ route('room.index') }}" class="nav-link active">
                     <i class="fas fa-bed"></i>
                     <span>Room</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('about') }}" class="nav-link">
                     <i class="fas fa-info-circle"></i>
                     <span>About</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('faq') }}" class="nav-link">
                     <i class="fas fa-question-circle"></i>
                     <span>FAQ</span>
                 </a>
-                <a href="login" class="login-button">
-                    Login
-                </a>
+                @auth('web')
+                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="login-button">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="login-button">
+                        Login
+                    </a>
+                @endauth
             </nav>
         </div>
     </header>
     <main class="main-content">
         <div class="container">
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-error">
+                    @foreach($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- ...existing code... -->
             <div class="room-detail">
                 <div class="room-grid">
                     <!-- Image Gallery -->
@@ -168,9 +192,26 @@
                     </div>
 
                     <div class="input-group">
-                        <a href="/payment" class="booking-btn" onclick="calculatePrice()">
-                            Booking Now
-                        </a>
+                        @auth('web')
+                            <!-- User sudah login, bisa booking -->
+                            <form method="POST" action="{{ route('room.book', 1) }}">
+                                @csrf
+                                <input type="hidden" name="check_in" id="hidden_checkin">
+                                <input type="hidden" name="check_out" id="hidden_checkout">
+                                <input type="hidden" name="guests" id="hidden_persons">
+                                <button type="submit" class="booking-btn" onclick="setBookingData()">
+                                    <i class="fas fa-calendar-check"></i>
+                                    Booking Now
+                                </button>
+                            </form>
+                        @else
+                            <!-- User belum login, arahkan ke login -->
+                            <a href="{{ route('login') }}" class="booking-btn login-required">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login to Book
+                            </a>
+                            <p class="login-notice">Silakan login terlebih dahulu untuk melakukan booking</p>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -196,6 +237,48 @@
                 </div>
             </div>
     </footer>
+
+    <script>
+        // Set booking data dari form ke hidden inputs
+        function setBookingData() {
+            const checkin = document.getElementById('checkin').value;
+            const checkout = document.getElementById('checkout').value;
+            const persons = document.getElementById('persons').value;
+
+            // Validasi input
+            if (!checkin || !checkout) {
+                alert('Silakan pilih tanggal check-in dan check-out');
+                return false;
+            }
+
+            if (new Date(checkin) >= new Date(checkout)) {
+                alert('Tanggal check-out harus setelah check-in');
+                return false;
+            }
+
+            // Set hidden inputs
+            document.getElementById('hidden_checkin').value = checkin;
+            document.getElementById('hidden_checkout').value = checkout;
+            document.getElementById('hidden_persons').value = persons;
+
+            return true;
+        }
+
+        // Set minimum date untuk form
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('checkin').setAttribute('min', today);
+            document.getElementById('checkout').setAttribute('min', today);
+
+            // Update checkout min date ketika checkin berubah
+            document.getElementById('checkin').addEventListener('change', function() {
+                const checkinDate = new Date(this.value);
+                checkinDate.setDate(checkinDate.getDate() + 1);
+                const minCheckout = checkinDate.toISOString().split('T')[0];
+                document.getElementById('checkout').setAttribute('min', minCheckout);
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -402,3 +402,40 @@ body {
 .booking-btn:hover {
     background-color: #b91c1c; /* hover:bg-red-700 */
 }
+
+/* Login Required Styles */
+.login-required {
+    background-color: #f59e0b; /* bg-yellow-500 */
+}
+
+.login-required:hover {
+    background-color: #d97706; /* hover:bg-yellow-600 */
+}
+
+.login-notice {
+    text-align: center;
+    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; /* text-gray-500 */
+    margin-top: 0.5rem; /* mt-2 */
+    font-style: italic;
+}
+
+/* Success/Error Messages */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: #d1fae5; /* bg-green-100 */
+    border-color: #10b981; /* border-green-500 */
+    color: #065f46; /* text-green-800 */
+}
+
+.alert-error {
+    background-color: #fee2e2; /* bg-red-100 */
+    border-color: #ef4444; /* border-red-500 */
+    color: #991b1b; /* text-red-800 */
+}

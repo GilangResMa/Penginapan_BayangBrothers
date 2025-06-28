@@ -24,25 +24,36 @@
 
             <!-- Navigation -->
             <nav class="navigation">
-                <a href="/" class="nav-link active">
+                <a href="{{ route('homepage') }}" class="nav-link active">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </a>
-                <a href="room" class="nav-link">
+                <a href="{{ route('room.index') }}" class="nav-link">
                     <i class="fas fa-bed"></i>
                     <span>Room</span>
                 </a>
-                <a href="about" class="nav-link">
+                <a href="{{ route('about') }}" class="nav-link">
                     <i class="fas fa-info-circle"></i>
                     <span>About</span>
                 </a>
-                <a href="faq" class="nav-link">
+                <a href="{{ route('faq') }}" class="nav-link">
                     <i class="fas fa-question-circle"></i>
                     <span>FAQ</span>
                 </a>
-                <a href="login" class="login-button">
-                    Login
-                </a>
+                @auth('web')
+                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="login-button">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="login-button">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                @endauth
             </nav>
         </div>
     </header>
@@ -61,7 +72,7 @@
 
                 <!-- Go to Room Button -->
                 <div class="button-container">
-                    <a href="detailkamar" class="go-to-room-button">
+                    <a href="room" class="go-to-room-button">
                         Go to Room
                     </a>
                 </div>

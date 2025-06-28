@@ -271,6 +271,30 @@ body {
     box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2); /* focus:ring-red-600 */
 }
 
+/* Logout form styling */
+.navigation form {
+    display: inline;
+    margin: 0;
+}
+
+.navigation form .login-button {
+    background-color: white;
+    color: #dc2626;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.navigation form .login-button:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
 /* Responsive Login Page */
 @media (max-width: 768px) {
     .login-main {

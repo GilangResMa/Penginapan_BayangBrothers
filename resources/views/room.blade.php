@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Room</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    @vite(['resources/css/room.css'])
+    @vite(['resources/css/room.css', 'resources/js/room.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
 
@@ -44,11 +44,13 @@
                     <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                         @csrf
                         <button type="submit" class="login-button">
+                            <i class="fas fa-sign-out-alt"></i>
                             Logout
                         </button>
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="login-button">
+                        <i class="fas fa-sign-in-alt"></i>
                         Login
                     </a>
                 @endauth
@@ -57,15 +59,15 @@
     </header>
     <main class="main-content">
         <div class="container">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
 
-            @if($errors->any())
+            @if ($errors->any())
                 <div class="alert alert-error">
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
                 </div>
@@ -83,7 +85,7 @@
                             <img src="{{ asset('img/kamar2.jpg') }}" alt="Kamar 2">
                             <img src="{{ asset('img/meja.jpg') }}" alt="Meja">
                             <img src="{{ asset('img/toilet.jpg') }}" alt="Toilet">
-                            <img src="{{ asset('img/wc.jpg') }}" alt="WC">
+                            <img src="{{ asset('img/km.jpg') }}" alt="WC">
                         </div>
                     </div>
 
@@ -145,7 +147,7 @@
                         <div class="price">
                             <div class="price-main">
                                 <span class="price-label">Price: </span>
-                                <span id="total-price" class="price-amount">Rp 0</span>
+                                <span id="total-price" class="price-amount">Rp150.000</span>
                             </div>
                             <div id="price-details" style="display: none;" class="price-details">
                                 <small id="nights-info"></small>
@@ -199,7 +201,8 @@
                                 <input type="hidden" name="check_in" id="hidden_checkin">
                                 <input type="hidden" name="check_out" id="hidden_checkout">
                                 <input type="hidden" name="guests" id="hidden_persons">
-                                <button type="submit" class="booking-btn" onclick="setBookingData()">
+                                <input type="hidden" name="total_cost" id="hidden_total_cost">
+                                <button type="submit" class="booking-btn" onclick="return setBookingData()">
                                     <i class="fas fa-calendar-check"></i>
                                     Booking Now
                                 </button>
@@ -237,48 +240,6 @@
                 </div>
             </div>
     </footer>
-
-    <script>
-        // Set booking data dari form ke hidden inputs
-        function setBookingData() {
-            const checkin = document.getElementById('checkin').value;
-            const checkout = document.getElementById('checkout').value;
-            const persons = document.getElementById('persons').value;
-
-            // Validasi input
-            if (!checkin || !checkout) {
-                alert('Silakan pilih tanggal check-in dan check-out');
-                return false;
-            }
-
-            if (new Date(checkin) >= new Date(checkout)) {
-                alert('Tanggal check-out harus setelah check-in');
-                return false;
-            }
-
-            // Set hidden inputs
-            document.getElementById('hidden_checkin').value = checkin;
-            document.getElementById('hidden_checkout').value = checkout;
-            document.getElementById('hidden_persons').value = persons;
-
-            return true;
-        }
-
-        // Set minimum date untuk form
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('checkin').setAttribute('min', today);
-            document.getElementById('checkout').setAttribute('min', today);
-
-            // Update checkout min date ketika checkin berubah
-            document.getElementById('checkin').addEventListener('change', function() {
-                const checkinDate = new Date(this.value);
-                checkinDate.setDate(checkinDate.getDate() + 1);
-                const minCheckout = checkinDate.toISOString().split('T')[0];
-                document.getElementById('checkout').setAttribute('min', minCheckout);
-            });
-        });
-    </script>
 </body>
 
 </html>

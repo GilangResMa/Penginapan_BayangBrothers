@@ -16,18 +16,11 @@ class RoomController extends Controller
         $rooms = [
             [
                 'id' => 1,
-                'name' => 'Deluxe Room',
-                'price' => 500000,
+                'name' => 'Bayang Brothers',
+                'price' => 150000,
                 'description' => 'Kamar mewah dengan fasilitas lengkap',
                 'image' => 'room1.jpg'
             ],
-            [
-                'id' => 2,
-                'name' => 'Standard Room',
-                'price' => 300000,
-                'description' => 'Kamar standar dengan fasilitas dasar',
-                'image' => 'room2.jpg'
-            ]
         ];
 
         return view('room', compact('rooms'));

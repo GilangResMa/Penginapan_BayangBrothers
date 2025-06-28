@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CekDB;
 
 Route::get('/', function () {
     return view('homepage');
@@ -25,3 +26,5 @@ Route::get('/about', function () {
 Route::get('/faq', function () {
     return view('faq');
 });
+
+Route::resource('/users', \App\Http\Controllers\CekDB::class);

@@ -32,9 +32,6 @@ Route::post('/actionlogin', [LoginController::class, 'actionlogin'])->name('acti
 Route::middleware('auth:web')->group(function () {
     Route::post('/room/book/{id}', [RoomController::class, 'book'])->name('room.book');
     Route::get('/booking-history', [RoomController::class, 'bookingHistory'])->name('booking.history');
-    Route::get('/user-dashboard', function () {
-        return view('user.dashboard');
-    })->name('user.dashboard');
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');

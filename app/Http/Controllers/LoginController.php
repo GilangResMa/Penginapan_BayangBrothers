@@ -23,7 +23,7 @@ class LoginController extends Controller
         // Coba login sebagai user (menggunakan bcrypt)
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/user-dashboard');
+            return redirect()->route('profile');
         }
 
         // Manual check untuk admin (tanpa hash)

@@ -41,6 +41,10 @@
                     <span>FAQ</span>
                 </a>
                 @auth('web')
+                    <a href="{{ route('profile') }}" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                         @csrf
                         <button type="submit" class="login-button">

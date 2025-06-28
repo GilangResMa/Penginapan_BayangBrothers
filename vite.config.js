@@ -13,6 +13,7 @@ export default defineConfig({
                 "resources/css/room.css",
                 "resources/css/about.css",
                 "resources/css/faq.css",
+                "resources/css/profile.css",
                 "resources/js/room.js",
             ],
             refresh: true,

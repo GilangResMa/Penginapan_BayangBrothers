@@ -4,36 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Users;
 
 class LoginController extends Controller
 {
-    public function login()
-    {
-        if (Auth::check()) {
-            return redirect('homepage');
-        } else {
-            return view('login');
-        }
-    }
-
     public function actionlogin(Request $request)
     {
-        $data = [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ];
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-        if (Auth::Attempt($data)) {
-            return redirect('homepage');
-        } else {
-            return redirect('login');
+        // Coba login sebagai user
+        if (Auth::guard('web')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/user-dashboard');
         }
-    }
 
-    public function actionlogout()
-    {
-        Auth::logout();
-        return redirect('login');
+        // Coba login sebagai admin
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/admin-dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Kredensial tidak valid.',
+        ]);
     }
 }

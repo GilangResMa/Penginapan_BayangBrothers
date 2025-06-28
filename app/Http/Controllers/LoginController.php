@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    // Method untuk menampilkan form login
+    public function login()
+    {
+        return view('login');
+    }
+
     public function actionlogin(Request $request)
     {
         $credentials = $request->validate([
@@ -14,14 +20,16 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        // Coba login sebagai user
+        // Coba login sebagai user (menggunakan bcrypt)
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/user-dashboard');
         }
 
-        // Coba login sebagai admin
-        if (Auth::guard('admin')->attempt($credentials)) {
+        // Manual check untuk admin (tanpa hash)
+        $admin = \App\Models\Admin::where('email', $credentials['email'])->first();
+        if ($admin && $admin->password === $credentials['password']) {
+            Auth::guard('admin')->login($admin);
             $request->session()->regenerate();
             return redirect()->intended('/admin-dashboard');
         }

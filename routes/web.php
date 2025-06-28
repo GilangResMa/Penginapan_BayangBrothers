@@ -6,9 +6,10 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('register');
-});
+Route::get(
+    '/',
+    [UserRegister::class, 'showRegisterForm']
+)->name('register');
 
 // Route::get('/login', function () {
 //     return view('login');
@@ -33,7 +34,7 @@ Route::get('/faq', function () {
 Route::post(
     '/register',
     [UserRegister::class, 'register']
-)->name('register');
+)->name('register.store');
 
 Route::get('/profile', function () {
     return view('profile');

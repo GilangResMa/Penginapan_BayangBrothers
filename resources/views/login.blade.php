@@ -47,16 +47,41 @@
         <div class="login-container">
             <h2 class="login-title">Login</h2>
 
+            <!-- Display Success Message -->
+            @if(session('success'))
+                <div class="success-message">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- Display Error Messages -->
+            @if($errors->any())
+                <div class="error-container">
+                    @foreach($errors->all() as $error)
+                        <p class="error-message">{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
             <form action="{{ route('actionlogin') }}" method="post">
                 @csrf
                 <!-- Email Field -->
                 <div>
-                    <input name="email" type="email" placeholder="Email" class="input-field" required>
+                    <input name="email" type="email" placeholder="Email" 
+                           class="input-field @error('email') error @enderror" 
+                           value="{{ old('email') }}" required>
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <!-- Password Field -->
                 <div>
-                    <input name="password" type="password" placeholder="Password" class="input-field" required>
+                    <input name="password" type="password" placeholder="Password" 
+                           class="input-field @error('password') error @enderror" required>
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <!-- Forgot Password Link -->

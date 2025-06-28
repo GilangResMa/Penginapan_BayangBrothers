@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('contact')->comment('User Contact');
             $table->string('email')->unique()->comment('User Email');
             $table->string('password')->comment('User Password');
+            $table->rememberToken()->comment('Remember Token for User');
         });
     }
 

@@ -7,20 +7,24 @@ use Illuminate\Http\Request;
 
 class UserRegister extends Controller
 {
-    public function store(Request $request)
+    public function showRegisterForm()
+    {
+        return view('register');
+    }
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'contact' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
 
-        $users = User::create([
+        $user = User::create([
             'name' => $request->name,
             'contact' => $request->contact,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => $request->password, // Will be auto-hashed by model
         ]);
 
         return redirect('/login')->with('success', 'Account created successfully!');

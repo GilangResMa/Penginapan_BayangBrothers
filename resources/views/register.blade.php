@@ -48,28 +48,54 @@
         <div class="register-container">
             <h2 class="register-title">Sign Up</h2>
 
-            <form class="register-form">
+            <form class="register-form" method="POST" action="{{ route('register.store') }}">
                 @csrf
+                
+                @if($errors->any())
+                    <div class="error-container">
+                        @foreach($errors->all() as $error)
+                            <p class="error-message">{{ $error }}</p>
+                        @endforeach
+                    </div>
+                @endif
+
                 <!-- Name Field -->
                 <div>
-                    <input name="name" type="text" placeholder="Name" class="input-field" required>
+                    <input name="name" type="text" placeholder="Name" class="input-field @error('name') error @enderror" value="{{ old('name') }}" required>
+                    @error('name')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
-                <!-- Email Field -->
-                <div>
-                    <input name="email" type="email" placeholder="Email" class="input-field" required>
-                </div>
+                
                 <!-- Kontak Field -->
                 <div>
-                    <input name="kontak" type="text" placeholder="Nomor Telepon" class="input-field" required>
+                    <input name="contact" type="text" placeholder="Nomor Telepon" class="input-field @error('contact') error @enderror" value="{{ old('contact') }}" required>
+                    @error('contact')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
+                
+                <!-- Email Field -->
+                <div>
+                    <input name="email" type="email" placeholder="Email" class="input-field @error('email') error @enderror" value="{{ old('email') }}" required>
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+                
                 <!-- Password Field -->
                 <div>
-                    <input name="password" type="password" placeholder="Password" class="input-field" required>
+                    <input name="password" type="password" placeholder="Password" class="input-field @error('password') error @enderror" required>
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
+                
                 <!-- Sign Up Button -->
                 <button type="submit" class="signup-button">
                     Sign Up
                 </button>
+                
                 <!-- Sign In Link -->
                 <p class="signin-text">
                     Already Have an Account?

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CekDB;
+use App\Http\Controllers\UserRegister;
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('homepage');
@@ -27,4 +29,14 @@ Route::get('/faq', function () {
     return view('faq');
 });
 
-Route::resource('/users', \App\Http\Controllers\CekDB::class);
+Route::post(
+    '/register',
+    [UserRegister::class, 'register']
+)->name('register');
+
+Route::get('/profile', function () {
+    return view('profile');
+});
+
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('actionlogin', [LoginController::class, 'actionlogin'])->name('actionlogin');

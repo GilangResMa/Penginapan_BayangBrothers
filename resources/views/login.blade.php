@@ -47,7 +47,7 @@
         <div class="login-container">
             <h2 class="login-title">Login</h2>
 
-            <form class="login-form">
+            <form action="{{ route('actionlogin') }}" method="post">
                 @csrf
                 <!-- Email Field -->
                 <div>

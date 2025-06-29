@@ -16,6 +16,8 @@ class Room extends Model
         'price_weekend',
         'extra_bed_price',
         'max_guests',
+        'total_quantity',
+        'available_quantity',
     ];
 
     protected $casts = [
@@ -28,5 +30,57 @@ class Room extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Cek ketersediaan kamar untuk tanggal tertentu
+     */
+    public function getAvailableQuantityForDate($checkIn, $checkOut)
+    {
+        // Hitung berapa kamar yang sudah dibooking untuk periode ini
+        $bookedQuantity = $this->bookings()
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->where(function ($q) use ($checkIn, $checkOut) {
+                    // Booking yang overlap dengan periode yang diminta
+                    $q->where('check_in', '<', $checkOut)
+                        ->where('check_out', '>', $checkIn);
+                })
+                    ->whereIn('status', ['pending', 'confirmed']); // Hanya booking aktif
+            })
+            ->count();
+
+        return $this->total_quantity - $bookedQuantity;
+    }
+
+    /**
+     * Cek apakah kamar tersedia untuk booking
+     */
+    public function isAvailableForBooking($checkIn, $checkOut, $requestedQuantity = 1)
+    {
+        $availableQuantity = $this->getAvailableQuantityForDate($checkIn, $checkOut);
+        return $availableQuantity >= $requestedQuantity;
+    }
+
+    /**
+     * Get booking conflicts for specific date range
+     */
+    public function getBookingConflicts($checkIn, $checkOut)
+    {
+        return $this->bookings()
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->where('check_in', '<', $checkOut)
+                    ->where('check_out', '>', $checkIn);
+            })
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->with('user')
+            ->get();
+    }
+
+    /**
+     * Check if room type is fully booked for date range
+     */
+    public function isFullyBookedForDate($checkIn, $checkOut)
+    {
+        return $this->getAvailableQuantityForDate($checkIn, $checkOut) <= 0;
     }
 }

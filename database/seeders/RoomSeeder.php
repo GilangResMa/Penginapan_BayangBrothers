@@ -19,7 +19,9 @@ class RoomSeeder extends Seeder
                 'price_weekday' => 150000,
                 'price_weekend' => 180000,
                 'extra_bed_price' => 70000,
-                'max_guests' => 2
+                'max_guests' => 2,
+                'total_quantity' => 12,      // Total 12 kamar
+                'available_quantity' => 12   // Semua tersedia di awal
             ],
         ];
 

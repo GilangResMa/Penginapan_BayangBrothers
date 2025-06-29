@@ -1,0 +1,561 @@
+/* ====================================
+   AUTH CSS - OPTIMIZED VERSION
+   Consistent with homepage red theme
+   ==================================== */
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f3f4f6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ====================================
+   HEADER & NAVIGATION (Shared with homepage)
+   ==================================== */
+.header {
+    background-color: #dc2626;
+    color: white;
+    padding: 1rem 1.5rem;
+    width: 100%;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 1.25rem;
+}
+
+.logo-text {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #fecaca;
+}
+
+.nav-link.active {
+    border-bottom: 2px solid white;
+}
+
+.login-button {
+    background-color: white;
+    color: #dc2626;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.login-button:hover {
+    background-color: #f3f4f6;
+}
+
+.navigation form {
+    display: inline;
+    margin: 0;
+}
+
+/* ====================================
+   MAIN CONTENT & LAYOUT
+   ==================================== */
+.main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .auth-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+}
+
+/* ====================================
+   AUTH CARDS
+   ==================================== */
+.auth-card,
+.info-card {
+    background-color: #d1d5db; /* Match homepage content cards */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* ====================================
+   FORM ELEMENTS
+   ==================================== */
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-label i {
+    color: #dc2626;
+    width: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Password Field */
+.password-field,
+.password-input-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: #dc2626;
+}
+
+/* Error Messages */
+.error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* ====================================
+   BUTTONS
+   ==================================== */
+.auth-button {
+    width: 100%;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.auth-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
+
+.auth-button:disabled,
+.auth-button.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ====================================
+   INFO COMPONENTS
+   ==================================== */
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.info-header i {
+    font-size: 1.25rem;
+    color: #dc2626;
+}
+
+.info-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.info-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-content li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.info-content li i {
+    color: #10b981;
+    font-size: 0.75rem;
+    width: 1rem;
+}
+
+/* ====================================
+   ALERTS & NOTIFICATIONS
+   ==================================== */
+.alert {
+    padding: 0.875rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.alert p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* ====================================
+   PASSWORD REQUIREMENTS
+   ==================================== */
+.password-requirements {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.password-requirements h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.password-requirements ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.password-requirements li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.password-requirements li i {
+    font-size: 0.625rem;
+    width: 0.875rem;
+    color: #ef4444;
+}
+
+.password-requirements li.valid {
+    color: #10b981;
+}
+
+.password-requirements li.valid i {
+    color: #10b981;
+}
+
+/* ====================================
+   AUTH FOOTER LINKS
+   ==================================== */
+.auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.auth-footer p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-footer a {
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+    color: #b91c1c;
+    text-decoration: underline;
+}
+
+/* ====================================
+   FOOTER (Shared with homepage)
+   ==================================== */
+.footer {
+    background-color: #dc2626;
+    color: white;
+    padding: 0.75rem 0;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.footer-title {
+    font-weight: bold;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.footer-description {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.social-media-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.social-link:hover {
+    color: #fecaca;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+@media (max-width: 768px) {
+    .main {
+        padding: 2rem 1rem;
+    }
+    
+    .auth-card,
+    .info-card {
+        padding: 1.5rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-container {
+        padding: 0 1rem;
+    }
+    
+    .logo-text {
+        font-size: 1.25rem;
+    }
+    
+    .navigation {
+        gap: 0.5rem;
+    }
+    
+    .nav-link {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .nav-link span {
+        display: none;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .social-media-container {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main {
+        padding: 1.5rem 0.875rem;
+    }
+    
+    .auth-card,
+    .info-card {
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+    }
+    
+    .form-input,
+    .auth-button {
+        padding: 0.75rem;
+    }
+}
+
+/* ====================================
+   UTILITY CLASSES
+   ==================================== */
+.loading-spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

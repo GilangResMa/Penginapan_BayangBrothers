@@ -4,26 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Reset Password - Bayang Brothers</title>
-    @vite(['resources/css/login.css'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @vite(['resources/css/auth.css'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="{{ route('homepage') }}">Bayang Brothers</a>
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo-section">
+                <i class="fas fa-home logo-icon"></i>
+                <div>
+                    <div class="logo-text">Bayang Brothers</div>
+                </div>
             </div>
-            <div class="nav-links">
-                <a href="{{ route('homepage') }}">Home</a>
-                <a href="{{ route('room.index') }}">Rooms</a>
-                <a href="{{ route('about') }}">About</a>
-                <a href="{{ route('faq') }}">FAQ</a>
-                <a href="{{ route('login') }}" class="nav-login-btn">Login</a>
-            </div>
+
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="{{ route('homepage') }}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ route('room.index') }}" class="nav-link">
+                    <i class="fas fa-bed"></i>
+                    <span>Room</span>
+                </a>
+                <a href="{{ route('about') }}" class="nav-link">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="{{ route('faq') }}" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>FAQ</span>
+                </a>
+                <a href="{{ route('login') }}" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="main">
@@ -67,12 +90,9 @@
                                 Password Baru
                             </label>
                             <div class="password-input-container">
-                                <input type="password" 
-                                       id="password" 
-                                       name="password" 
-                                       class="form-input @error('password') error @enderror"
-                                       placeholder="Masukkan password baru"
-                                       required>
+                                <input type="password" id="password" name="password"
+                                    class="form-input @error('password') error @enderror"
+                                    placeholder="Masukkan password baru" required>
                                 <button type="button" class="password-toggle" onclick="togglePassword('password')">
                                     <i class="fas fa-eye" id="password-icon"></i>
                                 </button>
@@ -88,13 +108,11 @@
                                 Konfirmasi Password
                             </label>
                             <div class="password-input-container">
-                                <input type="password" 
-                                       id="password_confirmation" 
-                                       name="password_confirmation" 
-                                       class="form-input @error('password_confirmation') error @enderror"
-                                       placeholder="Konfirmasi password baru"
-                                       required>
-                                <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
+                                <input type="password" id="password_confirmation" name="password_confirmation"
+                                    class="form-input @error('password_confirmation') error @enderror"
+                                    placeholder="Konfirmasi password baru" required>
+                                <button type="button" class="password-toggle"
+                                    onclick="togglePassword('password_confirmation')">
                                     <i class="fas fa-eye" id="password_confirmation-icon"></i>
                                 </button>
                             </div>
@@ -164,7 +182,6 @@
                     </a>
                 </div>
             </div>
-        </div>
     </footer>
 
     <script>
@@ -172,7 +189,7 @@
         function togglePassword(fieldId) {
             const passwordField = document.getElementById(fieldId);
             const icon = document.getElementById(fieldId + '-icon');
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -189,42 +206,42 @@
             const passwordInput = document.getElementById('password');
             const confirmInput = document.getElementById('password_confirmation');
             const submitBtn = document.getElementById('submit-btn');
-            
+
             function validatePassword() {
                 const password = passwordInput.value;
                 const confirm = confirmInput.value;
-                
+
                 // Check length
                 const lengthValid = password.length >= 8;
                 updateRequirement('length-req', lengthValid);
-                
+
                 // Check letter
                 const letterValid = /[a-zA-Z]/.test(password);
                 updateRequirement('letter-req', letterValid);
-                
+
                 // Check number
                 const numberValid = /\d/.test(password);
                 updateRequirement('number-req', numberValid);
-                
+
                 // Check match
                 const matchValid = password === confirm && password.length > 0;
                 updateRequirement('match-req', matchValid);
-                
+
                 // Enable submit button if all valid
                 const allValid = lengthValid && letterValid && numberValid && matchValid;
                 submitBtn.disabled = !allValid;
-                
+
                 if (allValid) {
                     submitBtn.classList.add('enabled');
                 } else {
                     submitBtn.classList.remove('enabled');
                 }
             }
-            
+
             function updateRequirement(id, isValid) {
                 const element = document.getElementById(id);
                 const icon = element.querySelector('i');
-                
+
                 if (isValid) {
                     element.classList.add('valid');
                     element.classList.remove('invalid');
@@ -237,81 +254,59 @@
                     icon.classList.add('fa-times');
                 }
             }
-            
+
             passwordInput.addEventListener('input', validatePassword);
             confirmInput.addEventListener('input', validatePassword);
         });
     </script>
 
-    <style>
-        .password-input-container {
-            position: relative;
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(fieldId + '-icon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
         }
-        
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            padding: 5px;
-        }
-        
-        .password-toggle:hover {
-            color: #667eea;
-        }
-        
-        .password-requirements {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .password-requirements h4 {
-            margin: 0 0 0.5rem 0;
-            color: #333;
-            font-size: 0.9rem;
-        }
-        
-        .password-requirements ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .password-requirements li {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            margin: 0.25rem 0;
-            color: #666;
-        }
-        
-        .password-requirements li.valid {
-            color: #27ae60;
-        }
-        
-        .password-requirements li.invalid {
-            color: #e74c3c;
-        }
-        
-        .auth-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #ccc;
-        }
-        
-        .auth-button.enabled {
-            opacity: 1;
-            cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-    </style>
+
+        // Password strength validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordField = document.getElementById('password');
+            const confirmField = document.getElementById('password_confirmation');
+            const submitButton = document.querySelector('.auth-button');
+
+            function validatePassword() {
+                const password = passwordField.value;
+                const confirm = confirmField.value;
+
+                // Basic validation
+                const isLongEnough = password.length >= 8;
+                const hasMatch = password === confirm && confirm.length > 0;
+
+                // Update button state
+                if (isLongEnough && hasMatch) {
+                    submitButton.disabled = false;
+                    submitButton.classList.add('enabled');
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.classList.remove('enabled');
+                }
+            }
+
+            passwordField.addEventListener('input', validatePassword);
+            confirmField.addEventListener('input', validatePassword);
+
+            // Initial validation
+            validatePassword();
+        });
+    </script>
 </body>
 
 </html>

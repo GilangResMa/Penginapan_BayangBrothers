@@ -12,12 +12,30 @@ class RoomController extends Controller
     /**
      * Tampilkan halaman room (bisa diakses tanpa login)
      */
-    public function index()
+    public function index(Request $request)
     {
         // Ambil data room dari database
         $rooms = Room::all();
 
-        return view('room', compact('rooms'));
+        // Jika ada parameter check_in dan check_out dari form pencarian
+        $checkIn = $request->input('check_in');
+        $checkOut = $request->input('check_out');
+
+        // Tambahkan informasi ketersediaan untuk setiap room
+        if ($checkIn && $checkOut) {
+            foreach ($rooms as $room) {
+                $room->available_for_dates = $room->getAvailableQuantityForDate($checkIn, $checkOut);
+                $room->is_available = $room->available_for_dates > 0;
+            }
+        } else {
+            // Jika tidak ada tanggal, show default availability
+            foreach ($rooms as $room) {
+                $room->available_for_dates = $room->total_quantity;
+                $room->is_available = true;
+            }
+        }
+
+        return view('room', compact('rooms', 'checkIn', 'checkOut'));
     }
 
     /**
@@ -40,6 +58,15 @@ class RoomController extends Controller
         ]);
 
         try {
+            // Cari room
+            $room = Room::findOrFail($id);
+
+            // Cek ketersediaan kamar untuk tanggal yang diminta
+            if (!$room->isAvailableForBooking($validated['check_in'], $validated['check_out'])) {
+                return back()->with('error', 'Maaf, kamar tidak tersedia untuk tanggal yang dipilih. Silakan pilih tanggal lain.')
+                    ->withInput();
+            }
+
             // Buat booking baru
             $booking = Booking::create([
                 'user_id' => Auth::guard('web')->id(),
@@ -71,5 +98,29 @@ class RoomController extends Controller
         $bookings = Booking::where('user_id', $user->id)->with('room')->orderBy('created_at', 'desc')->get();
         
         return view('booking.history', compact('bookings'));
+    }
+
+    /**
+     * API untuk cek ketersediaan real-time via AJAX
+     */
+    public function checkAvailability(Request $request)
+    {
+        $request->validate([
+            'room_id' => 'required|exists:rooms,id',
+            'check_in' => 'required|date|after_or_equal:today',
+            'check_out' => 'required|date|after:check_in',
+        ]);
+
+        $room = Room::findOrFail($request->room_id);
+        $availableQuantity = $room->getAvailableQuantityForDate($request->check_in, $request->check_out);
+
+        return response()->json([
+            'available' => $availableQuantity > 0,
+            'available_quantity' => $availableQuantity,
+            'total_quantity' => $room->total_quantity,
+            'message' => $availableQuantity > 0
+                ? "Tersedia {$availableQuantity} dari {$room->total_quantity} kamar"
+                : "Tidak ada kamar tersedia untuk tanggal tersebut"
+        ]);
     }
 }

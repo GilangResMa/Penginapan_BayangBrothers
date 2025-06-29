@@ -17,6 +17,10 @@ Route::get('/', function () {
 
 // Public routes (bisa diakses tanpa login)
 Route::get('/room', [RoomController::class, 'index'])->name('room.index');
+
+// API route untuk check availability
+Route::post('/api/room/availability', [RoomController::class, 'checkAvailability'])->name('room.check.availability');
+
 Route::get('/about', function () {
     return view('about');
 })->name('about');

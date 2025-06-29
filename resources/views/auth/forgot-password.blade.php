@@ -4,26 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Forgot Password - Bayang Brothers</title>
-    @vite(['resources/css/login.css'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @vite(['resources/css/auth.css'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="{{ route('homepage') }}">Bayang Brothers</a>
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo-section">
+                <i class="fas fa-home logo-icon"></i>
+                <div>
+                    <div class="logo-text">Bayang Brothers</div>
+                </div>
             </div>
-            <div class="nav-links">
-                <a href="{{ route('homepage') }}">Home</a>
-                <a href="{{ route('room.index') }}">Rooms</a>
-                <a href="{{ route('about') }}">About</a>
-                <a href="{{ route('faq') }}">FAQ</a>
-                <a href="{{ route('login') }}" class="nav-login-btn">Login</a>
-            </div>
+
+            <!-- Navigation -->
+            <nav class="navigation">
+                <a href="{{ route('homepage') }}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ route('room.index') }}" class="nav-link">
+                    <i class="fas fa-bed"></i>
+                    <span>Room</span>
+                </a>
+                <a href="{{ route('about') }}" class="nav-link">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+                <a href="{{ route('faq') }}" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>FAQ</span>
+                </a>
+                <a href="{{ route('login') }}" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="main">
@@ -107,7 +130,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+     <footer class="footer">
         <div class="footer-content">
             <h3 class="footer-title">Bayang Brothers</h3>
             <p class="footer-description">Bayang Brothers is a booking room service operating in Yogyakarta.</p>
@@ -126,8 +149,7 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </footer>
+    </footer> 
 </body>
 
 </html>

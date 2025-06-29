@@ -160,14 +160,14 @@ body {
 .footer-copyright {
     font-size: 0.75rem;
     margin: 0; /* Reset margin */
-}/* Responsive Footer for Mobile */
+} /* Responsive Footer for Mobile */
 @media (max-width: 768px) {
     .footer-bottom {
         flex-direction: column;
         gap: 1rem;
         text-align: center;
     }
-    
+
     .social-media-container {
         justify-content: center;
     }
@@ -191,7 +191,8 @@ body {
 .room-detail {
     background-color: white;
     border-radius: 0.5rem; /* rounded-lg */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
     overflow: hidden;
     margin-bottom: 2rem; /* mb-8 */
 }
@@ -327,7 +328,8 @@ body {
 .booking-section {
     background-color: white;
     border-radius: 0.5rem; /* rounded-lg */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
     padding: 1.5rem; /* p-6 */
 }
 
@@ -459,6 +461,63 @@ body {
     text-transform: capitalize;
 }
 
+/* Availability Info Styles */
+.availability-info {
+    margin: 1rem 0;
+}
+
+.availability {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.availability.available {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.availability.unavailable {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+}
+
+.availability.default {
+    background-color: #e0f2fe;
+    color: #0c4a6e;
+    border: 1px solid #0ea5e9;
+}
+
+.availability i {
+    font-size: 1rem;
+}
+
+/* Booking Button Disabled State */
+.booking-btn.disabled {
+    background-color: #9ca3af !important;
+    color: #fff !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+.booking-btn.disabled:hover {
+    background-color: #9ca3af !important;
+    transform: none !important;
+}
+
+.unavailable-notice {
+    color: #991b1b;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
 /* Extra bed notification styling */
 .extra-bed-notification {
     background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
@@ -489,7 +548,7 @@ body {
     font-weight: 500;
     z-index: 1001;
     min-width: 300px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     animation: slideIn 0.3s ease-out;
 }
 
@@ -719,22 +778,113 @@ body {
     .booking-inputs {
         grid-template-columns: 1fr;
     }
-    
+
     .date-inputs {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .date-separator {
         transform: rotate(90deg);
     }
-    
+
     .select-input {
         width: 100%;
     }
-    
+
     .extra-bed-notification {
         font-size: 0.8rem;
         padding: 0.5rem;
+    }
+}
+
+/* Main Content Styles */
+.main {
+    flex: 1;
+    padding: 2rem 1.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Search Availability Styles */
+.search-availability {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.search-title {
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.search-form {
+    width: 100%;
+}
+
+.search-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 1rem;
+    align-items: end;
+}
+
+.search-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-input-group label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.search-date-input {
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.search-date-input:focus {
+    outline: none;
+    border-color: #dc2626;
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.search-btn:hover {
+    background: linear-gradient(135deg, #991b1b, #7f1d1d);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .search-inputs {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 }

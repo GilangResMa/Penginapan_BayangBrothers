@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ForgotPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,12 @@ Route::get('/register', [UserRegister::class, 'showRegisterForm'])->name('regist
 Route::post('/register', [UserRegister::class, 'register'])->name('register.store');
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/actionlogin', [LoginController::class, 'actionlogin'])->name('actionlogin');
+
+// Forgot Password routes
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('forgot.password');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 // Protected routes - butuh login untuk booking
 Route::middleware('auth:web')->group(function () {

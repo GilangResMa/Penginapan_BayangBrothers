@@ -19,9 +19,8 @@ class RoomSeeder extends Seeder
                 'price_weekday' => 150000,
                 'price_weekend' => 180000,
                 'extra_bed_price' => 70000,
-                'max_guests' => 2,
-                'image' => 'https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=500'
-            ]
+                'max_guests' => 2
+            ],
         ];
 
         foreach ($rooms as $room) {

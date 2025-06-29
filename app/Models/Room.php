@@ -16,7 +16,6 @@ class Room extends Model
         'price_weekend',
         'extra_bed_price',
         'max_guests',
-        'image'
     ];
 
     protected $casts = [
@@ -25,9 +24,9 @@ class Room extends Model
         'extra_bed_price' => 'decimal:2',
     ];
 
-    // Relasi dengan booking (uncomment when Booking model is created)
-    // public function bookings()
-    // {
-    //     return $this->hasMany(Booking::class);
-    // }
+    // Relasi dengan booking
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

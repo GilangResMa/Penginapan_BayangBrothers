@@ -100,7 +100,7 @@
 
                 <!-- Forgot Password Link -->
                 <div class="forgot-password">
-                    <a href="#" class="forgot-link">Forgot Password?</a>
+                    <a href="{{ route('forgot.password') }}" class="forgot-link">Forgot Password?</a>
                 </div>
 
                 <!-- Sign In Button -->

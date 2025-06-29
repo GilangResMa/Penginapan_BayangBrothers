@@ -111,48 +111,74 @@ function updatePriceDisplay() {
 }
 
 // Set booking data dari form ke hidden inputs
-function setBookingData() {
-    const checkin = document.getElementById('checkin').value;
-    const checkout = document.getElementById('checkout').value;
-    const persons = document.getElementById('persons').value;
+function setBookingData(roomId = null) {
+    // Jika tidak ada roomId, gunakan ID default (untuk backward compatibility)
+    const checkinId = roomId ? `checkin_${roomId}` : "checkin";
+    const checkoutId = roomId ? `checkout_${roomId}` : "checkout";
+    const personsId = roomId ? `persons_${roomId}` : "persons";
+
+    const checkin =
+        document.getElementById(checkinId)?.value ||
+        document.getElementById("checkin")?.value;
+    const checkout =
+        document.getElementById(checkoutId)?.value ||
+        document.getElementById("checkout")?.value;
+    const persons =
+        document.getElementById(personsId)?.value ||
+        document.getElementById("persons")?.value;
 
     // Validasi input
     if (!checkin || !checkout) {
-        alert('Silakan pilih tanggal check-in dan check-out');
+        alert("Silakan pilih tanggal check-in dan check-out");
         return false;
     }
 
     if (new Date(checkin) >= new Date(checkout)) {
-        alert('Tanggal check-out harus setelah check-in');
+        alert("Tanggal check-out harus setelah check-in");
         return false;
     }
 
     // Validasi minimal 1 malam
     const result = calculateBookingCost(checkin, checkout, persons);
     if (result.totalNights === 0) {
-        alert('Minimal booking 1 malam');
+        alert("Minimal booking 1 malam");
         return false;
     }
 
     // Konfirmasi jika ada extra bed
     if (result.needsExtraBed) {
         const confirmExtraBed = confirm(
-            `Untuk ${persons} orang, akan dikenakan biaya extra bed ${formatRupiah(EXTRA_BED_PRICE)} per malam.\n` +
-            `Total biaya extra bed: ${formatRupiah(result.extraBedCost)}\n\n` +
-            `Total keseluruhan: ${formatRupiah(result.totalCost)}\n\n` +
-            `Lanjutkan booking?`
+            `Untuk ${persons} orang, akan dikenakan biaya extra bed ${formatRupiah(
+                EXTRA_BED_PRICE
+            )} per malam.\n` +
+                `Total biaya extra bed: ${formatRupiah(
+                    result.extraBedCost
+                )}\n\n` +
+                `Total keseluruhan: ${formatRupiah(result.totalCost)}\n\n` +
+                `Lanjutkan booking?`
         );
-        
+
         if (!confirmExtraBed) {
             return false;
         }
     }
 
-    // Set hidden inputs
-    document.getElementById('hidden_checkin').value = checkin;
-    document.getElementById('hidden_checkout').value = checkout;
-    document.getElementById('hidden_persons').value = persons;
-    document.getElementById('hidden_total_cost').value = result.totalCost;
+    // Set hidden inputs berdasarkan roomId
+    if (roomId) {
+        document.getElementById(`hidden_checkin_${roomId}`).value = checkin;
+        document.getElementById(`hidden_checkout_${roomId}`).value = checkout;
+        document.getElementById(`hidden_persons_${roomId}`).value = persons;
+        document.getElementById(`hidden_extra_bed_${roomId}`).value =
+            result.needsExtraBed ? "1" : "0";
+        document.getElementById(`hidden_total_cost_${roomId}`).value =
+            result.totalCost;
+    } else {
+        // Fallback untuk kompatibilitas
+        document.getElementById("hidden_checkin").value = checkin;
+        document.getElementById("hidden_checkout").value = checkout;
+        document.getElementById("hidden_persons").value = persons;
+        document.getElementById("hidden_total_cost").value = result.totalCost;
+    }
 
     return true;
 }

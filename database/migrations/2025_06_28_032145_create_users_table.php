@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('name')->comment('User Name');
             $table->string('contact')->comment('User Contact');
             $table->string('email')->unique()->comment('User Email');
+            $table->timestamp('email_verified_at')->nullable()->comment('Email Verification Time');
             $table->string('password')->comment('User Password');
             $table->rememberToken()->comment('Remember Token for User');
+            $table->timestamps();
         });
     }
 

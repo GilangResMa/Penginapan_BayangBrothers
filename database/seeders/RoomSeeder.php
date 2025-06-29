@@ -1,0 +1,31 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class RoomSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $rooms = [
+            [
+                'name' => 'Standard Room',
+                'description' => 'Comfortable standard room with basic amenities including AC, TV, and private bathroom. Perfect for budget travelers.',
+                'price_weekday' => 150000,
+                'price_weekend' => 180000,
+                'extra_bed_price' => 70000,
+                'max_guests' => 2,
+                'image' => 'https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=500'
+            ]
+        ];
+
+        foreach ($rooms as $room) {
+            \App\Models\Room::create($room);
+        }
+    }
+}

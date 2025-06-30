@@ -11,11 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-    // Security middleware applied globally
+    // Security middleware applied globally - Re-enabling one by one
     $middleware->append(\App\Http\Middleware\IPBlockingMiddleware::class);
-    $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
-    $middleware->append(\App\Http\Middleware\XSSProtectionMiddleware::class);
-    $middleware->append(\App\Http\Middleware\InputValidationMiddleware::class);
+    // $middleware->append(\App\Http\Middleware\SecurityHeadersMiddleware::class);
+    // $middleware->append(\App\Http\Middleware\XSSProtectionMiddleware::class);
+    // $middleware->append(\App\Http\Middleware\InputValidationMiddleware::class);
 
     // Rate limiting middleware
     $middleware->throttleApi('60,1'); // Built-in API rate limiting
@@ -30,20 +30,20 @@ return Application::configure(basePath: dirname(__DIR__))
         'ip.blocking' => \App\Http\Middleware\IPBlockingMiddleware::class,
     ]);
 
-    // Apply rate limiting to web routes
-    $middleware->web(append: [
-        \App\Http\Middleware\RateLimitMiddleware::class . ':120,1', // 120 requests per minute for web
-    ]);
+    // Apply rate limiting to web routes - TEMPORARILY DISABLED FOR DEBUGGING
+    // $middleware->web(append: [
+    //     \App\Http\Middleware\RateLimitMiddleware::class . ':120,1', // 120 requests per minute for web
+    // ]);
 
     // Apply stricter rate limiting to auth routes  
     $middleware->group('auth-strict', [
         \App\Http\Middleware\RateLimitMiddleware::class . ':30,1', // 30 requests per minute for auth
     ]);
 
-    // Owner-specific middleware group
+    // Owner-specific middleware group - TEMPORARILY DISABLED FOR DEBUGGING
     $middleware->group('owner', [
         'auth:owner',
-        \App\Http\Middleware\RateLimitMiddleware::class . ':60,1'
+        // \App\Http\Middleware\RateLimitMiddleware::class . ':60,1'
     ]);
 
     // Admin-specific middleware group

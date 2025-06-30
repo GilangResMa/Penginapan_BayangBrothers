@@ -73,7 +73,7 @@
                     </div>
                     <div class="card-content">
                         @php
-                            $activeCount = $admins->where('is_active', true)->count();
+                            $activeCount = $admins->where('status', true)->count();
                         @endphp
                         <div class="stat-number">{{ $activeCount }}</div>
                         <div class="stat-label">Currently active</div>
@@ -101,10 +101,10 @@
                     </div>
                     <div class="card-content">
                         @php
-                            $lastLogin = $admins->where('last_login_at', '!=', null)->sortByDesc('last_login_at')->first();
+                            $lastLogin = $admins->sortByDesc('updated_at')->first();
                         @endphp
-                        <div class="stat-number">{{ $lastLogin ? $lastLogin->last_login_at->diffForHumans() : 'Never' }}</div>
-                        <div class="stat-label">Most recent login</div>
+                        <div class="stat-number">{{ $lastLogin ? $lastLogin->updated_at->diffForHumans() : 'Never' }}</div>
+                        <div class="stat-label">Most recent activity</div>
                     </div>
                 </div>
             </div>
@@ -152,53 +152,45 @@
                                         <span class="admin-role">
                                             <i class="fas fa-tag"></i>
                                             Administrator
-                                        </span>
-                                        <span class="admin-status status-{{ $admin->is_active ? 'active' : 'inactive' }}">
-                                            <i class="fas fa-circle"></i>
-                                            {{ $admin->is_active ? 'Active' : 'Inactive' }}
-                                        </span>
+                                        </span>                        <span class="admin-status status-{{ $admin->status ? 'active' : 'inactive' }}">
+                            <i class="fas fa-circle"></i>
+                            {{ $admin->status ? 'Active' : 'Inactive' }}
+                        </span>
                                     </div>
                                     <div class="admin-dates">
                                         <div class="date-item">
                                             <span class="date-label">Created:</span>
                                             <span class="date-value">{{ $admin->created_at->format('d M Y') }}</span>
                                         </div>
-                                        @if($admin->last_login_at)
                                         <div class="date-item">
-                                            <span class="date-label">Last Login:</span>
-                                            <span class="date-value">{{ $admin->last_login_at->format('d M Y, H:i') }}</span>
+                                            <span class="date-label">Last Updated:</span>
+                                            <span class="date-value">{{ $admin->updated_at->format('d M Y, H:i') }}</span>
                                         </div>
-                                        @else
-                                        <div class="date-item">
-                                            <span class="date-label">Last Login:</span>
-                                            <span class="date-value text-muted">Never</span>
-                                        </div>
-                                        @endif
                                     </div>
                                 </div>
                                 <div class="admin-actions">
-                                    @if($admin->is_active)
-                                        <form method="POST" action="{{ route('owner.admin.deactivate', $admin->id) }}" style="display: inline;">
+                                    @if($admin->status)
+                                        <form method="POST" action="{{ route('owner.admin.update', $admin->id) }}" style="display: inline;">
                                             @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="action" value="deactivate">
                                             <button type="submit" class="btn-small btn-warning" title="Deactivate Admin" 
                                                     onclick="return confirm('Are you sure you want to deactivate this admin?')">
                                                 <i class="fas fa-user-slash"></i>
                                             </button>
                                         </form>
                                     @else
-                                        <form method="POST" action="{{ route('owner.admins', $admin->id) }}" style="display: inline;">
+                                        <form method="POST" action="{{ route('owner.admin.update', $admin->id) }}" style="display: inline;">
                                             @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="action" value="activate">
                                             <button type="submit" class="btn-small btn-success" title="Activate Admin">
                                                 <i class="fas fa-user-check"></i>
                                             </button>
                                         </form>
                                     @endif
                                     
-                                    <a href="{{ route('owner.admin.edit', $admin->id) }}" class="btn-small btn-info" title="Edit Admin">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    
-                                    <form method="POST" action="{{ route('owner.admins', $admin->id) }}" style="display: inline;">
+                                    <form method="POST" action="{{ route('owner.admin.delete', $admin->id) }}" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-small btn-danger" title="Delete Admin" 

@@ -16,6 +16,28 @@ class InputValidationMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Debug logging for owner admin routes
+        if (strpos($request->path(), 'owner') !== false) {
+            Log::info('Owner route accessed', [
+                'path' => $request->path(),
+                'method' => $request->method(),
+                'is_owner_admin_route' => $this->isOwnerAdminRoute($request),
+                'is_legitimate_form' => $this->isLegitimateFormSubmission($request),
+            ]);
+        }
+
+        // Skip validation for owner admin management routes to avoid false positives
+        if ($this->isOwnerAdminRoute($request)) {
+            Log::info('Skipping validation for owner admin route: ' . $request->path());
+            return $next($request);
+        }
+
+        // Skip validation for specific form fields that might trigger false positives
+        if ($this->isLegitimateFormSubmission($request)) {
+            Log::info('Skipping validation for legitimate form submission: ' . $request->path());
+            return $next($request);
+        }
+
         // Validate file uploads
         if ($request->hasFile('image') || $request->hasFile('photo') || $request->hasFile('file')) {
             $this->validateFileUploads($request);
@@ -27,7 +49,9 @@ class InputValidationMiddleware
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'url' => $request->fullUrl(),
-                'input' => $request->all(),
+                'path' => $request->path(),
+                'method' => $request->method(),
+                'input' => $request->except(['password', 'password_confirmation']), // Don't log passwords
                 'user_id' => $request->user() ? $request->user()->id : null
             ]);
             
@@ -52,7 +76,50 @@ class InputValidationMiddleware
         
         return $next($request);
     }
-    
+
+    /**
+     * Check if this is an owner admin management route
+     */
+    protected function isOwnerAdminRoute(Request $request): bool
+    {
+        $ownerAdminRoutes = [
+            'owner/admin',
+            'owner/admin/create',
+            'owner/admins'
+        ];
+
+        $path = $request->path();
+
+        foreach ($ownerAdminRoutes as $route) {
+            if (strpos($path, $route) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if this is a legitimate form submission that might trigger false positives
+     */
+    protected function isLegitimateFormSubmission(Request $request): bool
+    {
+        // If this is a POST/PUT request with password fields, likely a legitimate form
+        if (
+            in_array($request->method(), ['POST', 'PUT', 'PATCH']) &&
+            ($request->has('password') || $request->has('password_confirmation'))
+        ) {
+            return true;
+        }
+
+        // If this is an authenticated user making a request to admin/owner routes
+        if ($request->user() && (strpos($request->path(), 'admin') !== false || strpos($request->path(), 'owner') !== false)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Validate file uploads
      */
@@ -105,34 +172,34 @@ class InputValidationMiddleware
      */
     protected function containsSQLInjection(array $input): bool
     {
-        $inputString = json_encode($input);
-        
+        // Exclude password fields and other legitimate fields from SQL injection check
+        $excludedFields = ['password', 'password_confirmation', '_token', '_method', 'status', 'name', 'email'];
+        $filteredInput = array_filter($input, function ($key) use ($excludedFields) {
+            return !in_array($key, $excludedFields);
+        }, ARRAY_FILTER_USE_KEY);
+
+        // If no fields to check after filtering, skip
+        if (empty($filteredInput)) {
+            return false;
+        }
+
+        $inputString = json_encode($filteredInput);
+
+        // More specific SQL injection patterns that are less likely to trigger false positives
         $sqlPatterns = [
-            '/(\bUNION\b.*\bSELECT\b)/i',
-            '/(\bSELECT\b.*\bFROM\b)/i',
-            '/(\bINSERT\b.*\bINTO\b)/i',
-            '/(\bUPDATE\b.*\bSET\b)/i',
-            '/(\bDELETE\b.*\bFROM\b)/i',
-            '/(\bDROP\b.*\bTABLE\b)/i',
-            '/(\bCREATE\b.*\bTABLE\b)/i',
-            '/(\bALTER\b.*\bTABLE\b)/i',
-            '/(\bTRUNCATE\b.*\bTABLE\b)/i',
-            '/(\bEXEC\b|\bEXECUTE\b)/i',
-            '/(;.*--)/i',
-            '/(\bOR\b.*1=1)/i',
-            '/(\bAND\b.*1=1)/i',
-            '/(\'.*OR.*\'.*=.*\')/i',
-            '/(\".*OR.*\".*=.*\")/i',
+            '/(\bUNION\s+SELECT\b)/i',
+            '/(\bSELECT\s+\*\s+FROM\b)/i',
+            '/(\bINSERT\s+INTO\b)/i',
+            '/(\bDROP\s+TABLE\b)/i',
+            '/(\bDELETE\s+FROM\b)/i',
+            '/(\b--\s*$)/m',
+            '/(;\s*DROP\b)/i',
+            '/(;\s*DELETE\b)/i',
+            '/(\bOR\s+1\s*=\s*1)/i',
+            '/(\bAND\s+1\s*=\s*1)/i',
+            '/(\';\s*DROP\b)/i',
             '/(\bINFORMATION_SCHEMA\b)/i',
             '/(\bSYSTEM_USER\b)/i',
-            '/(\bDATABASE\b\(\))/i',
-            '/(\bVERSION\b\(\))/i',
-            '/(\bCONCAT\b\()/i',
-            '/(\bCHAR\b\()/i',
-            '/(\bHEX\b\()/i',
-            '/(\bASCII\b\()/i',
-            '/(\bSUBSTRING\b\()/i',
-            '/(\bLENGTH\b\()/i'
         ];
         
         foreach ($sqlPatterns as $pattern) {

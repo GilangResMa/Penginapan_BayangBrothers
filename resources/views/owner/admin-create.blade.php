@@ -69,7 +69,7 @@
                     <h3>Administrator Information</h3>
                 </div>
                 <div class="card-content">
-                    <form method="POST" action="{{ route('owner.admins') }}" class="admin-form">
+                    <form method="POST" action="/owner/admin" class="admin-form">
                         @csrf
                         
                         <!-- Basic Information -->
@@ -254,12 +254,12 @@
                             <div class="form-group">
                                 <div class="checkbox-group">
                                     <input type="checkbox" 
-                                           id="is_active" 
-                                           name="is_active" 
+                                           id="status" 
+                                           name="status" 
                                            value="1" 
                                            checked 
                                            class="form-checkbox">
-                                    <label for="is_active" class="checkbox-label">
+                                    <label for="status" class="checkbox-label">
                                         <i class="fas fa-user-check"></i>
                                         Activate administrator account immediately
                                     </label>

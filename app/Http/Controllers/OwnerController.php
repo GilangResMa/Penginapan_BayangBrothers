@@ -258,7 +258,7 @@ class OwnerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
+            'status' => 'nullable|boolean',
         ]);
 
         $owner = Auth::guard('owner')->user();
@@ -267,12 +267,11 @@ class OwnerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'status' => true,
+            'status' => $request->has('status') ? true : false,
             'created_by' => $owner->id,
         ]);
 
-        return redirect()->route('owner.admins')->with('success', 'Admin berhasil ditambahkan!');
+        return redirect('/owner/admins')->with('success', 'Admin berhasil ditambahkan!');
     }
 
     /**
@@ -294,18 +293,28 @@ class OwnerController extends Controller
         $owner = Auth::guard('owner')->user();
         $admin = Admin::where('created_by', $owner->id)->findOrFail($id);
 
+        // Handle activate/deactivate actions
+        if ($request->has('action')) {
+            if ($request->action === 'activate') {
+                $admin->update(['status' => true]);
+                return redirect()->route('owner.admins')->with('success', 'Admin berhasil diaktifkan!');
+            } elseif ($request->action === 'deactivate') {
+                $admin->update(['status' => false]);
+                return redirect()->route('owner.admins')->with('success', 'Admin berhasil dinonaktifkan!');
+            }
+        }
+
+        // Regular update validation for edit form
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins,email,' . $admin->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
             'status' => 'required|boolean',
         ]);
 
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
             'status' => $request->status,
         ];
 

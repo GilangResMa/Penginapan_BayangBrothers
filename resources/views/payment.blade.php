@@ -6,9 +6,180 @@
     <title>Payment - Bayang Brothers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/payment.css'])
-    <script type="text/javascript"
-            src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.stg.midtrans.com/snap/snap.js' }}"
-            data-client-key="{{ config('midtrans.client_key') }}"></script>
+    <style>
+        /* Payment Form Styles */
+        .payment-form {
+            margin-top: 1rem;
+        }
+
+        .payment-method-selection {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-method-selection h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .payment-option {
+            cursor: pointer;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 0;
+            transition: all 0.3s ease;
+            background: white;
+            overflow: hidden;
+        }
+
+        .payment-option:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+        }
+
+        .payment-option input[type="radio"] {
+            display: none;
+        }
+
+        .payment-option input[type="radio"]:checked + .option-content {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+        }
+
+        .option-content {
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-header i {
+            font-size: 1.5rem;
+            color: #3498db;
+            width: 24px;
+            text-align: center;
+        }
+
+        .option-header span {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .option-details {
+            margin-left: 2.25rem;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .option-details p {
+            margin-bottom: 0.5rem;
+        }
+
+        .bank-info, .office-info, .wallet-info {
+            background-color: #e8f4fd;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .bank-info strong, .office-info strong, .wallet-info strong {
+            color: #2c3e50;
+        }
+
+        .payment-notes-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-notes-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .payment-notes-section textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .payment-notes-section textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .payment-notes-section textarea::placeholder {
+            color: #999;
+        }
+
+        /* Button states */
+        .btn[type="submit"]:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #95a5a6;
+        }
+
+        .btn.expired {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .option-content {
+                padding: 1rem;
+            }
+            
+            .option-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .option-details {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .bank-info, .office-info, .wallet-info {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Form submission animation */
+        .payment-form.processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .payment-form.processing .btn[type="submit"] {
+            background-color: #95a5a6;
+        }
+    </style>
+
 </head>
 <body>
     <!-- Header -->
@@ -228,65 +399,80 @@
                         <p>Choose your preferred payment method</p>
                     </div>
 
-                    <!-- Payment Options Info -->
+                    <!-- Payment Info -->
                     <div class="payment-info">
                         <div class="info-banner">
                             <i class="fas fa-shield-alt"></i>
                             <div>
-                                <strong>Secure Payment</strong>
-                                <p>Your payment is processed securely through Midtrans payment gateway</p>
-                            </div>
-                        </div>
-
-                        <div class="available-methods">
-                            <h3>Available Payment Methods in Indonesia:</h3>
-                            <div class="methods-grid">
-                                <!-- Credit/Debit Cards -->
-                                <div class="method-category">
-                                    <h4><i class="fas fa-credit-card"></i> Credit & Debit Cards</h4>
-                                    <div class="method-items">
-                                        <span class="method-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiD0FD3k7rC2_9o3OHlSHuJGQVDYCy7KZ3ng&s" alt="Visa"> Visa</span>
-                                        <span class="method-item"><img src="https://logos-world.net/wp-content/uploads/2020/04/Mastercard-Logo.png" alt="Mastercard"> Mastercard</span>
-                                        <span class="method-item"><img src="https://e7.pngegg.com/pngimages/178/595/png-clipart-jcb-co-ltd-logo-credit-card-jcb-text-orange.png" alt="JCB"> JCB</span>
-                                    </div>
-                                </div>
-
-                                <!-- Bank Transfer -->
-                                <div class="method-category">
-                                    <h4><i class="fas fa-university"></i> Bank Transfer</h4>
-                                    <div class="method-items">
-                                        <span class="method-item">BCA</span>
-                                        <span class="method-item">BNI</span>
-                                        <span class="method-item">BRI</span>
-                                        <span class="method-item">Mandiri</span>
-                                        <span class="method-item">CIMB Niaga</span>
-                                        <span class="method-item">Permata</span>
-                                    </div>
-                                </div>
-
-                                <!-- E-Wallets -->
-                                <div class="method-category">
-                                    <h4><i class="fas fa-mobile-alt"></i> E-Wallets</h4>
-                                    <div class="method-items">
-                                        <span class="method-item">GoPay</span>
-                                        <span class="method-item">ShopeePay</span>
-                                        <span class="method-item">DANA</span>
-                                        <span class="method-item">OVO</span>
-                                        <span class="method-item">LinkAja</span>
-                                    </div>
-                                </div>
-
-                                <!-- Convenience Stores -->
-                                <div class="method-category">
-                                    <h4><i class="fas fa-store"></i> Convenience Stores</h4>
-                                    <div class="method-items">
-                                        <span class="method-item">Indomaret</span>
-                                        <span class="method-item">Alfamart</span>
-                                    </div>
-                                </div>
+                                <strong>Simple Payment Process</strong>
+                                <p>Choose your payment method and follow the instructions to complete your booking</p>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Payment Method Selection Form -->
+                    <form action="{{ route('payment.process', $booking->id) }}" method="POST" class="payment-form">
+                        @csrf
+                        <div class="payment-method-selection">
+                            <h3>Select Payment Method:</h3>
+                            
+                            <div class="payment-options">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="bank_transfer" required>
+                                    <div class="option-content">
+                                        <div class="option-header">
+                                            <i class="fas fa-university"></i>
+                                            <span>Bank Transfer</span>
+                                        </div>
+                                        <div class="option-details">
+                                            <p>Transfer to our bank account and upload proof of payment</p>
+                                            <div class="bank-info">
+                                                <strong>Bank BCA: 1234567890</strong><br>
+                                                <strong>A.n: Bayang Brothers</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="cash" required>
+                                    <div class="option-content">
+                                        <div class="option-header">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            <span>Cash Payment</span>
+                                        </div>
+                                        <div class="option-details">
+                                            <p>Pay directly at our office or upon check-in</p>
+                                            <div class="office-info">
+                                                <strong>Office Address:</strong><br>
+                                                Jl. Contoh No. 123, Yogyakarta
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="digital_wallet" required>
+                                    <div class="option-content">
+                                        <div class="option-header">
+                                            <i class="fas fa-mobile-alt"></i>
+                                            <span>Digital Wallet</span>
+                                        </div>
+                                        <div class="option-details">
+                                            <p>Pay using GoPay, DANA, OVO, or ShopeePay</p>
+                                            <div class="wallet-info">
+                                                <strong>Contact us for wallet payment details</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="payment-notes-section">
+                            <label for="payment_note">Additional Notes (Optional):</label>
+                            <textarea name="payment_note" id="payment_note" rows="3" placeholder="Add any special requests or notes..."></textarea>
+                        </div>
 
                     <!-- Payment Actions -->
                     <div class="payment-actions">
@@ -302,16 +488,18 @@
                                 <i class="fas fa-arrow-left"></i>
                                 Back to Rooms
                             </a>
-                            <button id="pay-button" class="btn btn-primary">
-                                <i class="fas fa-lock"></i>
-                                Proceed to Payment
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                Confirm Payment Method
                             </button>
                         </div>
+                    </form>
 
                         <div class="payment-notes">
-                            <p><i class="fas fa-info-circle"></i> You will be redirected to our secure payment page</p>
+                            <p><i class="fas fa-info-circle"></i> Complete your payment using the selected method</p>
                             <p><i class="fas fa-clock"></i> Payment must be completed within 24 hours</p>
                             <p><i class="fas fa-envelope"></i> Confirmation will be sent to {{ $booking->user->email }}</p>
+                            <p><i class="fas fa-phone"></i> Contact us at +62 813-9264-0030 for assistance</p>
                         </div>
                     </div>
                 </div>
@@ -344,46 +532,51 @@
 
     <!-- Payment Script -->
     <script>
-        // Payment button functionality
-        document.getElementById('pay-button').addEventListener('click', function () {
-            // Disable button to prevent double clicks
-            this.disabled = true;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        // Form validation and interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentOptions = document.querySelectorAll('input[name="payment_method"]');
+            const submitButton = document.querySelector('button[type="submit"]');
             
-            // Trigger Midtrans Snap
-            snap.pay('{{ $snapToken }}', {
-                onSuccess: function(result) {
-                    console.log('Payment success:', result);
-                    window.location.href = '{{ route("payment.finish") }}?order_id=' + result.order_id + 
-                                          '&status_code=' + result.status_code + 
-                                          '&transaction_status=' + result.transaction_status;
-                },
-                onPending: function(result) {
-                    console.log('Payment pending:', result);
-                    window.location.href = '{{ route("payment.unfinish") }}?order_id=' + result.order_id;
-                },
-                onError: function(result) {
-                    console.log('Payment error:', result);
-                    window.location.href = '{{ route("payment.error") }}?order_id=' + result.order_id;
-                },
-                onClose: function() {
-                    console.log('Payment popup closed');
-                    // Re-enable button if popup is closed
-                    document.getElementById('pay-button').disabled = false;
-                    document.getElementById('pay-button').innerHTML = '<i class="fas fa-lock"></i> Proceed to Payment';
+            // Enable submit button when payment method is selected
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    submitButton.disabled = false;
+                });
+            });
+            
+            // Form submission handling
+            document.querySelector('.payment-form').addEventListener('submit', function(e) {
+                const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+                if (!selectedMethod) {
+                    e.preventDefault();
+                    alert('Please select a payment method');
+                    return;
                 }
+                
+                // Disable submit button to prevent double submission
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             });
         });
 
-        // Auto-disable payment button after 24 hours
+        // Auto-disable payment after 24 hours
         const bookingTime = new Date('{{ $booking->created_at }}');
         const expiryTime = new Date(bookingTime.getTime() + (24 * 60 * 60 * 1000)); // 24 hours
         const now = new Date();
         
         if (now > expiryTime) {
-            document.getElementById('pay-button').disabled = true;
-            document.getElementById('pay-button').innerHTML = '<i class="fas fa-times"></i> Payment Expired';
-            document.getElementById('pay-button').classList.add('expired');
+            const form = document.querySelector('.payment-form');
+            const submitButton = document.querySelector('button[type="submit"]');
+            const paymentOptions = document.querySelectorAll('input[name="payment_method"]');
+            
+            form.style.opacity = '0.5';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-times"></i> Payment Expired';
+            submitButton.classList.add('expired');
+            
+            paymentOptions.forEach(option => {
+                option.disabled = true;
+            });
         }
 
         // Show success/error messages

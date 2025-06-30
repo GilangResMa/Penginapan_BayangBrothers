@@ -55,6 +55,9 @@ Route::middleware('auth:web')->group(function () {
 
     // Payment routes
     Route::get('/payment/{booking}', [PaymentController::class, 'show'])->name('payment');
+    Route::post('/payment/{booking}/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/payment/success/{booking}', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/cancel/{booking?}', [PaymentController::class, 'cancel'])->name('payment.cancel');
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
     Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('payment.unfinish');
     Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');

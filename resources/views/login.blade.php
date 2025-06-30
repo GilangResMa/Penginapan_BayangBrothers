@@ -90,9 +90,13 @@
                 </div>
 
                 <!-- Password Field -->
-                <div>
+                <div class="password-field">
                     <input name="password" type="password" placeholder="Password" 
-                           class="input-field @error('password') error @enderror" required>
+                           class="input-field @error('password') error @enderror" 
+                           id="password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="password-icon"></i>
+                    </button>
                     @error('password')
                         <span class="field-error">{{ $message }}</span>
                     @enderror
@@ -136,6 +140,23 @@
                 </div>
             </div>
     </footer>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const passwordIcon = document.getElementById('password-icon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -199,6 +199,35 @@ body {
     box-shadow: 0 0 0 2px #ef4444; /* focus:ring-2 focus:ring-red-500 */
 }
 
+/* Password Field with Toggle */
+.password-field {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.password-field .input-field {
+    padding-right: 3rem; /* Space for toggle button */
+    margin-bottom: 0;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.password-toggle:hover {
+    color: #dc2626;
+}
+
 .signin-button {
     width: 100%;
     background-color: #dc2626; /* bg-red-600 */

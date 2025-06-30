@@ -257,7 +257,7 @@
                                 <button class="admin-button"
                                     onclick="window.open('https://wa.me/6281392640030', '_blank')">
                                     <i class="fab fa-whatsapp"></i>
-                                    Cari Admin
+                                    Chat Admin
                                 </button>
                             </div>
 

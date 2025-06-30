@@ -14,28 +14,28 @@ class FaqSeeder extends Seeder
     {
         $faqs = [
             [
-                'question' => 'What time is check-in and check-out?',
-                'answer' => 'Check-in time is 2:00 PM and check-out time is 12:00 PM. Early check-in or late check-out may be available upon request and subject to availability.'
+                'question' => 'Jam berapa check-in dan check-out?',
+                'answer' => 'Waktu check-in adalah pukul 14:00 dan check-out pukul 12:00. Check-in lebih awal atau check-out lebih lambat dapat tersedia atas permintaan dan tergantung ketersediaan.'
             ],
             [
-                'question' => 'Do you provide free Wi-Fi?',
-                'answer' => 'Yes, we provide complimentary high-speed Wi-Fi internet access throughout the hotel, including all guest rooms and common areas.'
+                'question' => 'Apakah menyediakan Wi-Fi gratis?',
+                'answer' => 'Ya, kami menyediakan akses internet Wi-Fi berkecepatan tinggi gratis di seluruh area hotel, termasuk semua kamar tamu dan area umum.'
             ],
             [
-                'question' => 'Is parking available?',
-                'answer' => 'Yes, we offer free parking for our guests. The parking area is secure and monitored 24/7 for your peace of mind.'
+                'question' => 'Apakah tersedia tempat parkir?',
+                'answer' => 'Ya, kami menyediakan parkir gratis untuk tamu kami. Area parkir aman dan dipantau 24/7 untuk ketenangan pikiran Anda.'
             ],
             [
-                'question' => 'What is your cancellation policy?',
-                'answer' => 'Reservations can be cancelled up to 24 hours before the check-in date without penalty. Cancellations made within 24 hours of check-in will be charged for the first night.'
+                'question' => 'Bagaimana kebijakan pembatalan?',
+                'answer' => 'Reservasi dapat dibatalkan hingga 24 jam sebelum tanggal check-in tanpa penalti. Pembatalan yang dilakukan dalam 24 jam sebelum check-in akan dikenakan biaya untuk malam pertama.'
             ],
             [
-                'question' => 'Do you allow pets?',
-                'answer' => 'Unfortunately, we do not allow pets in our hotel, with the exception of certified service animals for guests with disabilities.'
+                'question' => 'Apakah boleh membawa hewan peliharaan?',
+                'answer' => 'Maaf, kami tidak mengizinkan hewan peliharaan di hotel kami, kecuali hewan pemandu yang bersertifikat untuk tamu dengan disabilitas.'
             ],
             [
-                'question' => 'What amenities are included in the room?',
-                'answer' => 'All rooms include air conditioning, flat-screen TV, private bathroom with hot water, complimentary toiletries, and daily housekeeping service.'
+                'question' => 'Fasilitas apa saja yang tersedia di kamar?',
+                'answer' => 'Semua kamar dilengkapi dengan AC, TV layar datar, kamar mandi pribadi dengan air panas, perlengkapan mandi gratis, dan layanan kebersihan harian.'
             ]
         ];
 

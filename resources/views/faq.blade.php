@@ -68,41 +68,19 @@
                 <h1 class="page-title">Frequently Asked Question</h1>
                 
                 <div class="faq-grid">
-                    <!-- FAQ Item 1 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Bagaimana cara melakukan reservasi?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-
-                    <!-- FAQ Item 2 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Apa saja fasilitas yang tersedia?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-
-                    <!-- FAQ Item 3 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Bagaimana kebijakan pembatalan?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-
-                    <!-- FAQ Item 4 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Metode pembayaran apa saja yang diterima?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-
-                    <!-- FAQ Item 5 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Apakah ada layanan antar jemput?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
-
-                    <!-- FAQ Item 6 -->
-                    <div class="faq-item">
-                        <h3 class="faq-question">Bagaimana menghubungi customer service?</h3>
-                        <p class="faq-answer">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    </div>
+                    @if($faqs->count() > 0)
+                        @foreach($faqs as $faq)
+                            <div class="faq-item">
+                                <h3 class="faq-question">{{ $faq->question }}</h3>
+                                <p class="faq-answer">{{ $faq->answer }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="faq-item">
+                            <h3 class="faq-question">No FAQ Available</h3>
+                            <p class="faq-answer">There are currently no frequently asked questions available. Please check back later or contact our customer service for assistance.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

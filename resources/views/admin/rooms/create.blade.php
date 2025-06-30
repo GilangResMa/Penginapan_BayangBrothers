@@ -98,12 +98,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="image" class="form-label">Image URL (Optional)</label>
-                        <input type="url" id="image" name="image" class="form-input" value="{{ old('image') }}" 
-                               placeholder="https://example.com/image.jpg">
-                    </div>
-
                     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save"></i>

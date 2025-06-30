@@ -10,18 +10,30 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'admin';
-
-    // Disable automatic timestamps jika tabel tidak punya kolom created_at/updated_at
-    public $timestamps = false;
+    protected $table = 'admins';
 
     protected $fillable = [
+        'name',
         'email',
         'password',
+        'status',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'password' => 'hashed',
+        'status' => 'boolean',
+    ];
+
+    /**
+     * Get the owner who created this admin
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo(Owner::class, 'created_by');
+    }
 }

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // Jalankan seeder untuk data yang diperlukan
         $this->call([
+            OwnerSeeder::class,
             AdminSeeder::class,
             RoomSeeder::class,
             FaqSeeder::class,

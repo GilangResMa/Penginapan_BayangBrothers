@@ -10,6 +10,7 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
+        'owner_id',
         'name',
         'description',
         'price_weekday',
@@ -25,6 +26,12 @@ class Room extends Model
         'price_weekend' => 'decimal:2',
         'extra_bed_price' => 'decimal:2',
     ];
+
+    // Relasi dengan owner
+    public function owner()
+    {
+        return $this->belongsTo(Owner::class);
+    }
 
     // Relasi dengan booking
     public function bookings()

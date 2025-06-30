@@ -94,15 +94,6 @@
                             </div>
                             <div class="info-value">{{ auth()->user()->contact }}</div>
                         </div>
-                        <div class="info-item">
-                            <div class="info-label">
-                                <i class="fas fa-calendar-alt"></i>
-                                Member Since
-                            </div>
-                            <div class="info-value">
-                                {{ auth()->user()->created_at ? auth()->user()->created_at->format('d F Y') : 'Recently joined' }}
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -117,10 +108,6 @@
                             <i class="fas fa-history"></i>
                             Booking History
                         </a>
-                        <button class="action-btn edit" onclick="toggleEditMode()">
-                            <i class="fas fa-edit"></i>
-                            Edit Profile
-                        </button>
                     </div>
                 </div>
             </div>

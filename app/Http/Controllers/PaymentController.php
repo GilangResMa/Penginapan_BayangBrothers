@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use Midtrans\Config;
 use Midtrans\Snap;
@@ -13,14 +14,34 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
+        // Pastikan package Midtrans tersedia
+        if (!class_exists('\Midtrans\Config')) {
+            Log::error('Midtrans package not found. Please install: composer require midtrans/midtrans-php');
+            throw new \Exception('Midtrans package not installed');
+        }
+
         // Set your Merchant Server Key
         Config::$serverKey = config('midtrans.server_key');
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        Config::$isProduction = config('midtrans.is_production');
+        Config::$isProduction = config('midtrans.is_production', false);
         // Set sanitization on (default)
-        Config::$isSanitized = true;
+        Config::$isSanitized = config('midtrans.is_sanitized', true);
         // Set 3DS transaction for credit card to true
-        Config::$is3ds = true;
+        Config::$is3ds = config('midtrans.is_3ds', true);
+
+        // Tambahkan logging untuk debugging
+        Log::info('Midtrans Config initialized:', [
+            'server_key_exists' => !empty(Config::$serverKey),
+            'server_key_preview' => Config::$serverKey ? substr(Config::$serverKey, 0, 10) . '...' : 'NOT SET',
+            'is_production' => Config::$isProduction,
+            'is_sanitized' => Config::$isSanitized,
+            'is_3ds' => Config::$is3ds
+        ]);
+
+        // Validasi konfigurasi penting
+        if (empty(Config::$serverKey)) {
+            Log::error('Midtrans server key is empty! Check your .env file.');
+        }
     }
 
     /**
@@ -79,10 +100,62 @@ class PaymentController extends Controller
         ];
 
         try {
+            // Pastikan package Midtrans tersedia
+            if (!class_exists('\Midtrans\Snap')) {
+                throw new \Exception('Midtrans Snap class not found. Please install midtrans/midtrans-php package.');
+            }
+
+            // Validasi konfigurasi Midtrans
+            if (empty(Config::$serverKey) || Config::$serverKey === 'your-server-key') {
+                throw new \Exception('Midtrans server key belum dikonfigurasi. Silakan periksa file .env');
+            }
+
+            // Validasi client key juga
+            $clientKey = config('midtrans.client_key');
+            if (empty($clientKey)) {
+                throw new \Exception('Midtrans client key belum dikonfigurasi. Silakan periksa file .env');
+            }
+
+            // Tambahkan logging untuk debugging
+            Log::info('Creating Midtrans transaction', [
+                'booking_id' => $booking->id,
+                'booking_code' => $booking->booking_code,
+                'amount' => $booking->total_cost,
+                'user_id' => $booking->user_id,
+                'transaction_data' => $transactionData
+            ]);
+
             $snapToken = Snap::getSnapToken($transactionData);
+
+            Log::info('Midtrans snap token generated successfully', [
+                'booking_code' => $booking->booking_code,
+                'token_length' => strlen($snapToken)
+            ]);
+
             return view('payment', compact('booking', 'snapToken'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage());
+            Log::error('Midtrans error: ' . $e->getMessage(), [
+                'booking_id' => $booking->id,
+                'transaction_data' => $transactionData,
+                'config_check' => [
+                    'server_key_set' => !empty(Config::$serverKey),
+                    'client_key_set' => !empty(config('midtrans.client_key')),
+                    'is_production' => Config::$isProduction
+                ],
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Pesan error yang lebih informatif
+            $errorMessage = 'Terjadi kesalahan saat memproses pembayaran: ';
+            if (strpos($e->getMessage(), 'server_key') !== false) {
+                $errorMessage .= 'Konfigurasi Midtrans belum lengkap.';
+            } elseif (strpos($e->getMessage(), 'curl') !== false) {
+                $errorMessage .= 'Koneksi ke server pembayaran gagal. Periksa koneksi internet.';
+            } else {
+                $errorMessage .= $e->getMessage();
+            }
+
+            return back()->with('error', $errorMessage);
         }
     }
 

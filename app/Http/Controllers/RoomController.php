@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Room;
 use App\Models\Booking;
 
@@ -67,6 +68,16 @@ class RoomController extends Controller
                     ->withInput();
             }
 
+            // Log untuk debugging
+            Log::info('Creating booking', [
+                'user_id' => Auth::guard('web')->id(),
+                'room_id' => $id,
+                'check_in' => $validated['check_in'],
+                'check_out' => $validated['check_out'],
+                'guests' => $validated['guests'],
+                'total_cost' => $validated['total_cost']
+            ]);
+
             // Buat booking baru
             $booking = Booking::create([
                 'user_id' => Auth::guard('web')->id(),
@@ -80,10 +91,23 @@ class RoomController extends Controller
                 'booking_code' => 'BK' . strtoupper(uniqid()),
             ]);
 
+            Log::info('Booking created successfully', [
+                'booking_id' => $booking->id,
+                'booking_code' => $booking->booking_code
+            ]);
+
             // Redirect ke payment page dengan booking ID
-            return redirect()->route('payment', ['booking' => $booking->id])->with('success', 'Booking berhasil dibuat. Silakan lanjutkan pembayaran.');
+            return redirect()->route('payment', ['booking' => $booking->id])
+                ->with('success', 'Booking berhasil dibuat. Silakan lanjutkan pembayaran.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat membuat booking. Silakan coba lagi.')->withInput();
+            Log::error('Booking creation failed: ' . $e->getMessage(), [
+                'user_id' => Auth::guard('web')->id(),
+                'room_id' => $id,
+                'validated_data' => $validated,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Terjadi kesalahan saat membuat booking: ' . $e->getMessage())->withInput();
         }
     }
 

@@ -527,12 +527,23 @@
 
             // Validasi input
             if (!checkin || !checkout) {
-                alert("Silakan pilih tanggal check-in dan check-out");
+                alert("Silakan pilih tanggal check-in dan check-out terlebih dahulu");
                 return false;
             }
 
-            if (new Date(checkin) >= new Date(checkout)) {
-                alert("Tanggal check-out harus setelah check-in");
+            const checkinDate = new Date(checkin);
+            const checkoutDate = new Date(checkout);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Validasi tanggal tidak boleh di masa lalu
+            if (checkinDate < today) {
+                alert("Tanggal check-in tidak boleh di masa lalu");
+                return false;
+            }
+
+            if (checkoutDate <= checkinDate) {
+                alert("Tanggal check-out harus setelah tanggal check-in");
                 return false;
             }
 
@@ -543,22 +554,32 @@
                 return false;
             }
 
-            // Konfirmasi jika ada extra bed - use dynamic pricing
-            if (result.needsExtraBed) {
-                const confirmExtraBed = confirm(
-                    `Untuk ${persons} orang, akan dikenakan biaya extra bed ${formatRupiah(
-                        result.extraBedPrice
-                    )} per malam.\n` +
-                        `Total biaya extra bed: ${formatRupiah(
-                            result.extraBedCost
-                        )}\n\n` +
-                        `Total keseluruhan: ${formatRupiah(result.totalCost)}\n\n` +
-                        `Lanjutkan booking?`
-                );
+            // Konfirmasi booking dengan detail lengkap
+            let confirmationMessage = `Detail Booking:\n\n`;
+            confirmationMessage += `🏨 Kamar: ${roomId ? document.querySelector(`[data-room-id="${roomId}"] .room-title`)?.textContent || 'Unknown Room' : 'Room'}\n`;
+            confirmationMessage += `📅 Check-in: ${checkin}\n`;
+            confirmationMessage += `📅 Check-out: ${checkout}\n`;
+            confirmationMessage += `👥 Jumlah tamu: ${persons} orang\n`;
+            confirmationMessage += `🌙 Total malam: ${result.totalNights}\n\n`;
 
-                if (!confirmExtraBed) {
-                    return false;
-                }
+            // Detail harga
+            confirmationMessage += `💰 Rincian Biaya:\n`;
+            if (result.weekdayNights > 0) {
+                confirmationMessage += `   • ${result.weekdayNights} malam hari biasa: ${formatRupiah(result.weekdayNights * result.weekdayPrice)}\n`;
+            }
+            if (result.weekendNights > 0) {
+                confirmationMessage += `   • ${result.weekendNights} malam weekend: ${formatRupiah(result.weekendNights * result.weekendPrice)}\n`;
+            }
+            if (result.needsExtraBed) {
+                confirmationMessage += `   • Extra bed (${result.totalNights} malam): ${formatRupiah(result.extraBedCost)}\n`;
+            }
+            confirmationMessage += `\n💵 Total: ${formatRupiah(result.totalCost)}\n\n`;
+            confirmationMessage += `Lanjutkan ke pembayaran?`;
+
+            const confirmBooking = confirm(confirmationMessage);
+
+            if (!confirmBooking) {
+                return false;
             }
 
             // Set hidden inputs berdasarkan roomId
@@ -572,10 +593,15 @@
                     result.totalCost;
             } else {
                 // Fallback untuk kompatibilitas
-                document.getElementById("hidden_checkin").value = checkin;
-                document.getElementById("hidden_checkout").value = checkout;
-                document.getElementById("hidden_persons").value = persons;
-                document.getElementById("hidden_total_cost").value = result.totalCost;
+                const hiddenCheckin = document.getElementById("hidden_checkin");
+                const hiddenCheckout = document.getElementById("hidden_checkout");
+                const hiddenPersons = document.getElementById("hidden_persons");
+                const hiddenTotalCost = document.getElementById("hidden_total_cost");
+                
+                if (hiddenCheckin) hiddenCheckin.value = checkin;
+                if (hiddenCheckout) hiddenCheckout.value = checkout;
+                if (hiddenPersons) hiddenPersons.value = persons;
+                if (hiddenTotalCost) hiddenTotalCost.value = result.totalCost;
             }
 
             return true;

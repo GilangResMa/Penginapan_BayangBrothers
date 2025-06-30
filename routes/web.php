@@ -58,26 +58,7 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/payment/{booking}/process', [PaymentController::class, 'process'])->name('payment.process');
     Route::get('/payment/success/{booking}', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/cancel/{booking?}', [PaymentController::class, 'cancel'])->name('payment.cancel');
-    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
-    Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('payment.unfinish');
-    Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
-
-    // Test route untuk debugging payment
-    Route::get('/payment/test/{booking}', function ($bookingId) {
-        $booking = \App\Models\Booking::with('room', 'user')->findOrFail($bookingId);
-        return response()->json([
-            'booking' => $booking,
-            'midtrans_config' => [
-                'server_key' => config('midtrans.server_key') ? 'configured' : 'not configured',
-                'client_key' => config('midtrans.client_key') ? 'configured' : 'not configured',
-                'is_production' => config('midtrans.is_production')
-            ]
-        ]);
-    })->name('payment.test');
 });
-
-// Midtrans notification (tidak perlu auth)
-Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
 
 // Admin routes - with enhanced security
 Route::middleware(['admin'])->group(function () {

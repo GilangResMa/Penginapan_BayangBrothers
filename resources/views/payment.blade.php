@@ -6,180 +6,6 @@
     <title>Payment - Bayang Brothers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/payment.css'])
-    <style>
-        /* Payment Form Styles */
-        .payment-form {
-            margin-top: 1rem;
-        }
-
-        .payment-method-selection {
-            margin-bottom: 1.5rem;
-        }
-
-        .payment-method-selection h3 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .payment-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .payment-option {
-            cursor: pointer;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
-            padding: 0;
-            transition: all 0.3s ease;
-            background: white;
-            overflow: hidden;
-        }
-
-        .payment-option:hover {
-            border-color: #3498db;
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
-        }
-
-        .payment-option input[type="radio"] {
-            display: none;
-        }
-
-        .payment-option input[type="radio"]:checked + .option-content {
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
-        }
-
-        .option-content {
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .option-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .option-header i {
-            font-size: 1.5rem;
-            color: #3498db;
-            width: 24px;
-            text-align: center;
-        }
-
-        .option-header span {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .option-details {
-            margin-left: 2.25rem;
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .option-details p {
-            margin-bottom: 0.5rem;
-        }
-
-        .bank-info, .office-info, .wallet-info {
-            background-color: #e8f4fd;
-            padding: 0.75rem;
-            border-radius: 6px;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .bank-info strong, .office-info strong, .wallet-info strong {
-            color: #2c3e50;
-        }
-
-        .payment-notes-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .payment-notes-section label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        .payment-notes-section textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e1e8ed;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: vertical;
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        .payment-notes-section textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        .payment-notes-section textarea::placeholder {
-            color: #999;
-        }
-
-        /* Button states */
-        .btn[type="submit"]:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background-color: #95a5a6;
-        }
-
-        .btn.expired {
-            background-color: #e74c3c !important;
-            color: white !important;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .option-content {
-                padding: 1rem;
-            }
-            
-            .option-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            
-            .option-details {
-                margin-left: 0;
-                margin-top: 0.5rem;
-            }
-            
-            .bank-info, .office-info, .wallet-info {
-                padding: 0.5rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        /* Form submission animation */
-        .payment-form.processing {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .payment-form.processing .btn[type="submit"] {
-            background-color: #95a5a6;
-        }
-    </style>
-
 </head>
 <body>
     <!-- Header -->
@@ -236,169 +62,60 @@
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <!-- Page Title -->
-            <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-credit-card"></i>
-                    Payment Confirmation
-                </h1>
-                <p class="page-subtitle">Review your booking details and proceed with payment</p>
-            </div>
-
-            <!-- Payment Content -->
             <div class="payment-wrapper">
-                <!-- Booking Summary Card -->
-                <div class="booking-summary-card">
-                    <div class="card-header">
-                        <h2>
-                            <i class="fas fa-file-invoice"></i>
-                            Booking Summary
-                        </h2>
-                        <span class="booking-status pending">Pending Payment</span>
+            <!-- Booking Summary -->
+            <div class="booking-summary">
+                <h2>Booking Summary</h2>
+                
+                <div class="summary-card">
+                    <div class="room-info">
+                        <h3>{{ $booking->room->name }}</h3>
+                        <p class="room-type">Max {{ $booking->room->max_guests }} guests</p>
                     </div>
                     
-                    <div class="room-preview">
-                        <div class="room-image">
-                            <img src="{{ asset('img/kamar1.jpg') }}" alt="{{ $booking->room->name }}">
+                    <div class="booking-details">
+                        <div class="detail-row">
+                            <span class="label">Booking Code:</span>
+                            <span class="value">{{ $booking->booking_code }}</span>
                         </div>
-                        <div class="room-details">
-                            <h3 class="room-name">{{ $booking->room->name }}</h3>
-                            <p class="room-description">
-                                {{ $booking->room->description ?? 'Comfortable room with modern amenities including AC, WiFi, TV, and private bathroom.' }}
-                            </p>
-                            <div class="room-facilities">
-                                <span class="facility"><i class="fas fa-snowflake"></i> AC</span>
-                                <span class="facility"><i class="fas fa-tv"></i> TV</span>
-                                <span class="facility"><i class="fas fa-wifi"></i> WiFi</span>
-                                <span class="facility"><i class="fas fa-bath"></i> Private Bath</span>
-                            </div>
+                        <div class="detail-row">
+                            <span class="label">Check-in:</span>
+                            <span class="value">{{ \Carbon\Carbon::parse($booking->check_in)->format('D, d M Y') }}</span>
                         </div>
+                        <div class="detail-row">
+                            <span class="label">Check-out:</span>
+                            <span class="value">{{ \Carbon\Carbon::parse($booking->check_out)->format('D, d M Y') }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Nights:</span>
+                            <span class="value">{{ \Carbon\Carbon::parse($booking->check_in)->diffInDays(\Carbon\Carbon::parse($booking->check_out)) }} night(s)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Guests:</span>
+                            <span class="value">{{ $booking->guests }} guest(s)</span>
+                        </div>
+                        @if($booking->extra_bed)
+                        <div class="detail-row">
+                            <span class="label">Extra Bed:</span>
+                            <span class="value">Yes</span>
+                        </div>
+                        @endif
                     </div>
-
-                    <div class="booking-info">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <i class="fas fa-barcode"></i>
-                                <div>
-                                    <label>Booking Code</label>
-                                    <span>{{ $booking->booking_code }}</span>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-calendar-check"></i>
-                                <div>
-                                    <label>Check-in</label>
-                                    <span>{{ \Carbon\Carbon::parse($booking->check_in)->format('D, d M Y') }}</span>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-calendar-times"></i>
-                                <div>
-                                    <label>Check-out</label>
-                                    <span>{{ \Carbon\Carbon::parse($booking->check_out)->format('D, d M Y') }}</span>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-moon"></i>
-                                <div>
-                                    <label>Duration</label>
-                                    <span>{{ \Carbon\Carbon::parse($booking->check_in)->diffInDays(\Carbon\Carbon::parse($booking->check_out)) }} night(s)</span>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                <div>
-                                    <label>Guests</label>
-                                    <span>{{ $booking->guests }} {{ $booking->guests > 1 ? 'guests' : 'guest' }}</span>
-                                </div>
-                            </div>
-                            @if($booking->extra_bed)
-                            <div class="info-item">
-                                <i class="fas fa-bed"></i>
-                                <div>
-                                    <label>Extra Bed</label>
-                                    <span>Included</span>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Price Breakdown -->
+                    
                     <div class="price-breakdown">
-                        <h3><i class="fas fa-calculator"></i> Price Breakdown</h3>
-                        <div class="price-details">
-                            @php
-                                $checkin = \Carbon\Carbon::parse($booking->check_in);
-                                $checkout = \Carbon\Carbon::parse($booking->check_out);
-                                $totalNights = $checkin->diffInDays($checkout);
-                                $weekdayNights = 0;
-                                $weekendNights = 0;
-                                
-                                $current = $checkin->copy();
-                                while ($current->lt($checkout)) {
-                                    if ($current->isWeekend()) {
-                                        $weekendNights++;
-                                    } else {
-                                        $weekdayNights++;
-                                    }
-                                    $current->addDay();
-                                }
-                                
-                                $roomCost = 0;
-                                if ($weekdayNights > 0) {
-                                    $roomCost += $weekdayNights * ($booking->room->price_weekday ?? 150000);
-                                }
-                                if ($weekendNights > 0) {
-                                    $roomCost += $weekendNights * ($booking->room->price_weekend ?? 180000);
-                                }
-                                
-                                $extraBedCost = 0;
-                                if ($booking->extra_bed) {
-                                    $extraBedCost = $totalNights * ($booking->room->extra_bed_price ?? 70000);
-                                }
-                            @endphp
-                            
-                            @if($weekdayNights > 0)
-                            <div class="price-item">
-                                <span>Room cost ({{ $weekdayNights }} weekday{{ $weekdayNights > 1 ? 's' : '' }})</span>
-                                <span>Rp {{ number_format($weekdayNights * ($booking->room->price_weekday ?? 150000), 0, ',', '.') }}</span>
-                            </div>
-                            @endif
-                            
-                            @if($weekendNights > 0)
-                            <div class="price-item">
-                                <span>Room cost ({{ $weekendNights }} weekend{{ $weekendNights > 1 ? 's' : '' }})</span>
-                                <span>Rp {{ number_format($weekendNights * ($booking->room->price_weekend ?? 180000), 0, ',', '.') }}</span>
-                            </div>
-                            @endif
-                            
-                            @if($booking->extra_bed)
-                            <div class="price-item">
-                                <span>Extra bed ({{ $totalNights }} night{{ $totalNights > 1 ? 's' : '' }})</span>
-                                <span>Rp {{ number_format($extraBedCost, 0, ',', '.') }}</span>
-                            </div>
-                            @endif
-                            
-                            <div class="price-divider"></div>
-                            <div class="price-total">
-                                <span>Total Amount</span>
-                                <span>Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
-                            </div>
+                        <div class="price-row">
+                            <span class="label">Total Amount:</span>
+                            <span class="value total-price">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Payment Methods Card -->
-                <div class="payment-methods-card">
-                    <div class="card-header">
-                        <h2>
-                            <i class="fas fa-credit-card"></i>
-                            Payment Methods
-                        </h2>
-                        <p>Choose your preferred payment method</p>
-                    </div>
-
+            <!-- Payment Section -->
+            <div class="payment-section">
+                <h2>Choose Payment Method</h2>
+                
+                <div class="payment-card">
                     <!-- Payment Info -->
                     <div class="payment-info">
                         <div class="info-banner">
@@ -474,15 +191,6 @@
                             <textarea name="payment_note" id="payment_note" rows="3" placeholder="Add any special requests or notes..."></textarea>
                         </div>
 
-                    <!-- Payment Actions -->
-                    <div class="payment-actions">
-                        <div class="payment-summary">
-                            <div class="amount-display">
-                                <span class="amount-label">Total to Pay:</span>
-                                <span class="amount-value">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-
                         <div class="action-buttons">
                             <a href="{{ route('room.index') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i>
@@ -495,14 +203,14 @@
                         </div>
                     </form>
 
-                        <div class="payment-notes">
-                            <p><i class="fas fa-info-circle"></i> Complete your payment using the selected method</p>
-                            <p><i class="fas fa-clock"></i> Payment must be completed within 24 hours</p>
-                            <p><i class="fas fa-envelope"></i> Confirmation will be sent to {{ $booking->user->email }}</p>
-                            <p><i class="fas fa-phone"></i> Contact us at +62 813-9264-0030 for assistance</p>
-                        </div>
+                    <div class="payment-notes">
+                        <p><i class="fas fa-info-circle"></i> Complete your payment using the selected method</p>
+                        <p><i class="fas fa-clock"></i> Payment must be completed within 24 hours</p>
+                        <p><i class="fas fa-envelope"></i> Confirmation will be sent to {{ $booking->user->email }}</p>
+                        <p><i class="fas fa-phone"></i> Contact us at +62 813-9264-0030 for assistance</p>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </main>
@@ -592,5 +300,18 @@
             }, 100);
         @endif
     </script>
+
+    <!-- Success/Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    @if(session('error'))
+        <div class="alert alert-error">
+            {{ session('error') }}
+        </div>
+    @endif
 </body>
 </html>

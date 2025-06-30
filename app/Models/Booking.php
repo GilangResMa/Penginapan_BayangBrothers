@@ -20,9 +20,6 @@ class Booking extends Model
         'extra_bed',
         'total_cost',
         'status',
-        'payment_method',
-        'payment_note',
-        'payment_confirmed_at',
     ];
 
     protected $casts = [
@@ -30,7 +27,6 @@ class Booking extends Model
         'check_out' => 'date',
         'extra_bed' => 'boolean',
         'total_cost' => 'decimal:2',
-        'payment_confirmed_at' => 'datetime',
     ];
 
     /**

@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->enum('payment_method', ['bank_transfer', 'cash', 'digital_wallet'])->nullable()->after('status');
-            $table->text('payment_note')->nullable()->after('payment_method');
-            $table->timestamp('payment_confirmed_at')->nullable()->after('payment_note');
+            //
         });
     }
 
@@ -24,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn(['payment_method', 'payment_note', 'payment_confirmed_at']);
+            //
         });
     }
 };

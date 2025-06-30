@@ -19,6 +19,7 @@ class AdminSeeder extends Seeder
             'name' => 'Super Admin',
             'email' => 'grm@gmail.com',
             'password' => Hash::make('password123'),
+            'created_by' => 1, // Assuming 1 is the owner ID
             'status' => true,
         ]);
 
@@ -26,6 +27,7 @@ class AdminSeeder extends Seeder
             'name' => 'Admin 2',
             'email' => 'mda@gmail.com',
             'password' => Hash::make('password123'),
+            'created_by' => 1, // Assuming 1 is the owner ID
             'status' => true,
         ]);
     }

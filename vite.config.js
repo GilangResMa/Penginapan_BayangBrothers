@@ -16,9 +16,16 @@ export default defineConfig({
                 "resources/css/profile.css",
                 "resources/css/admin.css",
                 "resources/css/payment.css",
-                "resources/js/room.js",
+                "resources/css/auth.css",
             ],
             refresh: true,
         }),
     ],
+    server: {
+        host: "127.0.0.1",
+        port: 5173,
+        hmr: {
+            host: "127.0.0.1",
+        },
+    },
 });

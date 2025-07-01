@@ -247,7 +247,7 @@
         window.bookingId = {{ $booking->id }};
         window.customerName = '{{ $booking->user->name }}';
         window.customerEmail = '{{ $booking->user->email }}';
-        window.customerPhone = '{{ $booking->user->phone ?? '' }}';
+        window.customerPhone = '{{ $booking->user->contact ?? '' }}';
 
         // Show success/error messages
         @if(session('success'))

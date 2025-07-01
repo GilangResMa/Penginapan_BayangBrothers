@@ -206,16 +206,26 @@ function processPayment(paymentMethod) {
 
 function getBookingData() {
     // Extract booking data from the page
-    const bookingCodeElement = document.querySelector('.booking-code');
-    const totalAmountElement = document.querySelector('.total-price');
-    
+    const bookingCodeElement = document.querySelector(".booking-code");
+    const totalAmountElement = document.querySelector(".total-price");
+
+    // Ensure phone number is not empty
+    let customerPhone = window.customerPhone || "";
+    if (!customerPhone.trim()) {
+        customerPhone = "081234567890"; // Default fallback phone
+    }
+
     return {
         booking_id: window.bookingId || null, // This should be set in the Blade template
-        booking_code: bookingCodeElement ? bookingCodeElement.textContent.trim() : '',
-        total_amount: extractAmountFromText(totalAmountElement ? totalAmountElement.textContent : '0'),
-        customer_name: window.customerName || '',
-        customer_email: window.customerEmail || '',
-        customer_phone: window.customerPhone || ''
+        booking_code: bookingCodeElement
+            ? bookingCodeElement.textContent.trim()
+            : "",
+        total_amount: extractAmountFromText(
+            totalAmountElement ? totalAmountElement.textContent : "0"
+        ),
+        customer_name: window.customerName || "",
+        customer_email: window.customerEmail || "",
+        customer_phone: customerPhone,
     };
 }
 

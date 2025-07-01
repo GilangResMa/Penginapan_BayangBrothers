@@ -1,47 +1,22 @@
 {
     "version": 2,
     "framework": null,
-    "builds": [
-        {
-            "src": "/api/index.php",
-            "use": "vercel-php@0.6.2"
-        },
-        {
-            "src": "/public/build/assets/**",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "/public/**",
-            "use": "@vercel/static"
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.6.0"
         }
-    ],
+    },
     "routes": [
-        {
-            "src": "/build/assets/(.*)",
-            "dest": "/public/build/assets/$1"
-        },
-        {
-            "src": "/favicon.ico",
-            "headers": {
-                "Content-Type": "image/x-icon"
-            },
-            "dest": "/public/favicon.ico"
-        },
         {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
     ],
-    "outputDirectory": "public",
     "env": {
-        "APP_NAME": "Bayang Brothers",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://laravel-app.vercel.app",
-
-        "LOG_CHANNEL": "stderr",
-        "CACHE_DRIVER": "array",
-        "SESSION_DRIVER": "array",
+        "APP_DEBUG": "true",
+        "APP_URL": "https://your.url.from.vercel.app",
+        "APP_KEY": "base64:L07Mu3wVqRXZ3snCdK+OU8fUNST7RBmmCV0mszY60FU=",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -49,10 +24,9 @@
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "VIEW_COMPILED_PATH": "/tmp",
-        
-        "MIDTRANS_SERVER_KEY": "your-server-key",
-        "MIDTRANS_CLIENT_KEY": "your-client-key",
-        "MIDTRANS_MERCHANT_ID": "your-merchant-id",
-        "MIDTRANS_IS_PRODUCTION": "false"
+
+        "CACHE_DRIVER": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie"
     }
 }

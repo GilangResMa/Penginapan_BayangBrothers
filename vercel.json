@@ -17,6 +17,12 @@
     ],
     "routes": [
         {
+            "src": "/(.*)",
+            "dest": "/public/$1",
+            "status": 404,
+            "continue": true
+        },
+        {
             "src": "/build/(.*)",
             "dest": "/public/build/$1"
         },
@@ -42,7 +48,6 @@
         "APP_DEBUG": "false",
         "APP_URL": "https://bayang-brothers.vercel.app",
         "APP_KEY": "base64:L07Mu3wVqRXZ3snCdK+OU8fUNST7RBmmCV0mszY60FU=",
-        
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
@@ -52,7 +57,6 @@
         "VIEW_CACHE_PATH": "/tmp/views",
         "SESSION_FILE_PATH": "/tmp/sessions",
         "CACHE_PATH": "/tmp/cache",
-        
         "CACHE_DRIVER": "array",
         "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr",

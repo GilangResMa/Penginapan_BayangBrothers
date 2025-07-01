@@ -1,20 +1,33 @@
 <?php
 
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
 // Set writable paths for Vercel
-if (isset($_ENV['VERCEL'])) {
-    // Create temp directories
-    $tempDirs = ['/tmp/views', '/tmp/cache', '/tmp/sessions'];
-    foreach ($tempDirs as $dir) {
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
+$tempDirs = ['/tmp/views', '/tmp/cache', '/tmp/sessions', '/tmp/logs'];
+foreach ($tempDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
     }
 }
 
-// Set proper server variables
-$_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
-$_SERVER['SCRIPT_NAME'] = '/index.php';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
+// Override environment variables for Vercel
+putenv('VIEW_COMPILED_PATH=/tmp/views');
+putenv('CACHE_PATH=/tmp/cache');
+putenv('SESSION_FILE_PATH=/tmp/sessions');
 
-// Forward to Laravel
-require __DIR__ . '/../public/index.php';
+// Register the Composer autoloader
+require __DIR__ . '/../vendor/autoload.php';
+
+// Bootstrap Laravel application
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// Handle the request
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+$response = $kernel->handle(
+    $request = Request::capture()
+)->send();
+
+$kernel->terminate($request, $response);

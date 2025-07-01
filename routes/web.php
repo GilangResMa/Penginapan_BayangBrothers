@@ -138,6 +138,23 @@ Route::get('/test-midtrans', function () {
     }
 })->name('test.midtrans');
 
+// API Routes for Midtrans Payment Integration
+Route::middleware(['auth:web'])->prefix('api')->group(function () {
+    Route::post('/payment/create-snap-token', [PaymentController::class, 'createSnapToken'])->name('api.payment.create-snap-token');
+});
+
+// Midtrans Callback Routes (no auth required)
+Route::post('/midtrans/notification', [PaymentController::class, 'handleNotification'])->name('midtrans.notification');
+Route::get('/payment/finish/{booking}', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
+Route::get('/payment/unfinish/{booking}', [PaymentController::class, 'paymentUnfinish'])->name('payment.unfinish');
+Route::get('/payment/error/{booking}', [PaymentController::class, 'paymentError'])->name('payment.error');
+Route::get('/payment/pending/{booking}', [PaymentController::class, 'paymentPending'])->name('payment.pending');
+
+// Demo route untuk Midtrans integration
+Route::get('/midtrans-demo', function () {
+    return view('midtrans-demo');
+})->name('midtrans.demo');
+
 // Logout routes untuk semua guards
 Route::post('/logout', function (Request $request) {
     Auth::guard('web')->logout();

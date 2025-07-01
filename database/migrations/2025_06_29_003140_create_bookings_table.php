@@ -24,10 +24,13 @@ return new class extends Migration
             $table->string('status')->default('pending'); // pending, confirmed, cancelled, completed
             $table->string('midtrans_order_id')->nullable();
             $table->string('midtrans_transaction_id')->nullable();
+            $table->string('snap_token')->nullable();
+            $table->string('order_id')->nullable();
+            $table->string('transaction_id')->nullable();
             $table->string('payment_type')->nullable();
-            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('payment_time')->nullable();
             $table->text('notes')->nullable();
-            $table->timestamps();
+            $table->timestamps(); // Menambahkan created_at dan updated_at
         });
     }
 

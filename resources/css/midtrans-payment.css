@@ -1,0 +1,361 @@
+/* Payment Method Details Styling */
+.payment-method-details {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.payment-details-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-details-card h4 {
+    color: #dc2626;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-details-card h4 i {
+    font-size: 1.2rem;
+}
+
+/* Bank Options Styling */
+.bank-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.bank-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.bank-option:hover {
+    border-color: #dc2626;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+}
+
+.bank-option.selected {
+    border-color: #dc2626;
+    background: #fef2f2;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+.bank-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.bank-option span {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Card Logos Styling */
+.card-logos {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: center;
+}
+
+.card-logo {
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Wallet Options Styling */
+.wallet-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.wallet-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.wallet-option:hover {
+    border-color: #dc2626;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+}
+
+.wallet-option.selected {
+    border-color: #dc2626;
+    background: #fef2f2;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+.wallet-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.wallet-option span {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Alert Styles */
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.alert i {
+    font-size: 1.2rem;
+}
+
+.alert-close {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.alert-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Payment Button Loading State */
+.payment-form button[type="submit"]:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.payment-form button[type="submit"] .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .bank-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .wallet-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .card-logos {
+        justify-content: center;
+    }
+    
+    .payment-method-details {
+        margin-top: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .payment-details-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wallet-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .bank-option,
+    .wallet-option {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .bank-logo,
+    .wallet-logo {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Payment Method Selection Enhancement */
+.payment-option {
+    transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.payment-option input[type="radio"]:checked + .option-content {
+    background: #fef2f2;
+    border-color: #dc2626;
+}
+
+.payment-option .option-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.payment-option .option-header i {
+    font-size: 1.5rem;
+    color: #dc2626;
+}
+
+.payment-option .option-details {
+    margin-top: 0.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* Midtrans Snap Integration Styles */
+.snap-payment-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading overlay for payment processing */
+.payment-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #374151;
+}
+
+.payment-loading-overlay .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #dc2626;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+/* Security badge */
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    border-radius: 6px;
+    color: #0c4a6e;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.security-badge i {
+    color: #0ea5e9;
+}

@@ -22,7 +22,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
     color: white;
     padding: 0;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
@@ -32,16 +32,16 @@ body {
 }
 
 .sidebar-header {
-    padding: 2rem 1.5rem;
-    border-bottom: 1px solid #374151;
-    text-align: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .logo-icon {
-    font-size: 2rem;
-    color: #fbbf24;
-    margin-bottom: 0.5rem;
-    display: block;
+    font-size: 1.5rem;
+    color: white;
 }
 
 .sidebar-header h2 {
@@ -196,6 +196,21 @@ body {
     gap: 0.5rem;
 }
 
+.card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc2626;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.card-action:hover {
+    color: #b91c1c;
+}
+
 .badge {
     background: #dc2626;
     color: white;
@@ -209,7 +224,7 @@ body {
 .stat-number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #1f2937;
+    color: #dc2626;
     margin-bottom: 0.5rem;
     line-height: 1;
 }

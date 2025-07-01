@@ -100,7 +100,7 @@
                                         <span class="value">{{ $booking->formatted_check_in }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="detail-item">
                                     <i class="fas fa-calendar"></i>
                                     <div>
@@ -108,7 +108,7 @@
                                         <span class="value">{{ $booking->formatted_check_out }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="detail-item">
                                     <i class="fas fa-moon"></i>
                                     <div>
@@ -116,7 +116,7 @@
                                         <span class="value">{{ $booking->nights }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div class="detail-item">
                                     <i class="fas fa-users"></i>
                                     <div>
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
 
-                            @if($booking->extra_bed)
+                            @if ($booking->extra_bed)
                                 <div class="extra-info">
                                     <i class="fas fa-bed"></i>
                                     <span>Extra Bed</span>
@@ -136,15 +136,16 @@
                             <div class="booking-footer">
                                 <div class="total-cost">
                                     <span class="cost-label">Total:</span>
-                                    <span class="cost-value">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
+                                    <span class="cost-value">Rp
+                                        {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
                                 </div>
-                                
+
                                 <div class="booking-date">
                                     <small>Dibuat: {{ $booking->created_at->format('d M Y, H:i') }}</small>
                                 </div>
                             </div>
 
-                            @if($booking->status === 'pending')
+                            @if ($booking->status === 'pending')
                                 <div class="booking-actions">
                                     <a href="{{ route('payment', $booking->id) }}" class="action-btn primary">
                                         <i class="fas fa-credit-card"></i>
@@ -181,45 +182,23 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-section">
-                <h3 class="footer-title">Bayang Brothers</h3>
-                <p class="footer-description">
-                    Bayang Brothers is a booking room service operating in Yogyakarta.
-                </p>
-            </div>
+            <h3 class="footer-title">Bayang Brothers</h3>
+            <p class="footer-description">Bayang Brothers is a booking room service operating in Yogyakarta.</p>
 
-            <div class="footer-section">
-                <h4 class="footer-subtitle">Quick Links</h4>
-                <div class="footer-links">
-                    <a href="{{ route('homepage') }}" class="footer-link">Home</a>
-                    <a href="{{ route('room.index') }}" class="footer-link">Rooms</a>
-                    <a href="{{ route('about') }}" class="footer-link">About</a>
-                    <a href="{{ route('faq') }}" class="footer-link">FAQ</a>
-                </div>
-            </div>
-
-            <div class="footer-section">
-                <h4 class="footer-subtitle">Contact Us</h4>
-                <div class="footer-contact">
-                    <a href="tel:+6281392640030" class="footer-contact-item">
+            <div class="footer-bottom">
+                <p class="footer-copyright">Copyright ©2025 Bayang Brothers</p>
+                <div class="social-media-container">
+                    <a href="tel:+6281392640030" class="social-link">
                         <i class="fas fa-phone"></i>
-                        +62 813-9264-0030
                     </a>
-                    <a href="https://wa.me/6281392640030" class="footer-contact-item">
-                        <i class="fab fa-whatsapp"></i>
-                        WhatsApp
-                    </a>
-                    <a href="https://instagram.com/bayangbrothers" class="footer-contact-item">
+                    <a href="https://instagram.com/bayangbrothers" class="social-link">
                         <i class="fab fa-instagram"></i>
-                        @bayangbrothers
+                    </a>
+                    <a href="https://wa.me/6281392640030" class="social-link">
+                        <i class="fab fa-whatsapp"></i>
                     </a>
                 </div>
             </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p class="footer-copyright">Copyright ©2025 Bayang Brothers</p>
-        </div>
     </footer>
 </body>
 

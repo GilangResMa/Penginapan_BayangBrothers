@@ -3,6 +3,10 @@
     "framework": null,
     "builds": [
         {
+            "src": "package.json",
+            "use": "@vercel/node"
+        },
+        {
             "src": "api/index.php",
             "use": "vercel-php@0.6.0"
         },
@@ -13,8 +17,20 @@
     ],
     "routes": [
         {
-            "src": "/(css|js|images|fonts)/(.*)",
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/(css|js|images|fonts|img)/(.*)",
             "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/favicon.ico",
+            "dest": "/public/favicon.ico"
+        },
+        {
+            "src": "/robots.txt",
+            "dest": "/public/robots.txt"
         },
         {
             "src": "/(.*)",
@@ -24,7 +40,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://your-domain.vercel.app",
+        "APP_URL": "https://bayang-brothers.vercel.app",
         "APP_KEY": "base64:L07Mu3wVqRXZ3snCdK+OU8fUNST7RBmmCV0mszY60FU=",
         
         "APP_CONFIG_CACHE": "/tmp/config.php",

@@ -20,12 +20,5 @@ class OwnerSeeder extends Seeder
             'password' => Hash::make('owner123'),
             'status' => true,
         ]);
-
-        Owner::create([
-            'name' => 'Owner 2',
-            'email' => 'owner2@bayangbrothers.com',
-            'password' => Hash::make('owner123'),
-            'status' => true,
-        ]);
     }
 }

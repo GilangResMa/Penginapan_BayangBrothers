@@ -16,17 +16,17 @@ class AdminSeeder extends Seeder
     {
         // Create demo user for testing
         Admin::create([
-            'name' => 'Super Admin',
+            'name' => 'Admin GRM',
             'email' => 'grm@gmail.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('gilangrm'),
             'created_by' => 1, // Assuming 1 is the owner ID
             'status' => true,
         ]);
 
         Admin::create([
-            'name' => 'Admin 2',
+            'name' => 'Admin MDA',
             'email' => 'mda@gmail.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('madedelsa'),
             'created_by' => 1, // Assuming 1 is the owner ID
             'status' => true,
         ]);

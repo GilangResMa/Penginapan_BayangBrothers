@@ -19,7 +19,7 @@ class RoomOwnershipSeeder extends Seeder
         
         if (!$owner) {
             $owner = Owner::create([
-                'name' => 'Default Owner',
+                'name' => 'Owner',
                 'email' => 'owner@bayangbrothers.com',
                 'password' => bcrypt('password123'),
                 'status' => true,

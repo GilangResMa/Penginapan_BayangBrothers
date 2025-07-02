@@ -112,8 +112,16 @@ body {
 .main-container {
     max-width: 1200px; /* container mx-auto */
     margin: 0 auto;
-    padding: 3rem 1.5rem; /* px-6 py-12 */
+    padding: 3rem 2rem; /* px-6 py-12 */
     flex: 1; /* This makes main content take remaining space */
+}
+
+.greetings {
+    font-size: 1.5rem; /* text-3xl */
+    font-weight: bold; /* font-extrabold */
+    color: #1f2937; /* text-gray-800 */
+    margin-bottom: 2rem; /* mb-8 */
+    text-align: center;
 }
 
 .content-grid {

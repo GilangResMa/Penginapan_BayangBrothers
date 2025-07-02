@@ -54,6 +54,16 @@
             </nav>
         </aside>
 
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
@@ -284,9 +294,41 @@
 
     @if(session('success'))
         <div class="alert alert-success" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-            <i class="fas fa-check-circle"></i>
-            {{ session('success') }}
-        </div>
+    @endif
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuOverlay.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+
+                mobileMenuOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    this.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+
+                // Close mobile menu when window resizes to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('active');
+                        mobileMenuOverlay.classList.remove('active');
+                        mobileMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
+
+</body> </div>
     @endif
 
     @if(session('error'))
@@ -296,126 +338,6 @@
         </div>
     @endif
 
-    <style>
-    .booking-details-grid,
-    .guest-details-grid,
-    .room-details-grid,
-    .payment-details-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .detail-item {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 8px;
-        border-left: 4px solid var(--primary-color);
-    }
-
-    .detail-item label {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #6c757d;
-        margin-bottom: 0.5rem;
-    }
-
-    .detail-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .amount-highlight {
-        font-size: 1.25rem;
-        color: var(--success-color);
-    }
-
-    .extra-bed-tag {
-        background: var(--success-color);
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.875rem;
-    }
-
-    .payment-proof {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .payment-proof label {
-        display: block;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
-    }
-
-    .payment-proof-img {
-        max-width: 300px;
-        height: auto;
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
-
-    .payment-proof-img:hover {
-        transform: scale(1.05);
-    }
-
-    .status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .status-confirmed {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-
-    .status-completed {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .status-cancelled {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    .status-verified {
-        background: #d4edda;
-        color: #155724;
-    }
-
-    .status-rejected {
-        background: #f8d7da;
-        color: #721c24;
-    }
-
-    @media (max-width: 768px) {
-        .booking-details-grid,
-        .guest-details-grid,
-        .room-details-grid,
-        .payment-details-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-    </style>
 </body>
 
 </html>

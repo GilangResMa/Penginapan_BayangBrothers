@@ -54,6 +54,16 @@
             </nav>
         </aside>
 
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
@@ -85,34 +95,6 @@
                         @endphp
                         <div class="stat-number">{{ $activeCount }}</div>
                         <div class="stat-label">Currently active</div>
-                    </div>
-                </div>
-
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <i class="fas fa-user-plus"></i>
-                        <h3>Recent Additions</h3>
-                    </div>
-                    <div class="card-content">
-                        @php
-                            $recentCount = $admins->where('created_at', '>=', now()->subMonth())->count();
-                        @endphp
-                        <div class="stat-number">{{ $recentCount }}</div>
-                        <div class="stat-label">Added this month</div>
-                    </div>
-                </div>
-
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <i class="fas fa-clock"></i>
-                        <h3>Last Activity</h3>
-                    </div>
-                    <div class="card-content">
-                        @php
-                            $lastLogin = $admins->sortByDesc('updated_at')->first();
-                        @endphp
-                        <div class="stat-number">{{ $lastLogin ? $lastLogin->updated_at->diffForHumans() : 'Never' }}</div>
-                        <div class="stat-label">Most recent activity</div>
                     </div>
                 </div>
             </div>
@@ -311,6 +293,38 @@
             {{ session('error') }}
         </div>
     @endif
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuOverlay.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+
+                mobileMenuOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    this.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+
+                // Close mobile menu when window resizes to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('active');
+                        mobileMenuOverlay.classList.remove('active');
+                        mobileMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

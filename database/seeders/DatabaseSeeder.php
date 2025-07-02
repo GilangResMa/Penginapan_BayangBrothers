@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             FaqSeeder::class,
             RoomOwnershipSeeder::class,
-            SampleDataSeeder::class,
+            BookingSeeder::class,
         ]);
     }
 }

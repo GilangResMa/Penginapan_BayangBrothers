@@ -13,9 +13,17 @@
 </head>
 
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-crown logo-icon"></i>
                 <h2>Owner Panel</h2>
@@ -56,7 +64,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content fade-in">
             <header class="content-header">
                 <h1>Owner Dashboard</h1>
                 <p>Welcome back, {{ $owner->name }}! Here's your business overview.</p>
@@ -114,36 +122,6 @@
                     </div>
                 </div>
 
-                <!-- Total Rooms -->
-                <div class="dashboard-card room-card">
-                    <div class="card-header">
-                        <i class="fas fa-bed"></i>
-                        <h3>Rooms</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-number">{{ $totalRooms }}</div>
-                        <div class="stat-label">Active Rooms</div>
-                        <div class="stat-detail">
-                            <small>Managed properties</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total Admins -->
-                <div class="dashboard-card admin-card">
-                    <div class="card-header">
-                        <i class="fas fa-user-shield"></i>
-                        <h3>Admins</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-number">{{ $totalAdmins }}</div>
-                        <div class="stat-label">Active Admins</div>
-                        <a href="{{ route('owner.admins') }}" class="card-action">
-                            Manage Admins <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
                 <!-- Payments Overview -->
                 <div class="dashboard-card payment-card">
                     <div class="card-header">
@@ -166,24 +144,6 @@
                         @endif
                         <a href="{{ route('owner.payments') }}" class="card-action">
                             View Payments <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Customer Management -->
-                <div class="dashboard-card customer-card">
-                    <div class="card-header">
-                        <i class="fas fa-users"></i>
-                        <h3>Customers</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-number">{{ $recentBookings->pluck('user.id')->unique()->count() }}</div>
-                        <div class="stat-label">Recent Customers</div>
-                        <div class="stat-detail">
-                            <small>From last 10 bookings</small>
-                        </div>
-                        <a href="{{ route('owner.users') }}" class="card-action">
-                            View Customers <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
@@ -235,44 +195,73 @@
                     </div>
                     <div class="card-content">
                         @if($recentBookings->count() > 0)
-                            <div class="bookings-table">
-                                <div class="table-header">
-                                    <div class="table-cell">Guest</div>
-                                    <div class="table-cell">Room</div>
-                                    <div class="table-cell">Check-in</div>
-                                    <div class="table-cell">Amount</div>
-                                    <div class="table-cell">Status</div>
-                                    <div class="table-cell">Date</div>
-                                </div>
-                                @foreach($recentBookings as $booking)
-                                    <div class="table-row">
-                                        <div class="table-cell">
-                                            <div class="guest-info">
-                                                <i class="fas fa-user"></i>
-                                                <span>{{ $booking->user->name }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="table-cell">{{ $booking->room->name }}</div>
-                                        <div class="table-cell">
-                                            {{ \Carbon\Carbon::parse($booking->check_in_date)->format('M d, Y') }}
-                                        </div>
-                                        <div class="table-cell">
-                                            <strong>Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</strong>
-                                        </div>
-                                        <div class="table-cell">
-                                            <span class="status-badge {{ $booking->status }}">
-                                                {{ ucfirst($booking->status) }}
-                                            </span>
-                                        </div>
-                                        <div class="table-cell">
-                                            <small>{{ $booking->created_at->format('M d, H:i') }}</small>
-                                        </div>
-                                    </div>
-                                @endforeach
+                            <div class="table-responsive">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Guest</th>
+                                            <th>Room</th>
+                                            <th>Check-in</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Booking Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($recentBookings as $booking)
+                                        <tr>
+                                            <td>
+                                                <div class="guest-info">
+                                                    <div class="guest-name">{{ $booking->user->name }}</div>
+                                                    <div class="guest-email">{{ $booking->user->email }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="room-info">
+                                                    <div class="room-name">{{ $booking->room->name }}</div>
+                                                    <div class="room-details">
+                                                        {{ $booking->guests }} guests
+                                                        @if($booking->extra_bed)
+                                                            <span class="extra-bed-tag">+ Extra Bed</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="date-cell">
+                                                {{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}
+                                            </td>
+                                            <td class="amount-cell">
+                                                Rp {{ number_format($booking->total_cost, 0, ',', '.') }}
+                                            </td>
+                                            <td>
+                                                <span class="status-badge status-{{ $booking->status }}">
+                                                    {{ ucfirst($booking->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="date-info">
+                                                    <strong>{{ $booking->created_at ? $booking->created_at->format('d M Y') : 'N/A' }}</strong>
+                                                    <small>{{ $booking->created_at ? $booking->created_at->format('H:i') : '' }}</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons-inline">
+                                                    <a href="{{ route('owner.booking.show', $booking->id) }}" class="btn-small btn-info" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                        Details
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="table-footer">
-                                <a href="{{ route('owner.bookings') }}" class="view-all-link">
-                                    View All Bookings <i class="fas fa-arrow-right"></i>
+                                <a href="{{ route('owner.bookings') }}" class="action-btn outline">
+                                    <i class="fas fa-list"></i>
+                                    View All Bookings
                                 </a>
                             </div>
                         @else
@@ -303,52 +292,6 @@
                             </a>
         </main>
     </div>
-
-    <style>
-        .payment-card .card-header {
-            background: linear-gradient(135deg, #8B5CF6, #A855F7);
-            color: white;
-        }
-
-        .customer-card .card-header {
-            background: linear-gradient(135deg, #06B6D4, #0891B2);
-            color: white;
-        }
-
-        .stat-trend.warning {
-            color: #F59E0B;
-        }
-
-        .stat-trend.info {
-            color: #3B82F6;
-        }
-
-        .status-item.completed {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-        }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .alert-warning {
-            background: #FEF3C7;
-            color: #92400E;
-            border: 1px solid #F59E0B;
-        }
-    </style>
 
     <!-- Revenue Chart Script -->
         </main>

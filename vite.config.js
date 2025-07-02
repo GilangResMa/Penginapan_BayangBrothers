@@ -18,8 +18,6 @@ export default defineConfig({
                 "resources/css/owner.css",
                 "resources/css/auth.css",
                 "resources/css/payment.css",
-                "resources/css/midtrans-payment.css",
-                "resources/js/midtrans-payment.js",
             ],
             refresh: true,
         }),

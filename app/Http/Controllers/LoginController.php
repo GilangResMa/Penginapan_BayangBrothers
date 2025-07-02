@@ -86,7 +86,7 @@ class LoginController extends Controller
         ]);
 
         return back()->withErrors([
-            'email' => 'Kredensial tidak valid.',
+            'email' => 'Email atau password salah!',
         ])->withInput($request->only('email'));
     }
 }

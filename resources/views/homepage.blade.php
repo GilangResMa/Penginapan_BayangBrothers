@@ -63,15 +63,15 @@
     </header>
     <main class="main-container">
         <div class="content-grid">
-
+            
             <!-- Left Content -->
             <div class="content-card">
+                <h3 class="greetings">Selamat Datang di Bayang Brothers!</h3>
                 <p class="content-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
+                    Cari tempat nginap yang bikin liburan di Jogja makin seru? Bayang Brothers hadir dengan vibes modern
+                    dan kenyamanan yang maksimal. Nikmati keramahan khas Jogja yang hangat, bikin kamu serasa pulang ke
+                    rumah. Dari sini, jelajahi pesona budaya dan keindahan kota istimewa ini dengan mudah. Yuk, booking
+                    sekarang dan ciptakan momen tak terlupakan bersama kami!
                 </p>
 
                 <!-- Go to Room Button -->

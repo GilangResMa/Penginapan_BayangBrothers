@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('admin_notes')->nullable(); // catatan dari admin
             $table->timestamp('verified_at')->nullable();
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->text('verification_notes')->nullable(); // catatan verifikasi
             $table->timestamps();
         });
     }

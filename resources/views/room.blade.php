@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Room - Bayang Brothers</title>
+    <title>Bayang Brothers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/room.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -218,84 +218,77 @@
                                     <small id="nights-info-{{ $room->id }}"></small>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Booking Section -->
-                    <div class="booking-section">
-                        <div class="booking-inputs">
-                            <div class="input-group">
-                                <label class="input-label">
-                                    <i class="fas fa-calendar"></i>
-                                    Check In - Check Out
-                                </label>
-                                <div class="date-inputs">
-                                    <input type="date" id="checkin_{{ $room->id }}" class="date-input"
-                                        onchange="updatePriceDisplayForRoom({{ $room->id }})">
-                                    <span class="date-separator">-</span>
-                                    <input type="date" id="checkout_{{ $room->id }}" class="date-input"
-                                        onchange="updatePriceDisplayForRoom({{ $room->id }})">
+                            <!-- Booking Section -->
+                            <div class="booking-section-compact">
+                                <div class="booking-inputs-row">
+                                    <div class="booking-form-inputs">
+                                        <div class="input-group-small">
+                                            <label class="input-label-small">
+                                                <i class="fas fa-calendar"></i>
+                                                Check In - Check Out
+                                            </label>
+                                            <div class="date-inputs-compact">
+                                                <input type="date" id="checkin_{{ $room->id }}" class="date-input-small"
+                                                    onchange="updatePriceDisplayForRoom({{ $room->id }})">
+                                                <span class="date-separator-small">-</span>
+                                                <input type="date" id="checkout_{{ $room->id }}" class="date-input-small"
+                                                    onchange="updatePriceDisplayForRoom({{ $room->id }})">
+                                            </div>
+                                        </div>
+
+                                        <div class="input-group-small">
+                                            <label class="input-label-small">
+                                                <i class="fas fa-user"></i>
+                                                Guests
+                                            </label>
+                                            <select id="persons_{{ $room->id }}" class="select-input-small"
+                                                onchange="updatePriceDisplayForRoom({{ $room->id }})">
+                                                <option value="1">1 Person</option>
+                                                <option value="2">2 Persons</option>
+                                                <option value="3">3 Persons</option>
+                                                <option value="4">4 Persons</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="booking-button-row">
+                                        @auth('web')
+                                            @if(!isset($room->is_available) || $room->is_available)
+                                                <form method="POST" action="{{ route('room.book', $room->id) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="room_id" value="{{ $room->id }}">
+                                                    <input type="hidden" name="check_in" id="hidden_checkin_{{ $room->id }}">
+                                                    <input type="hidden" name="check_out" id="hidden_checkout_{{ $room->id }}">
+                                                    <input type="hidden" name="guests" id="hidden_persons_{{ $room->id }}">
+                                                    <input type="hidden" name="extra_bed" id="hidden_extra_bed_{{ $room->id }}">
+                                                    <input type="hidden" name="total_cost" id="hidden_total_cost_{{ $room->id }}">
+                                                    <button type="submit" class="booking-btn-compact"
+                                                        onclick="return setBookingData({{ $room->id }})">
+                                                        <i class="fas fa-calendar-check"></i>
+                                                        Book Now
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <button class="booking-btn-compact disabled" disabled>
+                                                    <i class="fas fa-ban"></i>
+                                                    Unavailable
+                                                </button>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('login') }}" class="booking-btn-compact login-required">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                Login to Book
+                                            </a>
+                                        @endauth
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="input-group">
-                                <label class="input-label">
-                                    <i class="fas fa-user"></i>
-                                    Person
-                                </label>
-                                <select id="persons_{{ $room->id }}" class="select-input"
-                                    onchange="updatePriceDisplayForRoom({{ $room->id }})">
-                                    <option value="1">1 Person</option>
-                                    <option value="2">2 Persons</option>
-                                    <option value="3">3 Persons</option>
-                                    <option value="4">4 Persons</option>
-                                    </select>
-                            </div>
-
-                            <div class="input-group">
-                                <label class="input-label">Contact Admin</label>
-                                <button class="admin-button"
-                                    onclick="window.open('https://wa.me/6281392640030', '_blank')">
-                                    <i class="fab fa-whatsapp"></i>
-                                    Chat Admin
-                                </button>
-                            </div>
-
-                            <div class="input-group">
-                                @auth('web')
-                                    <!-- User sudah login, bisa booking -->
-                                    @if(!isset($room->is_available) || $room->is_available)
-                                        <form method="POST" action="{{ route('room.book', $room->id) }}">
-                                            @csrf
-                                            <input type="hidden" name="room_id" value="{{ $room->id }}">
-                                            <input type="hidden" name="check_in" id="hidden_checkin_{{ $room->id }}">
-                                            <input type="hidden" name="check_out" id="hidden_checkout_{{ $room->id }}">
-                                            <input type="hidden" name="guests" id="hidden_persons_{{ $room->id }}">
-                                            <input type="hidden" name="extra_bed"
-                                                id="hidden_extra_bed_{{ $room->id }}">
-                                            <input type="hidden" name="total_cost"
-                                                id="hidden_total_cost_{{ $room->id }}">
-                                            <button type="submit" class="booking-btn"
-                                                onclick="return setBookingData({{ $room->id }})">
-                                                <i class="fas fa-calendar-check"></i>
-                                                Booking Now
-                                            </button>
-                                        </form>
-                                    @else
-                                        <button class="booking-btn disabled" disabled>
-                                            <i class="fas fa-ban"></i>
-                                            Tidak Tersedia
-                                        </button>
-                                        <p class="unavailable-notice">Kamar tidak tersedia untuk tanggal yang dipilih</p>
-                                    @endif
-                                @else
-                                    <!-- User belum login, arahkan ke login -->
-                                    <a href="{{ route('login') }}" class="booking-btn login-required">
-                                        <i class="fas fa-sign-in-alt"></i>
-                                        Login to Book
-                                    </a>
-                                    <p class="login-notice">Silakan login terlebih dahulu untuk melakukan booking</p>
-                                @endauth
+                                
+                                @if(!auth('web')->check())
+                                    <p class="login-notice-small">Please login first to make a booking</p>
+                                @elseif(isset($room->is_available) && !$room->is_available)
+                                    <p class="unavailable-notice-small">Room not available for selected dates</p>
+                                @endif
                             </div>
                         </div>
                     </div>

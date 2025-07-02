@@ -158,7 +158,7 @@
                         @if($booking->extra_bed)
                         <div class="detail-row">
                             <span class="label">Extra Bed:</span>
-                            <span class="value">Yes</span>
+                            <span class="value">{{ $booking->extra_bed }}</span>
                         </div>
                         @endif
                     </div>
@@ -240,32 +240,10 @@
                                 <div class="account-info">
                                     <div>
                                         <strong>Bank BCA</strong><br>
-                                        <span>1234567890</span><br>
-                                        <span>A.n. Bayang Brothers</span>
+                                        <span>4561133632</span><br>
+                                        <span>A.n. Ribka Sebayang</span>
                                     </div>
                                     <button type="button" class="copy-btn" onclick="copyToClipboard('1234567890')">
-                                        <i class="fas fa-copy"></i> Copy
-                                    </button>
-                                </div>
-                                
-                                <div class="account-info">
-                                    <div>
-                                        <strong>Bank Mandiri</strong><br>
-                                        <span>9876543210</span><br>
-                                        <span>A.n. Bayang Brothers</span>
-                                    </div>
-                                    <button type="button" class="copy-btn" onclick="copyToClipboard('9876543210')">
-                                        <i class="fas fa-copy"></i> Copy
-                                    </button>
-                                </div>
-                                
-                                <div class="account-info">
-                                    <div>
-                                        <strong>Bank BNI</strong><br>
-                                        <span>5555666677</span><br>
-                                        <span>A.n. Bayang Brothers</span>
-                                    </div>
-                                    <button type="button" class="copy-btn" onclick="copyToClipboard('5555666677')">
                                         <i class="fas fa-copy"></i> Copy
                                     </button>
                                 </div>

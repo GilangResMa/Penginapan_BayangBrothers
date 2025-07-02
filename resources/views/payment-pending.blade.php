@@ -261,26 +261,6 @@
                         Browse Rooms
                     </a>
                 </div>
-
-                <!-- Contact Information -->
-                <div class="contact-info">
-                    <h4><i class="fas fa-headset"></i> Need Help?</h4>
-                    <p>Contact our customer service team:</p>
-                    <div class="contact-methods">
-                        <a href="tel:+6281392640030" class="contact-method">
-                            <i class="fas fa-phone"></i>
-                            <span>+62 813-9264-0030</span>
-                        </a>
-                        <a href="https://wa.me/6281392640030" class="contact-method" target="_blank">
-                            <i class="fab fa-whatsapp"></i>
-                            <span>WhatsApp Support</span>
-                        </a>
-                        <a href="mailto:support@bayangbrothers.com" class="contact-method">
-                            <i class="fas fa-envelope"></i>
-                            <span>support@bayangbrothers.com</span>
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </main>

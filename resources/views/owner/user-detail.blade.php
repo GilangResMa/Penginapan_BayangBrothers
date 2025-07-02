@@ -54,6 +54,16 @@
             </nav>
         </aside>
 
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
@@ -410,6 +420,38 @@
             font-style: italic;
         }
     </style>
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuOverlay.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+
+                mobileMenuOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    this.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+
+                // Close mobile menu when window resizes to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('active');
+                        mobileMenuOverlay.classList.remove('active');
+                        mobileMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

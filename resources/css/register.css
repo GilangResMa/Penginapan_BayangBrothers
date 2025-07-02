@@ -221,6 +221,43 @@ body {
     box-shadow: 0 0 0 2px #ef4444; /* focus:ring-2 focus:ring-red-500 */
 }
 
+/* Password field with toggle button */
+.password-field-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    padding-right: 3rem; /* Extra padding for toggle button */
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.password-toggle:hover {
+    color: #dc2626;
+}
+
+.password-toggle i {
+    font-size: 1rem;
+}
+
 .signup-button {
     width: 100%;
     background-color: #dc2626; /* bg-red-600 */

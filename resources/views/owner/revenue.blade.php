@@ -55,6 +55,16 @@
             </nav>
         </aside>
 
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="content-header">
@@ -99,48 +109,6 @@
                     </div>
                 </div>
 
-                <!-- Top Room Revenue -->
-                <div class="dashboard-card room-card">
-                    <div class="card-header">
-                        <i class="fas fa-star"></i>
-                        <h3>Top Room</h3>
-                    </div>
-                    <div class="card-content">
-                        @php
-                            $topRoom = $topRooms->first() ?? null;
-                        @endphp
-                        @if($topRoom)
-                            <div class="stat-number">Rp {{ number_format($topRoom->total_revenue ?? 0, 0, ',', '.') }}</div>
-                            <div class="stat-label">{{ $topRoom->name }}</div>
-                            <div class="stat-detail">
-                                Best performing room
-                            </div>
-                        @else
-                            <div class="stat-number">Rp 0</div>
-                            <div class="stat-label">No data</div>
-                            <div class="stat-detail">
-                                No bookings yet
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Growth Rate -->
-                <div class="dashboard-card admin-card">
-                    <div class="card-header">
-                        <i class="fas fa-chart-bar"></i>
-                        <h3>Growth Rate</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="stat-number">{{ number_format($revenueGrowth ?? 0, 1) }}%</div>
-                        <div class="stat-label">Year over year</div>
-                        <div class="stat-trend {{ ($revenueGrowth ?? 0) > 0 ? 'positive' : 'neutral' }}">
-                            <i class="fas fa-{{ ($revenueGrowth ?? 0) > 0 ? 'trending-up' : 'minus' }}"></i>
-                            Compared to {{ ($year ?? date('Y')) - 1 }}
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Revenue Chart -->
                 <div class="dashboard-card span-full">
                     <div class="card-header">
@@ -151,37 +119,6 @@
                         <div class="chart-container">
                             <canvas id="revenueChart" width="400" height="200"></canvas>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Revenue by Room Type -->
-                <div class="dashboard-card span-half">
-                    <div class="card-header">
-                        <i class="fas fa-bed"></i>
-                        <h3>Top Performing Rooms</h3>
-                    </div>
-                    <div class="card-content">
-                        @if(isset($topRooms) && $topRooms->count() > 0)
-                            <div class="room-revenue-list">
-                                @foreach($topRooms->take(5) as $room)
-                                <div class="room-revenue-item">
-                                    <div class="room-info">
-                                        <span class="room-name">{{ $room->name }}</span>
-                                        <span class="room-bookings">{{ $room->bookings_count ?? 0 }} bookings</span>
-                                    </div>
-                                    <div class="room-amount">
-                                        Rp {{ number_format($room->total_revenue ?? 0, 0, ',', '.') }}
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="empty-state">
-                                <i class="fas fa-chart-pie"></i>
-                                <h4>No Room Revenue Data</h4>
-                                <p>Revenue data will appear here once you have completed bookings.</p>
-                            </div>
-                        @endif
                     </div>
                 </div>
 
@@ -300,6 +237,38 @@
                 ctx.font = '16px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText('No revenue data available', canvas.width / 2, canvas.height / 2);
+            }
+        });
+    </script>
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const sidebar = document.querySelector('.sidebar');
+
+            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                    mobileMenuOverlay.classList.toggle('active');
+                    this.classList.toggle('active');
+                });
+
+                mobileMenuOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('active');
+                    this.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+
+                // Close mobile menu when window resizes to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('active');
+                        mobileMenuOverlay.classList.remove('active');
+                        mobileMenuToggle.classList.remove('active');
+                    }
+                });
             }
         });
     </script>

@@ -68,12 +68,12 @@
                 <!-- Description -->
                 <div class="description">
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
+                        Bayang Brothers adalah penginapan modern di jantungan Jogja yang memadukan kenyamanan kekinian
+                        dengan pesona budaya lokal. Kami hadir untuk memberikan pengalaman menginap yang istimewa dan
+                        suasana cozy dengan keramahan khas Jogja yang bikin betah. Setiap sudut dirancang untuk
+                        kenyamananmu, dari kamar yang stylish hingga fasilitas yang bikin liburanmu makin asyik.
+                        Terinspirasi dari semangat kebersamaan, Bayang Brothers ingin jadi “rumah” sementaramu saat
+                        menjelajahi keindahan dan keunikan Kota Gudeg. Yuk, jadilah bagian dari cerita kami!</p>
                 </div>
 
                 <!-- Map and Contact Section -->
@@ -82,9 +82,9 @@
                     <div class="map-container">
                         <div id="map">
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.542907594448!2d110.36050931477389!3d-7.801194594368487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5797e5d49e77%3A0x3d4a4b7bb3db9f7e!2sTugu%20Yogyakarta!5e0!3m2!1sen!2sid!4v1640123456789!5m2!1sen!2sid"
-                                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.2056919565644!2d110.40104887420637!3d-7.7679995770493475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59de66ac8305%3A0xdc5875d072500293!2sOYO%20347%20Bayang%20Brothers%20Guest%20House!5e0!3m2!1sen!2sid!4v1751459420743!5m2!1sen!2sid"
+                                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
 
@@ -136,9 +136,9 @@
                                     <div>
                                         <div class="contact-label">Address :</div>
                                         <div class="contact-address">
-                                            Jl. Malioboro, Yogyakarta<br>
-                                            Special Region of Yogyakarta<br>
-                                            Indonesia
+                                            Jl. Jodipati No.15A, Dabag, Condongcatur<br>
+                                            Kec. Depok, Yogyakarta<br>
+                                            Daerah Istimewa Yogyakarta 55281
                                         </div>
                                     </div>
                                 </div>
@@ -149,12 +149,12 @@
                         <div class="action-buttons">
                             <a href="https://wa.me/6281392640030" target="_blank" class="action-btn whatsapp">
                                 <i class="fab fa-whatsapp"></i>
-                                <span>Chat WhatsApp</span>
+                                <span>WhatsApp</span>
                             </a>
 
                             <a href="https://instagram.com/bayangbrothers" target="_blank" class="action-btn instagram">
                                 <i class="fab fa-instagram"></i>
-                                <span>Follow Instagram</span>
+                                <span>Instagram</span>
                             </a>
                         </div>
                     </div>

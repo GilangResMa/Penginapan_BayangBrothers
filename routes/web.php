@@ -16,6 +16,34 @@ Route::get('/', function () {
     return view('homepage');
 })->name('homepage');
 
+// Debug route - temporary untuk troubleshooting
+Route::get('/debug', function () {
+    try {
+        $dbConnected = \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'Connected' : 'Not Connected';
+
+        // TiDB specific checks
+        $version = \Illuminate\Support\Facades\DB::select('SELECT VERSION() as version')[0]->version;
+        $roomCount = \App\Models\Room::count();
+
+        return response()->json([
+            'status' => 'OK',
+            'database' => $dbConnected,
+            'db_version' => $version,
+            'room_count' => $roomCount,
+            'session_id' => session()->getId(),
+            'environment' => app()->environment(),
+            'ssl_verify' => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT'),
+            'ca_exists' => file_exists('/tmp/ca-cert.pem') ? 'Yes' : 'No',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'ERROR',
+            'message' => $e->getMessage(),
+            'environment' => app()->environment(),
+        ]);
+    }
+});
+
 // Public routes (bisa diakses tanpa login)
 Route::get('/room', [RoomController::class, 'index'])->name('room.index');
 

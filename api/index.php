@@ -12,6 +12,15 @@ foreach ($tempDirs as $dir) {
     }
 }
 
+// Download TiDB CA certificate if not exists
+$caCertPath = '/tmp/ca-cert.pem';
+if (!file_exists($caCertPath)) {
+    $caContent = file_get_contents('https://letsencrypt.org/certs/isrgrootx1.pem');
+    if ($caContent) {
+        file_put_contents($caCertPath, $caContent);
+    }
+}
+
 // Override environment variables for Vercel
 putenv('VIEW_COMPILED_PATH=/tmp/views');
 putenv('CACHE_PATH=/tmp/cache');

@@ -32,6 +32,10 @@
                     <i class="fas fa-question-circle"></i>
                     Manage FAQ
                 </a>
+                <a href="{{ route('admin.payments.index') }}" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Verification
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="logout-form">
                     @csrf
                     <button type="submit" class="nav-item logout-btn">
@@ -80,6 +84,21 @@
                     </div>
                 </div>
 
+                <!-- Payment Stats -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>Payments</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-number">{{ $pendingPayments }}</div>
+                        <div class="stat-label">Pending Verification</div>
+                        <a href="{{ route('admin.payments.index') }}" class="card-action">
+                            Verify Payments <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Quick Actions -->
                 <div class="dashboard-card span-full">
                     <div class="card-header">
@@ -95,6 +114,10 @@
                             <a href="{{ route('admin.faqs.create') }}" class="action-btn secondary">
                                 <i class="fas fa-plus"></i>
                                 Add New FAQ
+                            </a>
+                            <a href="{{ route('admin.payments.index') }}" class="action-btn warning">
+                                <i class="fas fa-credit-card"></i>
+                                Verify Payments
                             </a>
                             <a href="{{ route('homepage') }}" class="action-btn tertiary">
                                 <i class="fas fa-eye"></i>

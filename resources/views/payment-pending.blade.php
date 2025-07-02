@@ -3,9 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Payment Pending - Bayang Brothers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/payment.css'])
+    <style>
+        .pending-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .pending-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            margin: 30px 0;
+        }
+        .pending-icon {
+            font-size: 64px;
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+        .pending-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .pending-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .booking-summary-pending {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .timeline {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        .timeline-icon.completed {
+            background: #28a745;
+            color: white;
+        }
+        .timeline-icon.current {
+            background: #f39c12;
+            color: white;
+        }
+        .timeline-icon.pending {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+        .timeline-content h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .timeline-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .contact-info {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .contact-info h4 {
+            margin: 0 0 10px 0;
+            color: #1976d2;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->

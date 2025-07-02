@@ -29,6 +29,18 @@
                     <i class="fas fa-calendar-check"></i>
                     Bookings
                 </a>
+                <a href="{{ route('owner.payments') }}" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Payments
+                </a>
+                <a href="{{ route('owner.users') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Customers
+                </a>
+                <a href="{{ route('owner.revenue') }}" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Revenue Report
+                </a>
                 <a href="{{ route('owner.admins') }}" class="nav-item">
                     <i class="fas fa-user-shield"></i>
                     Admin Management
@@ -48,6 +60,12 @@
             <header class="content-header">
                 <h1>Owner Dashboard</h1>
                 <p>Welcome back, {{ $owner->name }}! Here's your business overview.</p>
+                @if($totalRooms == 0)
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No rooms assigned to your account. Contact administrator to assign rooms.
+                    </div>
+                @endif
             </header>
 
             <!-- Statistics Cards -->
@@ -60,11 +78,20 @@
                     </div>
                     <div class="card-content">
                         <div class="stat-number">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</div>
-                        <div class="stat-label">All-time earnings</div>
+                        <div class="stat-label">
+                            @if($verifiedPayments > 0)
+                                From verified payments
+                            @else
+                                From confirmed bookings
+                            @endif
+                        </div>
                         <div class="stat-trend positive">
                             <i class="fas fa-arrow-up"></i>
                             This month: Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}
                         </div>
+                        <a href="{{ route('owner.revenue') }}" class="card-action">
+                            View Revenue Report <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -117,6 +144,50 @@
                     </div>
                 </div>
 
+                <!-- Payments Overview -->
+                <div class="dashboard-card payment-card">
+                    <div class="card-header">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>Payments</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-number">{{ $verifiedPayments }}</div>
+                        <div class="stat-label">Verified Payments</div>
+                        @if($pendingPayments > 0)
+                        <div class="stat-trend warning">
+                            <i class="fas fa-clock"></i>
+                            {{ $pendingPayments }} pending verification
+                        </div>
+                        @elseif($verifiedPayments == 0 && $totalBookings > 0)
+                        <div class="stat-trend info">
+                            <i class="fas fa-info-circle"></i>
+                            Payment system available for new bookings
+                        </div>
+                        @endif
+                        <a href="{{ route('owner.payments') }}" class="card-action">
+                            View Payments <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Customer Management -->
+                <div class="dashboard-card customer-card">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Customers</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-number">{{ $recentBookings->pluck('user.id')->unique()->count() }}</div>
+                        <div class="stat-label">Recent Customers</div>
+                        <div class="stat-detail">
+                            <small>From last 10 bookings</small>
+                        </div>
+                        <a href="{{ route('owner.users') }}" class="card-action">
+                            View Customers <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Booking Status Overview -->
                 <div class="dashboard-card span-half">
                     <div class="card-header">
@@ -132,6 +203,10 @@
                             <div class="status-item pending">
                                 <div class="status-number">{{ $bookingStats['pending'] }}</div>
                                 <div class="status-label">Pending</div>
+                            </div>
+                            <div class="status-item completed">
+                                <div class="status-number">{{ $bookingStats['completed'] }}</div>
+                                <div class="status-label">Completed</div>
                             </div>
                             <div class="status-item cancelled">
                                 <div class="status-number">{{ $bookingStats['cancelled'] }}</div>
@@ -226,10 +301,56 @@
                                 <i class="fas fa-user-plus"></i>
                                 Add New Admin
                             </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </main>
+    </div>
+
+    <style>
+        .payment-card .card-header {
+            background: linear-gradient(135deg, #8B5CF6, #A855F7);
+            color: white;
+        }
+
+        .customer-card .card-header {
+            background: linear-gradient(135deg, #06B6D4, #0891B2);
+            color: white;
+        }
+
+        .stat-trend.warning {
+            color: #F59E0B;
+        }
+
+        .stat-trend.info {
+            color: #3B82F6;
+        }
+
+        .status-item.completed {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-warning {
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #F59E0B;
+        }
+    </style>
+
+    <!-- Revenue Chart Script -->
         </main>
     </div>
 

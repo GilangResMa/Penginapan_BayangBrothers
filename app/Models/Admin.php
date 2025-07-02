@@ -37,4 +37,12 @@ class Admin extends Authenticatable
     {
         return $this->belongsTo(Owner::class, 'created_by');
     }
+
+    /**
+     * Get all payments verified by this admin
+     */
+    public function verifiedPayments()
+    {
+        return $this->hasMany(Payment::class, 'verified_by');
+    }
 }

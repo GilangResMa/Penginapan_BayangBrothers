@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Faq;
+use App\Models\Payment;
+use App\Models\Booking;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -13,7 +16,9 @@ class AdminController extends Controller
     {
         $rooms = Room::all();
         $faqs = Faq::all();
-        return view('admin.dashboard', compact('rooms', 'faqs'));
+        $pendingPayments = Payment::where('status', 'pending')->count();
+
+        return view('admin.dashboard', compact('rooms', 'faqs', 'pendingPayments'));
     }
 
     // Room Management
@@ -126,5 +131,70 @@ class AdminController extends Controller
         $faq->delete();
 
         return redirect()->route('admin.faqs.index')->with('success', 'FAQ deleted successfully!');
+    }
+
+    // Payment Management
+    public function paymentIndex(Request $request)
+    {
+        $query = Payment::with(['booking.user', 'booking.room']);
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by payment method
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+        $payments = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        return view('admin.payments.index', compact('payments'));
+    }
+
+    public function paymentShow($id)
+    {
+        $payment = Payment::with(['booking.user', 'booking.room', 'verifiedBy'])->findOrFail($id);
+
+        return view('admin.payments.show', compact('payment'));
+    }
+
+    public function paymentVerify(Request $request, $id)
+    {
+        $request->validate([
+            'action' => 'required|in:verify,reject',
+            'admin_notes' => 'nullable|string|max:1000'
+        ]);
+
+        $payment = Payment::with('booking')->findOrFail($id);
+
+        if ($request->action === 'verify') {
+            $payment->update([
+                'status' => 'verified',
+                'admin_notes' => $request->admin_notes,
+                'verified_at' => now(),
+                'verified_by' => Auth::guard('admin')->id()
+            ]);
+
+            // Update booking status to confirmed
+            $payment->booking->update(['status' => 'confirmed']);
+
+            $message = 'Payment verified successfully! Booking has been confirmed.';
+        } else {
+            $payment->update([
+                'status' => 'rejected',
+                'admin_notes' => $request->admin_notes,
+                'verified_at' => now(),
+                'verified_by' => Auth::guard('admin')->id()
+            ]);
+
+            // Update booking status back to pending
+            $payment->booking->update(['status' => 'pending']);
+
+            $message = 'Payment rejected. Customer will need to submit new payment proof.';
+        }
+
+        return redirect()->route('admin.payments.index')->with('success', $message);
     }
 }

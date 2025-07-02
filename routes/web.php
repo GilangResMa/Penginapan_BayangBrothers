@@ -77,15 +77,15 @@ Route::middleware(['auth-strict'])->group(function () {
 Route::middleware('auth:web')->group(function () {
     Route::post('/room/book/{id}', [RoomController::class, 'book'])->name('room.book');
     Route::get('/booking-history', [RoomController::class, 'bookingHistory'])->name('booking.history');
+    Route::delete('/booking/{id}/cancel', [RoomController::class, 'cancelBooking'])->name('booking.cancel');
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');
 
     // Payment routes
     Route::get('/payment/{booking}', [PaymentController::class, 'show'])->name('payment');
-    Route::post('/payment/{booking}/process', [PaymentController::class, 'process'])->name('payment.process');
-    Route::get('/payment/success/{booking}', [PaymentController::class, 'success'])->name('payment.success');
-    Route::get('/payment/cancel/{booking?}', [PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::post('/payment/{booking}/upload', [PaymentController::class, 'uploadPayment'])->name('payment.upload');
+    Route::get('/payment/pending/{booking}', [PaymentController::class, 'paymentPending'])->name('payment.pending');
 });
 
 // Admin routes - with enhanced security
@@ -107,6 +107,11 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/faqs/{id}/edit', [AdminController::class, 'faqEdit'])->name('admin.faqs.edit');
     Route::put('/admin/faqs/{id}', [AdminController::class, 'faqUpdate'])->name('admin.faqs.update');
     Route::delete('/admin/faqs/{id}', [AdminController::class, 'faqDestroy'])->name('admin.faqs.destroy');
+
+    // Payment verification routes
+    Route::get('/admin/payments', [AdminController::class, 'paymentIndex'])->name('admin.payments.index');
+    Route::get('/admin/payments/{id}', [AdminController::class, 'paymentShow'])->name('admin.payments.show');
+    Route::post('/admin/payments/{id}/verify', [AdminController::class, 'paymentVerify'])->name('admin.payments.verify');
 });
 
 // Owner routes - with enhanced security  
@@ -116,6 +121,14 @@ Route::middleware(['owner'])->group(function () {
     // Booking management
     Route::get('/owner/bookings', [OwnerController::class, 'bookings'])->name('owner.bookings');
     Route::get('/owner/booking/{id}', [OwnerController::class, 'showBooking'])->name('owner.booking.show');
+
+    // Payment management
+    Route::get('/owner/payments', [OwnerController::class, 'payments'])->name('owner.payments');
+    Route::get('/owner/payments/{id}', [OwnerController::class, 'showPayment'])->name('owner.payments.show');
+
+    // Customer management
+    Route::get('/owner/users', [OwnerController::class, 'users'])->name('owner.users');
+    Route::get('/owner/users/{id}', [OwnerController::class, 'showUser'])->name('owner.users.show');
 
     // Revenue analytics
     Route::get('/owner/revenue', [OwnerController::class, 'revenue'])->name('owner.revenue');

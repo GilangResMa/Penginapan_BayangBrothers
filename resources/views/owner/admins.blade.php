@@ -28,9 +28,17 @@
                     <i class="fas fa-calendar-check"></i>
                     Bookings
                 </a>
+                <a href="{{ route('owner.payments') }}" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Payments
+                </a>
+                <a href="{{ route('owner.users') }}" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Customers
+                </a>
                 <a href="{{ route('owner.revenue') }}" class="nav-item">
                     <i class="fas fa-chart-line"></i>
-                    Revenue
+                    Revenue Report
                 </a>
                 <a href="{{ route('owner.admins') }}" class="nav-item active">
                     <i class="fas fa-user-shield"></i>

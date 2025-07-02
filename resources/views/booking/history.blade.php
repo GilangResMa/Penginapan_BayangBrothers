@@ -7,6 +7,50 @@
     <title>Booking History - Bayang Brothers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/profile.css'])
+    <style>
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .action-btn.danger {
+            background: #dc3545;
+            color: white;
+            border: 2px solid #dc3545;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .action-btn.danger:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+        }
+        .action-btn.warning {
+            background: #ffc107;
+            color: #212529;
+            border: 2px solid #ffc107;
+        }
+        .action-btn.warning:hover {
+            background: #e0a800;
+            border-color: #e0a800;
+        }
+        .action-btn.success {
+            background: #28a745;
+            color: white;
+            border: 2px solid #28a745;
+        }
+        .action-btn.info {
+            background: #17a2b8;
+            color: white;
+            border: 2px solid #17a2b8;
+        }
+    </style>
 </head>
 
 <body>
@@ -151,6 +195,54 @@
                                         <i class="fas fa-credit-card"></i>
                                         Lanjutkan Pembayaran
                                     </a>
+                                    <form method="POST" action="{{ route('booking.cancel', $booking->id) }}" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn danger" 
+                                                onclick="return confirmCancel(event, '{{ $booking->booking_code }}', 'pending')"
+                                                title="Batalkan Booking">
+                                            <i class="fas fa-times"></i>
+                                            Batalkan
+                                        </button>
+                                    </form>
+                                </div>
+                            @elseif ($booking->status === 'awaiting_payment')
+                                <div class="booking-actions">
+                                    <a href="{{ route('payment.pending', $booking->id) }}" class="action-btn warning">
+                                        <i class="fas fa-clock"></i>
+                                        Lihat Status Verifikasi
+                                    </a>
+                                    <form method="POST" action="{{ route('booking.cancel', $booking->id) }}" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="action-btn danger" 
+                                                onclick="return confirmCancel(event, '{{ $booking->booking_code }}', 'awaiting_payment')"
+                                                title="Batalkan Booking">
+                                            <i class="fas fa-times"></i>
+                                            Batalkan
+                                        </button>
+                                    </form>
+                                </div>
+                            @elseif ($booking->status === 'confirmed')
+                                <div class="booking-actions">
+                                    <span class="action-btn success" style="cursor: default;">
+                                        <i class="fas fa-check-circle"></i>
+                                        Booking Terkonfirmasi
+                                    </span>
+                                </div>
+                            @elseif ($booking->status === 'cancelled')
+                                <div class="booking-actions">
+                                    <span class="action-btn danger" style="cursor: default; opacity: 0.6;">
+                                        <i class="fas fa-ban"></i>
+                                        Booking Dibatalkan
+                                    </span>
+                                </div>
+                            @elseif ($booking->status === 'completed')
+                                <div class="booking-actions">
+                                    <span class="action-btn info" style="cursor: default;">
+                                        <i class="fas fa-flag-checkered"></i>
+                                        Selesai
+                                    </span>
                                 </div>
                             @endif
                         </div>
@@ -200,6 +292,40 @@
                 </div>
             </div>
     </footer>
+
+    <script>
+        // Enhanced confirmation for booking cancellation
+        function confirmCancel(event, bookingCode, status) {
+            event.preventDefault();
+            
+            let message = `Apakah Anda yakin ingin membatalkan booking ${bookingCode}?`;
+            
+            if (status === 'awaiting_payment') {
+                message += '\n\nPerhatian: Bukti pembayaran yang sudah diupload akan dihapus dan Anda perlu mengupload ulang jika ingin melanjutkan booking.';
+            } else {
+                message += '\n\nBooking akan dibatalkan dan tidak dapat dikembalikan.';
+            }
+            
+            if (confirm(message)) {
+                event.target.closest('form').submit();
+            }
+            
+            return false;
+        }
+
+        // Auto hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            if (alerts.length > 0) {
+                setTimeout(() => {
+                    alerts.forEach(alert => {
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 300);
+                    });
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 
 </html>

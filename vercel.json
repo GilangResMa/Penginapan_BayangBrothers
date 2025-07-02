@@ -33,7 +33,7 @@
         "APP_DEBUG": "false",
         "APP_URL": "https://bayang-brothers.vercel.app",
         "ASSET_URL": "https://bayang-brothers.vercel.app",
-        "APP_KEY": "base64:L07Mu3wVqRXZ3snCdK+OU8fUNST7RBmmCV0mszY60FU=",
+        "APP_KEY": "base64:RcpqVSqWFuDT1JkseGA0fuPnxREsS/VmyvW8SLQKi+E=",
         
         "DB_CONNECTION": "mysql",
         "DB_HOST": "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",

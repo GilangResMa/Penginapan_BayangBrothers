@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Booking;
+use App\Models\Payment;
 use Illuminate\Support\Str;
 
 // Midtrans Integration
@@ -16,11 +18,7 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
-        // Set Midtrans configuration
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = config('midtrans.is_production', false);
-        Config::$isSanitized = config('midtrans.is_sanitized', true);
-        Config::$is3ds = config('midtrans.is_3ds', true);
+        // Remove Midtrans configuration as we're using manual payment
     }
 
     /**
@@ -376,11 +374,22 @@ class PaymentController extends Controller
      */
     public function paymentPending($bookingId)
     {
-        $booking = Booking::with('room', 'user')->findOrFail($bookingId);
+        // Validasi user login
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
 
-        // Ensure booking belongs to authenticated user
+        // Ambil data booking dengan payment
+        $booking = Booking::with(['room', 'user', 'payment'])->findOrFail($bookingId);
+
+        // Pastikan booking milik user yang login
         if ($booking->user_id !== Auth::guard('web')->id()) {
             return redirect()->route('room.index')->with('error', 'Booking tidak ditemukan.');
+        }
+
+        // Pastikan booking sudah ada payment
+        if (!$booking->payment || $booking->status !== 'awaiting_payment') {
+            return redirect()->route('profile')->with('error', 'Status pembayaran tidak valid.');
         }
 
         return view('payment-pending', compact('booking'));
@@ -452,6 +461,65 @@ class PaymentController extends Controller
             ]);
 
             return back()->with('error', 'Terjadi kesalahan saat membatalkan booking.');
+        }
+    }
+
+    /**
+     * Upload bukti pembayaran
+     */
+    public function uploadPayment(Request $request, $bookingId)
+    {
+        // Validasi user login
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        // Validasi input
+        $validated = $request->validate([
+            'payment_method' => 'required|in:qris,bank_transfer',
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:5120', // 5MB max
+        ]);
+
+        // Ambil data booking
+        $booking = Booking::with('room', 'user')->findOrFail($bookingId);
+
+        // Pastikan booking milik user yang login
+        if ($booking->user_id !== Auth::guard('web')->id()) {
+            return redirect()->route('room.index')->with('error', 'Booking tidak ditemukan.');
+        }
+
+        // Pastikan booking masih pending
+        if ($booking->status !== 'pending') {
+            return redirect()->route('profile')->with('error', 'Booking ini sudah diproses.');
+        }
+
+        try {
+            // Upload file bukti pembayaran
+            $file = $request->file('payment_proof');
+            $filename = 'payment_proof_' . $booking->booking_code . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filePath = $file->storeAs('payment_proofs', $filename, 'public');
+
+            // Simpan data payment
+            Payment::create([
+                'booking_id' => $booking->id,
+                'payment_method' => $validated['payment_method'],
+                'amount' => $booking->total_cost,
+                'payment_proof' => $filePath,
+                'status' => 'pending'
+            ]);
+
+            // Update status booking menjadi awaiting_payment
+            $booking->update(['status' => 'awaiting_payment']);
+
+            return redirect()->route('payment.pending', $booking->id)
+                ->with('success', 'Bukti pembayaran berhasil diupload. Admin akan memverifikasi pembayaran Anda dalam 2x24 jam.');
+        } catch (\Exception $e) {
+            Log::error('Error uploading payment proof', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return back()->with('error', 'Terjadi kesalahan saat mengupload bukti pembayaran. Silakan coba lagi.');
         }
     }
 }

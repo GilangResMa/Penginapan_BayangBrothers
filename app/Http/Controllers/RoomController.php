@@ -125,6 +125,54 @@ class RoomController extends Controller
     }
 
     /**
+     * Cancel booking (hanya bisa untuk status pending atau awaiting_payment)
+     */
+    public function cancelBooking(Request $request, $id)
+    {
+        // Validasi user login
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        try {
+            // Ambil booking dan pastikan milik user yang login
+            $booking = Booking::where('id', $id)
+                ->where('user_id', Auth::guard('web')->id())
+                ->first();
+
+            if (!$booking) {
+                return redirect()->route('booking.history')->with('error', 'Booking tidak ditemukan.');
+            }
+
+            // Hanya bisa cancel booking dengan status pending atau awaiting_payment
+            if (!in_array($booking->status, ['pending', 'awaiting_payment'])) {
+                return redirect()->route('booking.history')->with('error', 'Booking tidak dapat dibatalkan. Status: ' . $booking->status);
+            }
+
+            // Update status booking menjadi cancelled
+            $booking->update(['status' => 'cancelled']);
+
+            // Log cancellation
+            Log::info('Booking cancelled by user', [
+                'booking_id' => $booking->id,
+                'booking_code' => $booking->booking_code,
+                'user_id' => Auth::guard('web')->id(),
+                'cancelled_at' => now()
+            ]);
+
+            return redirect()->route('booking.history')->with('success', 'Booking berhasil dibatalkan.');
+        } catch (\Exception $e) {
+            Log::error('Error cancelling booking', [
+                'booking_id' => $id,
+                'user_id' => Auth::guard('web')->id(),
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->route('booking.history')->with('error', 'Terjadi kesalahan saat membatalkan booking.');
+        }
+    }
+
+    /**
      * API untuk cek ketersediaan real-time via AJAX
      */
     public function checkAvailability(Request $request)

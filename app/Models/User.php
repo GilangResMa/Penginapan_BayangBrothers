@@ -11,8 +11,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Disable automatic timestamps jika tabel tidak punya kolom created_at/updated_at
-    public $timestamps = false;
+    // Enable automatic timestamps untuk created_at/updated_at
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
@@ -30,5 +30,13 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);
+    }
+
+    /**
+     * Get all bookings for this user
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

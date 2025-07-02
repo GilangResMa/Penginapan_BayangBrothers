@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Customer Management - Owner Panel</title>
+    <title>Customer Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/owner.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -14,7 +14,7 @@
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-crown logo-icon"></i>
                 <h2>Owner Panel</h2>
@@ -127,24 +127,38 @@
                 </div>
                 <div class="card-content">
                     <form method="GET" action="{{ route('owner.users') }}" class="filter-form">
-                        <div class="filter-grid">
-                            <div class="filter-item">
-                                <label for="search">Search</label>
-                                <input type="text" id="search" name="search" class="form-input"
+                        <div class="search-row">
+                            <div class="search-input-container">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="search" name="search" class="search-input"
                                        value="{{ request('search') }}" 
-                                       placeholder="Customer name or email...">
+                                       placeholder="Search customer name, email, phone number...">
+                            </div>
+                            <div class="search-actions">
+                                <button type="submit" class="search-btn">
+                                    Search
+                                </button>
+                                @if(request()->has('search'))
+                                    <a href="{{ route('owner.users') }}" class="clear-search-btn">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                         
-                        <div class="filter-actions">
-                            <button type="submit" class="action-btn primary">
-                                <i class="fas fa-search"></i>
-                                Search
-                            </button>
-                            <a href="{{ route('owner.users') }}" class="action-btn outline">
-                                <i class="fas fa-undo"></i>
-                                Reset
-                            </a>
+                        <div class="filter-options">
+                            <div class="filter-label-text">Advanced filters coming soon:</div>
+                            <div class="filter-chips">
+                                <span class="filter-chip disabled">
+                                    <i class="fas fa-star"></i> Loyal Customers
+                                </span>
+                                <span class="filter-chip disabled">
+                                    <i class="fas fa-calendar-check"></i> With Bookings
+                                </span>
+                                <span class="filter-chip disabled">
+                                    <i class="fas fa-calendar-times"></i> No Bookings
+                                </span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -157,20 +171,33 @@
                     <h3>All Customers</h3>
                     <div class="card-actions">
                         <span class="badge">{{ $users->total() ?? 0 }} total</span>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="#" class="dropdown-item disabled">
+                                    <i class="fas fa-file-export"></i> Export CSV
+                                </a>
+                                <a href="#" class="dropdown-item disabled">
+                                    <i class="fas fa-envelope"></i> Email All
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card-content">
                     @if(isset($users) && $users->count() > 0)
                         <div class="table-responsive">
-                            <table class="admin-table">
+                            <table class="admin-table customers-table">
                                 <thead>
                                     <tr>
                                         <th>Customer</th>
-                                        <th>Email</th>
-                                        <th>Total Bookings</th>
-                                        <th>Member Since</th>
+                                        <th>Contact Info</th>
+                                        <th>Bookings</th>
+                                        <th>Joined</th>
                                         <th>Recent Activity</th>
-                                        <th>Actions</th>
+                                        <th class="col-actions"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -178,65 +205,98 @@
                                     <tr>
                                         <td>
                                             <div class="guest-info">
-                                                <div class="user-avatar">
+                                                <div class="user-avatar {{ $user->bookings_count > 1 ? 'loyal' : '' }}">
                                                     {{ strtoupper(substr($user->name, 0, 2)) }}
                                                 </div>
                                                 <div class="user-details">
                                                     <div class="guest-name">{{ $user->name }}</div>
-                                                    @if($user->bookings_count > 1)
-                                                        <span class="badge success">
-                                                            <i class="fas fa-star"></i>
-                                                            Repeat Customer
-                                                        </span>
-                                                    @else
-                                                        <span class="badge secondary">New Customer</span>
+                                                    <div class="customer-tags">
+                                                        @if($user->bookings_count > 1)
+                                                            <span class="badge success">
+                                                                <i class="fas fa-star"></i>
+                                                                Loyal
+                                                            </span>
+                                                        @else
+                                                            <span class="badge secondary">New</span>
+                                                        @endif
+                                                        
+                                                        @if($user->bookings_count > 3)
+                                                            <span class="badge primary">
+                                                                <i class="fas fa-award"></i>
+                                                                VIP
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="contact-info">
+                                                <div class="guest-email">
+                                                    <i class="fas fa-envelope"></i>
+                                                    {{ $user->email }}
+                                                </div>
+                                                @if(isset($user->contact) && $user->contact)
+                                                    <div class="guest-phone">
+                                                        <i class="fas fa-phone"></i>
+                                                        {{ $user->contact }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="booking-count-display">
+                                                <span class="booking-count">{{ $user->bookings_count }}</span>
+                                                <div class="booking-label">
+                                                    <span>bookings</span>
+                                                    @if($user->bookings_count > 0)
+                                                        <div class="booking-value">
+                                                            Rp {{ number_format($user->bookings->sum('total_cost'), 0, ',', '.') }}
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="guest-email">{{ $user->email }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="booking-count-display">
-                                                <span class="booking-count">{{ $user->bookings_count }}</span>
-                                                <small class="text-muted">bookings</small>
+                                            <div class="check-date">
+                                                <i class="fas fa-calendar-alt"></i> 
+                                                {{ $user->created_at ? $user->created_at->format('d/m/y') : 'N/A' }}
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="date-info">
-                                                <strong>{{ $user->created_at ? $user->created_at->format('d M Y') : 'N/A' }}</strong>
-                                                <small>{{ $user->created_at ? $user->created_at->diffForHumans() : 'Unknown' }}</small>
+                                            <div class="booking-date-small">
+                                                {{ $user->created_at ? $user->created_at->diffForHumans() : 'Unknown' }}
                                             </div>
                                         </td>
                                         <td>
                                             <div class="recent-bookings-display">
-                                                @forelse($user->bookings->take(2) as $booking)
+                                                @forelse($user->bookings->sortByDesc('created_at')->take(1) as $booking)
                                                     <div class="booking-item-display">
                                                         <div class="booking-code">{{ $booking->booking_code }}</div>
                                                         <div class="booking-details">
-                                                            <span class="booking-date">{{ $booking->created_at ? $booking->created_at->format('M Y') : 'N/A' }}</span>
+                                                            <span class="booking-date-small">{{ $booking->created_at ? $booking->created_at->format('d/m/y') : 'N/A' }}</span>
                                                             <span class="status-badge status-{{ $booking->status }}">
+                                                                <i class="fas fa-{{ 
+                                                                    $booking->status == 'pending' ? 'clock' : 
+                                                                    ($booking->status == 'confirmed' ? 'check-circle' : 
+                                                                    ($booking->status == 'completed' ? 'star' : 'times-circle')) 
+                                                                }}"></i>
                                                                 {{ ucfirst($booking->status) }}
                                                             </span>
                                                         </div>
                                                     </div>
                                                 @empty
-                                                    <span class="text-muted">No bookings</span>
+                                                    <span class="text-muted">No bookings yet</span>
                                                 @endforelse
-                                                @if($user->bookings->count() > 2)
-                                                    <small class="text-muted">+{{ $user->bookings->count() - 2 }} more bookings</small>
+                                                @if($user->bookings->count() > 1)
+                                                    <div class="more-bookings">
+                                                        <small class="text-muted">+{{ $user->bookings->count() - 1 }} more</small>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="action-buttons-inline">
-                                                <a href="{{ route('owner.users.show', $user->id) }}" 
-                                                   class="btn-small btn-info" title="View Details">
-                                                    <i class="fas fa-eye"></i>
-                                                    Profile
-                                                </a>
-                                            </div>
+                                            <a href="{{ route('owner.users.show', $user->id) }}" class="action-icon" title="View Customer Profile">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -316,36 +376,17 @@
         </div>
     @endif
 
+    <!-- Scripts -->
     <script>
-        // Mobile menu functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-            const sidebar = document.querySelector('.sidebar');
-
-            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuOverlay.classList.toggle('active');
-                    this.classList.toggle('active');
-                });
-
-                mobileMenuOverlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    this.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
-                });
-
-                // Close mobile menu when window resizes to desktop size
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth > 768) {
-                        sidebar.classList.remove('active');
-                        mobileMenuOverlay.classList.remove('active');
-                        mobileMenuToggle.classList.remove('active');
-                    }
-                });
-            }
-        });
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.mobile-menu-overlay').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        
+        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
+        document.querySelector('.mobile-menu-overlay').addEventListener('click', toggleMobileMenu);
     </script>
 </body>
 

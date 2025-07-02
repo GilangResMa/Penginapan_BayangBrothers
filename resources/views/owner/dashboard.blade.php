@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Owner Dashboard - Bayang Brothers</title>
+    <title>Owner Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/owner.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -192,47 +192,49 @@
                     <div class="card-header">
                         <i class="fas fa-clock"></i>
                         <h3>Recent Bookings</h3>
+                        <div class="card-actions">
+                            <a href="{{ route('owner.bookings') }}" class="header-link">
+                                <i class="fas fa-external-link-alt"></i> View All
+                            </a>
+                        </div>
                     </div>
                     <div class="card-content">
                         @if($recentBookings->count() > 0)
                             <div class="table-responsive">
-                                <table class="admin-table">
+                                <table class="admin-table compact-table">
                                     <thead>
                                         <tr>
+                                            <th>Booking Code</th>
                                             <th>Guest</th>
                                             <th>Room</th>
-                                            <th>Check-in</th>
+                                            <th>Dates</th>
                                             <th>Amount</th>
                                             <th>Status</th>
-                                            <th>Booking Date</th>
-                                            <th>Actions</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($recentBookings as $booking)
                                         <tr>
                                             <td>
-                                                <div class="guest-info">
-                                                    <div class="guest-name">{{ $booking->user->name }}</div>
-                                                    <div class="guest-email">{{ $booking->user->email }}</div>
-                                                </div>
+                                                <div class="booking-code">{{ $booking->booking_code }}</div>
+                                                <div class="booking-date-small">{{ $booking->created_at ? $booking->created_at->format('d/m/y') : 'N/A' }}</div>
                                             </td>
                                             <td>
-                                                <div class="room-info">
-                                                    <div class="room-name">{{ $booking->room->name }}</div>
-                                                    <div class="room-details">
-                                                        {{ $booking->guests }} guests
-                                                        @if($booking->extra_bed)
-                                                            <span class="extra-bed-tag">+ Extra Bed</span>
-                                                        @endif
-                                                    </div>
+                                                <div class="guest-name">{{ $booking->user->name }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="room-name">{{ $booking->room->name }}</div>
+                                                <div class="room-occupancy-small">{{ $booking->guests }} guests {{ $booking->extra_bed ? '+ Extra Bed' : '' }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="booking-dates">
+                                                    <div class="check-date"><i class="fas fa-sign-in-alt"></i> {{ $booking->check_in ? $booking->check_in->format('d/m/y') : 'N/A' }}</div>
+                                                    <div class="check-date"><i class="fas fa-sign-out-alt"></i> {{ $booking->check_out ? $booking->check_out->format('d/m/y') : 'N/A' }}</div>
                                                 </div>
                                             </td>
-                                            <td class="date-cell">
-                                                {{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}
-                                            </td>
                                             <td class="amount-cell">
-                                                Rp {{ number_format($booking->total_cost, 0, ',', '.') }}
+                                                <div class="amount">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</div>
                                             </td>
                                             <td>
                                                 <span class="status-badge status-{{ $booking->status }}">
@@ -240,18 +242,9 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <div class="date-info">
-                                                    <strong>{{ $booking->created_at ? $booking->created_at->format('d M Y') : 'N/A' }}</strong>
-                                                    <small>{{ $booking->created_at ? $booking->created_at->format('H:i') : '' }}</small>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons-inline">
-                                                    <a href="{{ route('owner.booking.show', $booking->id) }}" class="btn-small btn-info" title="View Details">
-                                                        <i class="fas fa-eye"></i>
-                                                        Details
-                                                    </a>
-                                                </div>
+                                                <a href="{{ route('owner.booking.show', $booking->id) }}" class="action-icon" title="View Details">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach

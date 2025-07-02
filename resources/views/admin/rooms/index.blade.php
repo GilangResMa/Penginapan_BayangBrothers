@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Manage Rooms - Admin</title>
+    <title>Manage Rooms</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/admin.css'])
 </head>
@@ -30,6 +30,10 @@
                 <a href="{{ route('admin.faqs.index') }}" class="nav-item">
                     <i class="fas fa-question-circle"></i>
                     Manage FAQ
+                </a>
+                <a href="{{ route('admin.payments.index') }}" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Verification
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="logout-form">
                     @csrf
@@ -78,7 +82,8 @@
                         @forelse ($rooms as $room)
                             <tr>
                                 <td style="font-weight: 500;">{{ $room->name }}</td>
-                                <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <td
+                                    style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     {{ $room->description }}
                                 </td>
                                 <td>Rp {{ number_format($room->price_weekday, 0, ',', '.') }}</td>
@@ -87,11 +92,13 @@
                                 <td>{{ $room->max_guests }}</td>
                                 <td>
                                     <div style="display: flex; gap: 0.5rem;">
-                                        <a href="{{ route('admin.rooms.edit', $room->id) }}" class="btn btn-secondary" style="padding: 0.5rem;">
+                                        <a href="{{ route('admin.rooms.edit', $room->id) }}" class="btn btn-secondary"
+                                            style="padding: 0.5rem;">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form method="POST" action="{{ route('admin.rooms.destroy', $room->id) }}" style="display: inline;" 
-                                              onsubmit="return confirm('Are you sure you want to delete this room?')">
+                                        <form method="POST" action="{{ route('admin.rooms.destroy', $room->id) }}"
+                                            style="display: inline;"
+                                            onsubmit="return confirm('Are you sure you want to delete this room?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger" style="padding: 0.5rem;">
@@ -104,7 +111,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" style="text-align: center; color: #6b7280; padding: 2rem;">
-                                    No rooms found. <a href="{{ route('admin.rooms.create') }}" style="color: #dc2626;">Add your first room</a>
+                                    No rooms found. <a href="{{ route('admin.rooms.create') }}"
+                                        style="color: #dc2626;">Add your first room</a>
                                 </td>
                             </tr>
                         @endforelse

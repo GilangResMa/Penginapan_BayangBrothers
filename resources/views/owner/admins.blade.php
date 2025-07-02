@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin Management - Owner Panel - Bayang Brothers</title>
+    <title>Admin Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/owner.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -142,10 +142,11 @@
                                         <span class="admin-role">
                                             <i class="fas fa-tag"></i>
                                             Administrator
-                                        </span>                        <span class="admin-status status-{{ $admin->status ? 'active' : 'inactive' }}">
-                            <i class="fas fa-circle"></i>
-                            {{ $admin->status ? 'Active' : 'Inactive' }}
-                        </span>
+                                        </span>
+                                        <span class="admin-status status-{{ $admin->status ? 'active' : 'inactive' }}">
+                                            <i class="fas fa-circle"></i>
+                                            {{ $admin->status ? 'Active' : 'Inactive' }}
+                                        </span>
                                     </div>
                                     <div class="admin-dates">
                                         <div class="date-item">

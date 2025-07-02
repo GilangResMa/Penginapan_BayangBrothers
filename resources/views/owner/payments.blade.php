@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Payments Management - Owner Panel</title>
+    <title>Payments Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/owner.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -14,7 +14,7 @@
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-crown logo-icon"></i>
                 <h2>Owner Panel</h2>
@@ -133,40 +133,64 @@
                 </div>
                 <div class="card-content">
                     <form method="GET" action="{{ route('owner.payments') }}" class="filter-form">
+                        <div class="search-row">
+                            <div class="search-input-container">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="search" name="search" class="search-input"
+                                       value="{{ request('search') }}" 
+                                       placeholder="Search booking code, user name, email...">
+                            </div>
+                        </div>
+                        
                         <div class="filter-grid">
                             <div class="filter-item">
-                                <label for="search">Search</label>
-                                <input type="text" id="search" name="search" class="form-input"
-                                       value="{{ request('search') }}" 
-                                       placeholder="Booking code, user name, email...">
-                            </div>
-                            
-                            <div class="filter-item">
-                                <label for="status">Status</label>
+                                <label for="status" class="filter-label">
+                                    <i class="fas fa-tag"></i>
+                                    Payment Status
+                                </label>
                                 <select id="status" name="status" class="form-select">
                                     <option value="">All Status</option>
-                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>Verified</option>
-                                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                                        <i class="fas fa-clock"></i> Pending
+                                    </option>
+                                    <option value="verified" {{ request('status') == 'verified' ? 'selected' : '' }}>
+                                        <i class="fas fa-check-circle"></i> Verified
+                                    </option>
+                                    <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>
+                                        <i class="fas fa-times-circle"></i> Rejected
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="filter-item">
-                                <label for="payment_method">Payment Method</label>
+                                <label for="payment_method" class="filter-label">
+                                    <i class="fas fa-credit-card"></i>
+                                    Payment Method
+                                </label>
                                 <select id="payment_method" name="payment_method" class="form-select">
                                     <option value="">All Methods</option>
-                                    <option value="qris" {{ request('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
-                                    <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                                    <option value="qris" {{ request('payment_method') == 'qris' ? 'selected' : '' }}>
+                                        <i class="fas fa-qrcode"></i> QRIS
+                                    </option>
+                                    <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>
+                                        <i class="fas fa-university"></i> Bank Transfer
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="filter-item">
-                                <label for="date_from">Date From</label>
+                                <label for="date_from" class="filter-label">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date From
+                                </label>
                                 <input type="date" id="date_from" name="date_from" class="form-input" value="{{ request('date_from') }}">
                             </div>
 
                             <div class="filter-item">
-                                <label for="date_to">Date To</label>
+                                <label for="date_to" class="filter-label">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Date To
+                                </label>
                                 <input type="date" id="date_to" name="date_to" class="form-input" value="{{ request('date_to') }}">
                             </div>
                         </div>
@@ -178,7 +202,7 @@
                             </button>
                             <a href="{{ route('owner.payments') }}" class="action-btn outline">
                                 <i class="fas fa-undo"></i>
-                                Reset
+                                Clear All Filters
                             </a>
                         </div>
                     </form>
@@ -200,14 +224,14 @@
                             <table class="admin-table">
                                 <thead>
                                     <tr>
-                                        <th>Booking</th>
-                                        <th>Customer</th>
+                                        <th class="col-code">Payment ID</th>
+                                        <th class="col-guest">Customer</th>
                                         <th>Room</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Status</th>
+                                        <th class="col-amount">Amount</th>
+                                        <th>Method</th>
+                                        <th class="col-status">Status</th>
                                         <th>Date</th>
-                                        <th>Actions</th>
+                                        <th class="col-actions"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -215,18 +239,17 @@
                                     <tr>
                                         <td>
                                             <div class="booking-code">{{ $payment->booking->booking_code }}</div>
+                                            <div class="booking-date-small">ID: {{ $payment->id }}</div>
                                         </td>
                                         <td>
-                                            <div class="guest-info">
-                                                <div class="guest-name">{{ $payment->booking->user->name }}</div>
-                                                <div class="guest-email">{{ $payment->booking->user->email }}</div>
-                                            </div>
+                                            <div class="guest-name">{{ $payment->booking->user->name }}</div>
+                                            <div class="guest-email">{{ $payment->booking->user->email }}</div>
                                         </td>
                                         <td>
                                             <div class="room-name">{{ $payment->booking->room->name }}</div>
                                         </td>
-                                        <td class="amount-cell">
-                                            Rp {{ number_format($payment->amount, 0, ',', '.') }}
+                                        <td>
+                                            <div class="amount">Rp {{ number_format($payment->amount, 0, ',', '.') }}</div>
                                         </td>
                                         <td>
                                             <div class="payment-method">
@@ -239,33 +262,26 @@
                                         </td>
                                         <td>
                                             <span class="status-badge status-{{ $payment->status }}">
-                                                @switch($payment->status)
-                                                    @case('pending')
-                                                        <i class="fas fa-clock"></i> Pending
-                                                        @break
-                                                    @case('verified')
-                                                        <i class="fas fa-check-circle"></i> Verified
-                                                        @break
-                                                    @case('rejected')
-                                                        <i class="fas fa-times-circle"></i> Rejected
-                                                        @break
-                                                @endswitch
+                                                <i class="fas fa-{{ 
+                                                    $payment->status == 'pending' ? 'clock' : 
+                                                    ($payment->status == 'verified' ? 'check-circle' : 'times-circle') 
+                                                }}"></i>
+                                                {{ ucfirst($payment->status) }}
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="date-info">
-                                                <strong>{{ $payment->created_at ? $payment->created_at->format('d M Y') : 'N/A' }}</strong>
-                                                <small>{{ $payment->created_at ? $payment->created_at->format('H:i') : '' }}</small>
+                                            <div class="check-date">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                {{ $payment->created_at ? $payment->created_at->format('d/m/y') : 'N/A' }}
+                                            </div>
+                                            <div class="booking-date-small">
+                                                {{ $payment->created_at ? $payment->created_at->format('H:i') : '' }}
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="action-buttons-inline">
-                                                <a href="{{ route('owner.payments.show', $payment->id) }}" 
-                                                   class="btn-small btn-info" title="View Details">
-                                                    <i class="fas fa-eye"></i>
-                                                    Details
-                                                </a>
-                                            </div>
+                                            <a href="{{ route('owner.payments.show', $payment->id) }}" class="action-icon" title="View Details">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -345,36 +361,17 @@
         </div>
     @endif
 
+    <!-- Scripts -->
     <script>
-        // Mobile menu functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-            const sidebar = document.querySelector('.sidebar');
-
-            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuOverlay.classList.toggle('active');
-                    this.classList.toggle('active');
-                });
-
-                mobileMenuOverlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    this.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
-                });
-
-                // Close mobile menu when window resizes to desktop size
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth > 768) {
-                        sidebar.classList.remove('active');
-                        mobileMenuOverlay.classList.remove('active');
-                        mobileMenuToggle.classList.remove('active');
-                    }
-                });
-            }
-        });
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.mobile-menu-overlay').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        
+        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
+        document.querySelector('.mobile-menu-overlay').addEventListener('click', toggleMobileMenu);
     </script>
 </body>
 

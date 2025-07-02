@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Revenue Report - Owner Panel - Bayang Brothers</title>
+    <title>Revenue Report</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/owner.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
@@ -130,18 +130,41 @@
                     </div>
                     <div class="card-content">
                         @if(isset($monthlyRevenue) && count($monthlyRevenue) > 0)
-                            <div class="monthly-breakdown">
-                                @foreach($monthlyRevenue as $month)
-                                <div class="month-item">
-                                    <div class="month-info">
-                                        <span class="month-name">{{ $month['month'] }} {{ $year ?? date('Y') }}</span>
-                                        <span class="month-bookings">Monthly revenue</span>
-                                    </div>
-                                    <div class="month-revenue">
-                                        Rp {{ number_format($month['revenue'], 0, ',', '.') }}
-                                    </div>
-                                </div>
-                                @endforeach
+                            <div class="table-responsive">
+                                <table class="admin-table compact-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Month</th>
+                                            <th>Revenue</th>
+                                            <th>Bookings</th>
+                                            <th>Avg. per Booking</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($monthlyRevenue as $month)
+                                        <tr>
+                                            <td>
+                                                <div class="month-name">{{ $month['month'] }} {{ $year ?? date('Y') }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="amount">Rp {{ number_format($month['revenue'], 0, ',', '.') }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="booking-count">
+                                                    {{ $month['bookings_count'] ?? 0 }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if(($month['bookings_count'] ?? 0) > 0)
+                                                    <div class="amount">Rp {{ number_format($month['revenue'] / $month['bookings_count'], 0, ',', '.') }}</div>
+                                                @else
+                                                    <div class="text-muted">-</div>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @else
                             <div class="empty-state">
@@ -182,6 +205,16 @@
 
     <!-- Revenue Chart Script -->
     <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.mobile-overlay').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        
+        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
+        document.querySelector('.mobile-overlay').addEventListener('click', toggleMobileMenu);
+    
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('revenueChart').getContext('2d');
             const monthlyData = @json($monthlyRevenue ?? []);

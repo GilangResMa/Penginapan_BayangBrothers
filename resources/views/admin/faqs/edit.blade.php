@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edit FAQ - Admin</title>
+    <title>Edit FAQ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/admin.css'])
 </head>
@@ -13,7 +13,7 @@
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
-        <aside class="sidebar">
+<aside class="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-shield-alt logo-icon"></i>
                 <h2>Admin Panel</h2>
@@ -31,6 +31,10 @@
                     <i class="fas fa-question-circle"></i>
                     Manage FAQ
                 </a>
+                <a href="{{ route('admin.payments.index') }}" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Verification
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="logout-form">
                     @csrf
                     <button type="submit" class="nav-item logout-btn">
@@ -40,6 +44,7 @@
                 </form>
             </nav>
         </aside>
+
 
         <!-- Main Content -->
         <main class="main-content">

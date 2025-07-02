@@ -152,8 +152,8 @@
                             </td>
                             <td>
                                 <div class="date-info">
-                                    <strong>{{ $user->created_at->format('d M Y') }}</strong>
-                                    <small>{{ $user->created_at->diffForHumans() }}</small>
+                                    <strong>{{ $user->created_at ? $user->created_at->format('d M Y') : 'N/A' }}</strong>
+                                    <small>{{ $user->created_at ? $user->created_at->diffForHumans() : 'Unknown' }}</small>
                                 </div>
                             </td>
                             <td>
@@ -161,7 +161,7 @@
                                     @forelse($user->bookings->take(2) as $booking)
                                         <div class="booking-item">
                                             <span class="booking-code">{{ $booking->booking_code }}</span>
-                                            <span class="booking-date">{{ $booking->created_at->format('M Y') }}</span>
+                                            <span class="booking-date">{{ $booking->created_at ? $booking->created_at->format('M Y') : 'N/A' }}</span>
                                             <span class="status-badge status-{{ $booking->status }}">
                                                 {{ ucfirst($booking->status) }}
                                             </span>

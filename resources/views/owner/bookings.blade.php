@@ -201,7 +201,7 @@
                                     <tr>
                                         <td>
                                             <div class="booking-code">{{ $booking->booking_code }}</div>
-                                            <div class="booking-date">{{ $booking->created_at->format('d M Y, H:i') }}</div>
+                                            <div class="booking-date">{{ $booking->created_at ? $booking->created_at->format('d M Y, H:i') : 'N/A' }}</div>
                                         </td>
                                         <td>
                                             <div class="guest-info">
@@ -220,8 +220,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="date-cell">{{ \Carbon\Carbon::parse($booking->check_in_date)->format('d M Y') }}</td>
-                                        <td class="date-cell">{{ \Carbon\Carbon::parse($booking->check_out_date)->format('d M Y') }}</td>
+                                        <td class="date-cell">{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</td>
+                                        <td class="date-cell">{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</td>
                                         <td class="amount-cell">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</td>
                                         <td>
                                             <span class="status-badge status-{{ $booking->status }}">
@@ -250,28 +250,16 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons-inline">
-                                                @if($booking->status === 'pending')
-                                                    <form method="POST" action="{{ route('owner.booking.confirm', $booking->id) }}" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn-small btn-success" title="Confirm Booking">
-                                                            <i class="fas fa-check"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                                
-                                                @if(in_array($booking->status, ['pending', 'confirmed']))
-                                                    <form method="POST" action="{{ route('owner.booking.cancel', $booking->id) }}" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn-small btn-danger" title="Cancel Booking" 
-                                                                onclick="return confirm('Are you sure you want to cancel this booking?')">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                                
                                                 <a href="{{ route('owner.booking.show', $booking->id) }}" class="btn-small btn-info" title="View Details">
                                                     <i class="fas fa-eye"></i>
+                                                    Details
                                                 </a>
+                                                @if($booking->payment)
+                                                    <a href="{{ route('owner.payments.show', $booking->payment->id) }}" class="btn-small btn-secondary" title="View Payment">
+                                                        <i class="fas fa-credit-card"></i>
+                                                        Payment
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

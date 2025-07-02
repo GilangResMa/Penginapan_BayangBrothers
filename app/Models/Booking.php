@@ -20,6 +20,14 @@ class Booking extends Model
         'extra_bed',
         'total_cost',
         'status',
+        'midtrans_order_id',
+        'midtrans_transaction_id',
+        'snap_token',
+        'order_id',
+        'transaction_id',
+        'payment_type',
+        'payment_time',
+        'notes',
     ];
 
     protected $casts = [

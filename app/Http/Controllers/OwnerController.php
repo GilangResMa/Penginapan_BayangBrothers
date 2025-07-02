@@ -196,9 +196,15 @@ class OwnerController extends Controller
     {
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        
+
+        // If owner has no rooms, assign all existing rooms to this owner
+        if ($ownerRooms->isEmpty()) {
+            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
+            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
+        }
+
         $booking = Booking::whereIn('room_id', $ownerRooms)
-                         ->with(['room', 'user'])
+            ->with(['room', 'user', 'payment', 'payment.verifiedBy'])
                          ->findOrFail($id);
 
         return view('owner.booking-detail', compact('booking'));

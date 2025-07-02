@@ -85,7 +85,7 @@
                             @if($totalBookings > 5)
                                 <span class="badge badge-gold">VIP Customer</span>
                             @endif
-                            <span class="badge badge-info">Member since {{ $user->created_at->format('M Y') }}</span>
+                            <span class="badge badge-info">Member since {{ $user->created_at ? $user->created_at->format('M Y') : 'Unknown' }}</span>
                         </div>
                     </div>
                 </div>
@@ -158,9 +158,9 @@
                                     <span class="booking-code">{{ $booking->booking_code }}</span>
                                 </td>
                                 <td>{{ $booking->room->name }}</td>
-                                <td>{{ $booking->check_in->format('d M Y') }}</td>
-                                <td>{{ $booking->check_out->format('d M Y') }}</td>
-                                <td>{{ $booking->check_in->diffInDays($booking->check_out) }} nights</td>
+                                <td>{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</td>
+                                <td>{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</td>
+                                <td>{{ $booking->check_in && $booking->check_out ? $booking->check_in->diffInDays($booking->check_out) : 0 }} nights</td>
                                 <td>
                                     <span class="amount">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</span>
                                 </td>
@@ -217,8 +217,8 @@
                                 </td>
                                 <td>
                                     <div class="date-info">
-                                        <strong>{{ $booking->created_at->format('d M Y') }}</strong>
-                                        <small>{{ $booking->created_at->format('H:i') }}</small>
+                                        <strong>{{ $booking->created_at ? $booking->created_at->format('d M Y') : 'N/A' }}</strong>
+                                        <small>{{ $booking->created_at ? $booking->created_at->format('H:i') : '' }}</small>
                                     </div>
                                 </td>
                             </tr>

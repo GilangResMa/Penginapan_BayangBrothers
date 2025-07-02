@@ -30,7 +30,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "APP_URL": "https://bayang-brothers.vercel.app",
         "ASSET_URL": "https://bayang-brothers.vercel.app",
         "APP_KEY": "base64:L07Mu3wVqRXZ3snCdK+OU8fUNST7RBmmCV0mszY60FU=",

@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Owner;
 use App\Models\Admin;
 use App\Models\Booking;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\PaymentMethod;
 use Carbon\Carbon;
 
 class OwnerController extends Controller
@@ -25,62 +27,37 @@ class OwnerController extends Controller
     {
         $owner = Auth::guard('owner')->user();
 
-        // Get owner's rooms first - if none exist, assign all rooms to this owner temporarily
+        // Get owner's rooms first
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
 
         // Statistics based on owner's rooms
         $totalBookings = Booking::whereIn('room_id', $ownerRooms)->count();
+        $totalRevenue = Booking::whereIn('room_id', $ownerRooms)
+            ->where('status', 'confirmed')
+            ->sum('total_cost');
 
-        // Total revenue from verified payments
-        $totalRevenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')->sum('amount');
-
-        // If no payments exist, calculate from bookings for fallback
-        if ($totalRevenue == 0) {
-            $totalRevenue = Booking::whereIn('room_id', $ownerRooms)
-                ->whereIn('status', ['confirmed', 'completed'])
-                ->sum('total_cost');
-        }
-
-        // Monthly revenue for current month from verified payments
-        $monthlyRevenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')
-            ->whereMonth('verified_at', now()->month)
-            ->whereYear('verified_at', now()->year)
-            ->sum('amount');
-
-        // Fallback to booking total_cost if no payments
-        if ($monthlyRevenue == 0) {
-            $monthlyRevenue = Booking::whereIn('room_id', $ownerRooms)
-                ->whereIn('status', ['confirmed', 'completed'])
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('total_cost');
-        }
+        // Monthly revenue for current month
+        $monthlyRevenue = Booking::whereIn('room_id', $ownerRooms)
+            ->where('status', 'confirmed')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_cost');
         
         $totalAdmins = Admin::where('created_by', $owner->id)->count();
         $totalRooms = $ownerRooms->count();
 
         // Payment statistics
-        $pendingPayments = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'pending')->count();
-
-        $verifiedPayments = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
+        $verifiedPayments = Payment::whereHas('booking', function ($query) use ($ownerRooms) {
+            $query->whereIn('room_id', $ownerRooms);
         })->where('status', 'verified')->count();
+
+        $pendingPayments = Payment::whereHas('booking', function ($query) use ($ownerRooms) {
+            $query->whereIn('room_id', $ownerRooms);
+        })->where('status', 'pending')->count();
 
         // Recent bookings
         $recentBookings = Booking::whereIn('room_id', $ownerRooms)
-            ->with(['room', 'user', 'payment'])
+            ->with(['room', 'user'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
@@ -89,23 +66,11 @@ class OwnerController extends Controller
         $monthlyData = [];
         for ($i = 11; $i >= 0; $i--) {
             $date = Carbon::now()->subMonths($i);
-
-            // Try payments first
-            $revenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-                $q->whereIn('room_id', $ownerRooms);
-            })->where('status', 'verified')
-                ->whereYear('verified_at', $date->year)
-                ->whereMonth('verified_at', $date->month)
-                ->sum('amount');
-
-            // Fallback to bookings if no payments
-            if ($revenue == 0) {
-                $revenue = Booking::whereIn('room_id', $ownerRooms)
-                    ->whereIn('status', ['confirmed', 'completed'])
-                    ->whereYear('created_at', $date->year)
-                    ->whereMonth('created_at', $date->month)
-                    ->sum('total_cost');
-            }
+            $revenue = Booking::whereIn('room_id', $ownerRooms)
+                ->where('status', 'confirmed')
+                ->whereYear('created_at', $date->year)
+                ->whereMonth('created_at', $date->month)
+                ->sum('total_cost');
             
             $monthlyData[] = [
                 'month' => $date->format('M Y'),
@@ -117,13 +82,12 @@ class OwnerController extends Controller
         $bookingStats = [
             'total' => $totalBookings,
             'confirmed' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'confirmed')->count(),
-            'pending' => Booking::whereIn('room_id', $ownerRooms)->whereIn('status', ['pending', 'awaiting_payment'])->count(),
+            'pending' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'pending')->count(),
             'cancelled' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'cancelled')->count(),
-            'completed' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'completed')->count(),
         ];
-        
+
         $bookingStats['success_rate'] = $bookingStats['total'] > 0
-            ? round((($bookingStats['confirmed'] + $bookingStats['completed']) / $bookingStats['total']) * 100, 2)
+            ? round(($bookingStats['confirmed'] / $bookingStats['total']) * 100, 2)
             : 0;
 
         return view('owner.dashboard', compact(
@@ -133,12 +97,11 @@ class OwnerController extends Controller
             'monthlyRevenue',
             'totalAdmins',
             'totalRooms',
-            'pendingPayments',
-            'verifiedPayments',
             'recentBookings',
             'monthlyData',
             'bookingStats',
-            'ownerRooms'
+            'verifiedPayments',
+            'pendingPayments'
         ));
     }
 
@@ -150,13 +113,7 @@ class OwnerController extends Controller
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
-
-        $query = Booking::whereIn('room_id', $ownerRooms)->with(['room', 'user', 'payment']);
+        $query = Booking::whereIn('room_id', $ownerRooms)->with(['room', 'user']);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -197,14 +154,8 @@ class OwnerController extends Controller
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
-
         $booking = Booking::whereIn('room_id', $ownerRooms)
-            ->with(['room', 'user', 'payment', 'payment.verifiedBy'])
+            ->with(['room', 'user'])
                          ->findOrFail($id);
 
         return view('owner.booking-detail', compact('booking'));
@@ -218,12 +169,6 @@ class OwnerController extends Controller
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
-
         // Default to current year
         $year = $request->get('year', date('Y'));
         $month = $request->get('month');
@@ -231,21 +176,11 @@ class OwnerController extends Controller
         // Monthly revenue for the selected year
         $monthlyRevenue = [];
         for ($i = 1; $i <= 12; $i++) {
-            $revenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-                $q->whereIn('room_id', $ownerRooms);
-            })->where('status', 'verified')
-                ->whereYear('verified_at', $year)
-                ->whereMonth('verified_at', $i)
-                ->sum('amount');
-
-            // Fallback to bookings if no payments
-            if ($revenue == 0) {
-                $revenue = Booking::whereIn('room_id', $ownerRooms)
-                    ->whereIn('status', ['confirmed', 'completed'])
-                    ->whereYear('created_at', $year)
-                    ->whereMonth('created_at', $i)
-                    ->sum('total_cost');
-            }
+            $revenue = Booking::whereIn('room_id', $ownerRooms)
+                ->where('status', 'confirmed')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $i)
+                ->sum('total_cost');
             
             $monthlyRevenue[] = [
                 'month' => Carbon::create($year, $i, 1)->format('M'),
@@ -256,18 +191,17 @@ class OwnerController extends Controller
         // Top performing rooms
         $topRooms = Room::where('owner_id', $owner->id)
             ->select('rooms.*')
-            ->selectSub(function ($query) use ($year, $month, $ownerRooms) {
-                $query->from('payments')
-                    ->join('bookings', 'payments.booking_id', '=', 'bookings.id')
-                    ->selectRaw('COALESCE(SUM(payments.amount), 0)')
+            ->selectSub(function ($query) use ($year, $month) {
+                $query->from('bookings')
+                    ->selectRaw('COALESCE(SUM(total_cost), 0)')
                      ->whereColumn('bookings.room_id', 'rooms.id')
-                ->where('payments.status', 'verified');
+                ->where('status', 'confirmed');
                 
                 if ($year) {
-                $query->whereYear('payments.verified_at', $year);
+                $query->whereYear('created_at', $year);
                 }
                 if ($month) {
-                $query->whereMonth('payments.verified_at', $month);
+                $query->whereMonth('created_at', $month);
                 }
             }, 'total_revenue')
             ->orderBy('total_revenue', 'desc')
@@ -275,43 +209,23 @@ class OwnerController extends Controller
             ->get();
 
         // Year-over-year comparison
-        $currentYearRevenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')
-            ->whereYear('verified_at', $year)
-            ->sum('amount');
+        $currentYearRevenue = Booking::whereIn('room_id', $ownerRooms)
+            ->where('status', 'confirmed')
+            ->whereYear('created_at', $year)
+            ->sum('total_cost');
 
-        // Fallback to bookings if no payments
-        if ($currentYearRevenue == 0) {
-            $currentYearRevenue = Booking::whereIn('room_id', $ownerRooms)
-                ->whereIn('status', ['confirmed', 'completed'])
-                ->whereYear('created_at', $year)
-                ->sum('total_cost');
-        }
-
-        $previousYearRevenue = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')
-            ->whereYear('verified_at', $year - 1)
-            ->sum('amount');
-
-        // Fallback to bookings if no payments
-        if ($previousYearRevenue == 0) {
-            $previousYearRevenue = Booking::whereIn('room_id', $ownerRooms)
-                ->whereIn('status', ['confirmed', 'completed'])
-                ->whereYear('created_at', $year - 1)
-                ->sum('total_cost');
-        }
+        $previousYearRevenue = Booking::whereIn('room_id', $ownerRooms)
+            ->where('status', 'confirmed')
+            ->whereYear('created_at', $year - 1)
+            ->sum('total_cost');
 
         $revenueGrowth = $previousYearRevenue > 0 
             ? (($currentYearRevenue - $previousYearRevenue) / $previousYearRevenue) * 100 
             : 0;
 
         // Available years for filter
-        $availableYears = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')
-            ->selectRaw('YEAR(verified_at) as year')
+        $availableYears = Booking::whereIn('room_id', $ownerRooms)
+            ->selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
@@ -451,20 +365,19 @@ class OwnerController extends Controller
         $year = $request->get('year', date('Y'));
         $month = $request->get('month');
 
-        $query = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->where('status', 'verified')
-            ->with(['booking.room', 'booking.user']);
+        $query = Booking::whereIn('room_id', $ownerRooms)
+            ->where('status', 'confirmed')
+            ->with(['room', 'user']);
 
         if ($year) {
-            $query->whereYear('verified_at', $year);
+            $query->whereYear('created_at', $year);
         }
 
         if ($month) {
-            $query->whereMonth('verified_at', $month);
+            $query->whereMonth('created_at', $month);
         }
 
-        $payments = $query->orderBy('verified_at', 'desc')->get();
+        $bookings = $query->orderBy('created_at', 'desc')->get();
 
         $fileName = 'revenue_report_' . $year . ($month ? '_' . $month : '') . '.csv';
 
@@ -473,40 +386,34 @@ class OwnerController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
 
-        $callback = function () use ($payments) {
+        $callback = function () use ($bookings) {
             $file = fopen('php://output', 'w');
-            
+
             // Header CSV
             fputcsv($file, [
-                'Payment ID',
                 'Booking Code',
                 'Room Name',
                 'Guest Name',
                 'Guest Email',
                 'Check-in',
                 'Check-out',
-                'Payment Amount',
-                'Payment Method',
-                'Payment Date',
-                'Verified Date',
+                'Total Cost',
+                'Booking Date',
                 'Status'
             ]);
 
             // Data rows
-            foreach ($payments as $payment) {
+            foreach ($bookings as $booking) {
                 fputcsv($file, [
-                    $payment->id,
-                    $payment->booking->booking_code,
-                    $payment->booking->room->name ?? 'N/A',
-                    $payment->booking->user->name ?? 'N/A',
-                    $payment->booking->user->email ?? 'N/A',
-                    $payment->booking->check_in ? $payment->booking->check_in->format('Y-m-d') : 'N/A',
-                    $payment->booking->check_out ? $payment->booking->check_out->format('Y-m-d') : 'N/A',
-                    $payment->amount,
-                    ucfirst(str_replace('_', ' ', $payment->payment_method)),
-                    $payment->created_at->format('Y-m-d H:i:s'),
-                    $payment->verified_at ? $payment->verified_at->format('Y-m-d H:i:s') : 'N/A',
-                    ucfirst($payment->status)
+                    $booking->booking_code,
+                    $booking->room->name ?? 'N/A',
+                    $booking->user->name ?? 'N/A',
+                    $booking->user->email ?? 'N/A',
+                    $booking->check_in ? $booking->check_in->format('Y-m-d') : 'N/A',
+                    $booking->check_out ? $booking->check_out->format('Y-m-d') : 'N/A',
+                    $booking->total_cost,
+                    $booking->created_at->format('Y-m-d H:i:s'),
+                    ucfirst($booking->status)
                 ]);
             }
 
@@ -519,129 +426,207 @@ class OwnerController extends Controller
     /**
      * Show all payments
      */
-    public function payments(Request $request)
+    public function payments()
     {
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
-
-        $query = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->with(['booking.room', 'booking.user', 'verifiedBy']);
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Filter by payment method
-        if ($request->filled('payment_method')) {
-            $query->where('payment_method', $request->payment_method);
-        }
-
-        // Filter by date range
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // Search by booking code or user name
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('booking', function ($bookingQuery) use ($search) {
-                $bookingQuery->where('booking_code', 'like', "%{$search}%")
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        $payments = $query->orderBy('created_at', 'desc')->paginate(15);
+        $payments = Payment::whereHas('booking', function ($query) use ($ownerRooms) {
+            $query->whereIn('room_id', $ownerRooms);
+        })
+            ->with(['booking', 'booking.user', 'booking.room'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('owner.payments', compact('payments'));
     }
 
     /**
-     * Show payment details
+     * Show a specific payment
      */
     public function showPayment($id)
     {
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        $payment = Payment::whereHas('booking', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->with(['booking.room', 'booking.user', 'verifiedBy'])->findOrFail($id);
+        $payment = Payment::with(['booking', 'booking.user', 'booking.room'])
+            ->whereHas('booking', function ($query) use ($ownerRooms) {
+                $query->whereIn('room_id', $ownerRooms);
+            })
+            ->findOrFail($id);
 
         return view('owner.payment-detail', compact('payment'));
     }
 
     /**
-     * Show all users who have made bookings
+     * Show all users/customers
      */
-    public function users(Request $request)
+    public function users()
     {
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        // If owner has no rooms, assign all existing rooms to this owner
-        if ($ownerRooms->isEmpty()) {
-            Room::whereNull('owner_id')->orWhere('owner_id', 0)->update(['owner_id' => $owner->id]);
-            $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
-        }
-
-        $query = User::whereHas('bookings', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->withCount(['bookings' => function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        }])->with(['bookings' => function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms)->latest()->take(3);
-        }]);
-
-        // Search by name or email
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        $users = $query->orderBy('bookings_count', 'desc')->paginate(15);
+        $users = User::whereHas('bookings', function ($query) use ($ownerRooms) {
+            $query->whereIn('room_id', $ownerRooms);
+        })
+            ->withCount(['bookings' => function ($query) use ($ownerRooms) {
+                $query->whereIn('room_id', $ownerRooms);
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('owner.users', compact('users'));
     }
 
     /**
-     * Show user details
+     * Show a specific user/customer
      */
     public function showUser($id)
     {
         $owner = Auth::guard('owner')->user();
         $ownerRooms = Room::where('owner_id', $owner->id)->pluck('id');
 
-        $user = User::whereHas('bookings', function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms);
-        })->with(['bookings' => function ($q) use ($ownerRooms) {
-            $q->whereIn('room_id', $ownerRooms)->with(['room', 'payment']);
-        }])->findOrFail($id);
+        $user = User::findOrFail($id);
+        $bookings = Booking::where('user_id', $id)
+            ->whereIn('room_id', $ownerRooms)
+            ->with(['room', 'payment'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $totalBookings = $user->bookings->count();
-        $totalSpent = $user->bookings->whereIn('status', ['confirmed', 'completed'])
-            ->sum(function ($booking) {
-                return $booking->payment && $booking->payment->status === 'verified'
-                    ? $booking->payment->amount : $booking->total_cost;
-            });
+        return view('owner.user-detail', compact('user', 'bookings'));
+    }
 
-        return view('owner.user-detail', compact('user', 'totalBookings', 'totalSpent'));
+    /**
+     * List all payment methods
+     */
+    public function paymentMethods()
+    {
+        $bankMethods = PaymentMethod::where('type', 'bank')->get();
+        $qrisMethods = PaymentMethod::where('type', 'qris')->get();
+
+        return view('owner.payment-methods.index', compact('bankMethods', 'qrisMethods'));
+    }
+
+    /**
+     * Show form to create a new payment method
+     */
+    public function createPaymentMethod()
+    {
+        return view('owner.payment-methods.create');
+    }
+
+    /**
+     * Store a new payment method
+     */
+    public function storePaymentMethod(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:bank,qris',
+            'name' => 'required|string|max:255',
+            'bank_name' => 'required_if:type,bank|nullable|string|max:255',
+            'account_number' => 'required_if:type,bank|nullable|string|max:255',
+            'account_name' => 'required_if:type,bank|nullable|string|max:255',
+            'description' => 'nullable|string|max:500',
+            'qr_image' => 'required_if:type,qris|nullable|image|max:2048',
+            'is_active' => 'boolean',
+        ]);
+
+        $method = new PaymentMethod();
+        $method->type = $validated['type'];
+        $method->name = $validated['name'];
+        $method->description = $validated['description'] ?? null;
+        $method->is_active = $request->has('is_active');
+
+        if ($validated['type'] == 'bank') {
+            $method->bank_name = $validated['bank_name'];
+            $method->account_number = $validated['account_number'];
+            $method->account_name = $validated['account_name'];
+        } elseif ($validated['type'] == 'qris') {
+            if ($request->hasFile('qr_image')) {
+                $method->qr_image = $request->file('qr_image')->store('payment_methods', 'public');
+            }
+        }
+
+        $method->save();
+
+        return redirect()->route('owner.payment-methods')->with('success', 'Payment method created successfully.');
+    }
+
+    /**
+     * Show form to edit a payment method
+     */
+    public function editPaymentMethod($id)
+    {
+        $method = PaymentMethod::findOrFail($id);
+        return view('owner.payment-methods.edit', compact('method'));
+    }
+
+    /**
+     * Update a payment method
+     */
+    public function updatePaymentMethod(Request $request, $id)
+    {
+        $method = PaymentMethod::findOrFail($id);
+
+        if ($method->type == 'bank') {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'bank_name' => 'required|string|max:255',
+                'account_number' => 'required|string|max:255',
+                'account_name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:500',
+                'is_active' => 'boolean',
+            ]);
+
+            $method->name = $validated['name'];
+            $method->bank_name = $validated['bank_name'];
+            $method->account_number = $validated['account_number'];
+            $method->account_name = $validated['account_name'];
+            $method->description = $validated['description'] ?? $method->description;
+            $method->is_active = $request->has('is_active');
+        } else if ($method->type == 'qris') {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:500',
+                'qr_image' => 'nullable|image|max:2048',
+                'is_active' => 'boolean',
+            ]);
+
+            $method->name = $validated['name'];
+            $method->description = $validated['description'] ?? $method->description;
+            $method->is_active = $request->has('is_active');
+
+            // Handle QR code image upload
+            if ($request->hasFile('qr_image')) {
+                // Delete old image
+                if ($method->qr_image) {
+                    Storage::delete('public/' . $method->qr_image);
+                }
+
+                // Store new image
+                $method->qr_image = $request->file('qr_image')->store('payment_methods', 'public');
+            }
+        }
+
+        $method->save();
+
+        return redirect()->route('owner.payment-methods')->with('success', 'Payment method updated successfully.');
+    }
+
+    /**
+     * Delete a payment method
+     */
+    public function deletePaymentMethod($id)
+    {
+        $method = PaymentMethod::findOrFail($id);
+
+        // Delete QR image if exists
+        if ($method->qr_image) {
+            Storage::delete('public/' . $method->qr_image);
+        }
+
+        $method->delete();
+
+        return redirect()->route('owner.payment-methods')->with('success', 'Payment method deleted successfully.');
     }
 }

@@ -222,37 +222,35 @@
                             <!-- Booking Section -->
                             <div class="booking-section-compact">
                                 <div class="booking-inputs-row">
-                                    <div class="booking-form-inputs">
-                                        <div class="input-group-small">
-                                            <label class="input-label-small">
-                                                <i class="fas fa-calendar"></i>
-                                                Check In - Check Out
-                                            </label>
-                                            <div class="date-inputs-compact">
-                                                <input type="date" id="checkin_{{ $room->id }}" class="date-input-small"
-                                                    onchange="updatePriceDisplayForRoom({{ $room->id }})">
-                                                <span class="date-separator-small">-</span>
-                                                <input type="date" id="checkout_{{ $room->id }}" class="date-input-small"
-                                                    onchange="updatePriceDisplayForRoom({{ $room->id }})">
-                                            </div>
-                                        </div>
-
-                                        <div class="input-group-small">
-                                            <label class="input-label-small">
-                                                <i class="fas fa-user"></i>
-                                                Guests
-                                            </label>
-                                            <select id="persons_{{ $room->id }}" class="select-input-small"
+                                    <div class="input-group-small">
+                                        <label class="input-label-small">
+                                            <i class="fas fa-calendar"></i>
+                                            Check In - Check Out
+                                        </label>
+                                        <div class="date-inputs-compact">
+                                            <input type="date" id="checkin_{{ $room->id }}" class="date-input-small"
                                                 onchange="updatePriceDisplayForRoom({{ $room->id }})">
-                                                <option value="1">1 Person</option>
-                                                <option value="2">2 Persons</option>
-                                                <option value="3">3 Persons</option>
-                                                <option value="4">4 Persons</option>
-                                            </select>
+                                            <span class="date-separator-small">-</span>
+                                            <input type="date" id="checkout_{{ $room->id }}" class="date-input-small"
+                                                onchange="updatePriceDisplayForRoom({{ $room->id }})">
                                         </div>
                                     </div>
 
-                                    <div class="booking-button-row">
+                                    <div class="input-group-small">
+                                        <label class="input-label-small">
+                                            <i class="fas fa-user"></i>
+                                            Guests
+                                        </label>
+                                        <select id="persons_{{ $room->id }}" class="select-input-small"
+                                            onchange="updatePriceDisplayForRoom({{ $room->id }})">
+                                            <option value="1">1 Person</option>
+                                            <option value="2">2 Persons</option>
+                                            <option value="3">3 Persons</option>
+                                            <option value="4">4 Persons</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="input-group-small">
                                         @auth('web')
                                             @if(!isset($room->is_available) || $room->is_available)
                                                 <form method="POST" action="{{ route('room.book', $room->id) }}">

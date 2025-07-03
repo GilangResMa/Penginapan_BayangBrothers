@@ -44,7 +44,10 @@ class PaymentController extends Controller
             return redirect()->route('profile')->with('error', 'Booking ini sudah diproses.');
         }
 
-        return view('payment', compact('booking'));
+        // Get active payment methods
+        $paymentMethods = \App\Models\PaymentMethod::where('is_active', true)->get();
+
+        return view('payment', compact('booking', 'paymentMethods'));
     }
 
     /**
@@ -476,7 +479,7 @@ class PaymentController extends Controller
 
         // Validasi input
         $validated = $request->validate([
-            'payment_method' => 'required|in:qris,bank_transfer',
+            'payment_method' => 'required|string',
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:5120', // 5MB max
         ]);
 
@@ -493,6 +496,21 @@ class PaymentController extends Controller
             return redirect()->route('profile')->with('error', 'Booking ini sudah diproses.');
         }
 
+        // Extract payment method type and id
+        $paymentMethodParts = explode('-', $validated['payment_method']);
+        if (count($paymentMethodParts) !== 2) {
+            return back()->with('error', 'Format metode pembayaran tidak valid.');
+        }
+
+        $methodType = $paymentMethodParts[0]; // qris or bank
+        $methodId = $paymentMethodParts[1]; // method id
+
+        // Verify payment method exists
+        $paymentMethod = \App\Models\PaymentMethod::find($methodId);
+        if (!$paymentMethod || !$paymentMethod->is_active) {
+            return back()->with('error', 'Metode pembayaran tidak valid atau tidak aktif.');
+        }
+
         try {
             // Upload file bukti pembayaran
             $file = $request->file('payment_proof');
@@ -502,7 +520,7 @@ class PaymentController extends Controller
             // Simpan data payment
             Payment::create([
                 'booking_id' => $booking->id,
-                'payment_method' => $validated['payment_method'],
+                'payment_method' => $paymentMethod->type == 'qris' ? 'qris' : 'bank_transfer', // maintain backward compatibility
                 'amount' => $booking->total_cost,
                 'payment_proof' => $filePath,
                 'status' => 'pending'

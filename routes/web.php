@@ -77,15 +77,15 @@ Route::middleware(['auth-strict'])->group(function () {
 Route::middleware('auth:web')->group(function () {
     Route::post('/room/book/{id}', [RoomController::class, 'book'])->name('room.book');
     Route::get('/booking-history', [RoomController::class, 'bookingHistory'])->name('booking.history');
-    Route::delete('/booking/{id}/cancel', [RoomController::class, 'cancelBooking'])->name('booking.cancel');
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');
 
     // Payment routes
     Route::get('/payment/{booking}', [PaymentController::class, 'show'])->name('payment');
-    Route::post('/payment/{booking}/upload', [PaymentController::class, 'uploadPayment'])->name('payment.upload');
-    Route::get('/payment/pending/{booking}', [PaymentController::class, 'paymentPending'])->name('payment.pending');
+    Route::post('/payment/{booking}/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::get('/payment/success/{booking}', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/cancel/{booking?}', [PaymentController::class, 'cancel'])->name('payment.cancel');
 });
 
 // Admin routes - with enhanced security
@@ -107,11 +107,6 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/faqs/{id}/edit', [AdminController::class, 'faqEdit'])->name('admin.faqs.edit');
     Route::put('/admin/faqs/{id}', [AdminController::class, 'faqUpdate'])->name('admin.faqs.update');
     Route::delete('/admin/faqs/{id}', [AdminController::class, 'faqDestroy'])->name('admin.faqs.destroy');
-
-    // Payment verification routes
-    Route::get('/admin/payments', [AdminController::class, 'paymentIndex'])->name('admin.payments.index');
-    Route::get('/admin/payments/{id}', [AdminController::class, 'paymentShow'])->name('admin.payments.show');
-    Route::post('/admin/payments/{id}/verify', [AdminController::class, 'paymentVerify'])->name('admin.payments.verify');
 });
 
 // Owner routes - with enhanced security  
@@ -124,11 +119,19 @@ Route::middleware(['owner'])->group(function () {
 
     // Payment management
     Route::get('/owner/payments', [OwnerController::class, 'payments'])->name('owner.payments');
-    Route::get('/owner/payments/{id}', [OwnerController::class, 'showPayment'])->name('owner.payments.show');
+    Route::get('/owner/payment/{id}', [OwnerController::class, 'showPayment'])->name('owner.payment.show');
 
-    // Customer management
+    // User/Customer management
     Route::get('/owner/users', [OwnerController::class, 'users'])->name('owner.users');
-    Route::get('/owner/users/{id}', [OwnerController::class, 'showUser'])->name('owner.users.show');
+    Route::get('/owner/user/{id}', [OwnerController::class, 'showUser'])->name('owner.user.show');
+
+    // Payment Methods management
+    Route::get('/owner/payment-methods', [OwnerController::class, 'paymentMethods'])->name('owner.payment-methods');
+    Route::get('/owner/payment-methods/create', [OwnerController::class, 'createPaymentMethod'])->name('owner.payment-methods.create');
+    Route::post('/owner/payment-methods', [OwnerController::class, 'storePaymentMethod'])->name('owner.payment-methods.store');
+    Route::get('/owner/payment-methods/{id}/edit', [OwnerController::class, 'editPaymentMethod'])->name('owner.payment-methods.edit');
+    Route::put('/owner/payment-methods/{id}', [OwnerController::class, 'updatePaymentMethod'])->name('owner.payment-methods.update');
+    Route::delete('/owner/payment-methods/{id}', [OwnerController::class, 'deletePaymentMethod'])->name('owner.payment-methods.delete');
 
     // Revenue analytics
     Route::get('/owner/revenue', [OwnerController::class, 'revenue'])->name('owner.revenue');
@@ -142,59 +145,6 @@ Route::middleware(['owner'])->group(function () {
     Route::put('/owner/admin/{id}', [OwnerController::class, 'updateAdmin'])->name('owner.admin.update');
     Route::delete('/owner/admin/{id}/delete', [OwnerController::class, 'deleteAdmin'])->name('owner.admin.delete');
 });
-
-// Debug route untuk test Midtrans config
-Route::get('/test-midtrans', function () {
-    try {
-        // Check if classes exist
-        $checks = [
-            'Midtrans package installed' => class_exists('\Midtrans\Config'),
-            'Midtrans Snap available' => class_exists('\Midtrans\Snap'),
-            'Server key configured' => !empty(config('midtrans.server_key')),
-            'Client key configured' => !empty(config('midtrans.client_key')),
-        ];
-
-        // Test basic Midtrans setup
-        if (class_exists('\Midtrans\Config')) {
-            \Midtrans\Config::$serverKey = config('midtrans.server_key');
-            \Midtrans\Config::$isProduction = config('midtrans.is_production', false);
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'checks' => $checks,
-            'config' => [
-                'server_key' => config('midtrans.server_key') ? 'SET (length: ' . strlen(config('midtrans.server_key')) . ')' : 'NOT SET',
-                'client_key' => config('midtrans.client_key') ? 'SET (length: ' . strlen(config('midtrans.client_key')) . ')' : 'NOT SET',
-                'merchant_id' => config('midtrans.merchant_id'),
-                'is_production' => config('midtrans.is_production'),
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ], 500);
-    }
-})->name('test.midtrans');
-
-// API Routes for Midtrans Payment Integration
-Route::middleware(['auth:web'])->prefix('api')->group(function () {
-    Route::post('/payment/create-snap-token', [PaymentController::class, 'createSnapToken'])->name('api.payment.create-snap-token');
-});
-
-// Midtrans Callback Routes (no auth required)
-Route::post('/midtrans/notification', [PaymentController::class, 'handleNotification'])->name('midtrans.notification');
-Route::get('/payment/finish/{booking}', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
-Route::get('/payment/unfinish/{booking}', [PaymentController::class, 'paymentUnfinish'])->name('payment.unfinish');
-Route::get('/payment/error/{booking}', [PaymentController::class, 'paymentError'])->name('payment.error');
-Route::get('/payment/pending/{booking}', [PaymentController::class, 'paymentPending'])->name('payment.pending');
-
-// Demo route untuk Midtrans integration
-Route::get('/midtrans-demo', function () {
-    return view('midtrans-demo');
-})->name('midtrans.demo');
 
 // Logout routes untuk semua guards
 Route::post('/logout', function (Request $request) {

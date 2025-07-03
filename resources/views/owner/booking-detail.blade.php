@@ -78,51 +78,50 @@
                     <h3>Booking Information</h3>
                     <div class="card-actions">
                         <span class="status-badge status-{{ $booking->status }}">
-                            <i class="fas fa-{{ 
-                                $booking->status == 'pending' ? 'clock' : 
-                                ($booking->status == 'confirmed' ? 'check-circle' : 
-                                ($booking->status == 'completed' ? 'star' : 'times-circle')) 
-                            }}"></i>
                             {{ ucfirst($booking->status) }}
                         </span>
                     </div>
                 </div>
                 <div class="card-content">
-                    <div class="table-responsive">
-                        <table class="admin-table details-table">
-                            <tbody>
-                                <tr>
-                                    <th><i class="fas fa-bookmark fa-fw text-primary"></i> Booking Code</th>
-                                    <td>{{ $booking->booking_code }}</td>
-                                    <th><i class="fas fa-calendar-alt fa-fw text-primary"></i> Booking Date</th>
-                                    <td>{{ $booking->created_at ? $booking->created_at->format('d M Y, H:i') : 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fas fa-sign-in-alt fa-fw text-primary"></i> Check-in Date</th>
-                                    <td>{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</td>
-                                    <th><i class="fas fa-sign-out-alt fa-fw text-primary"></i> Check-out Date</th>
-                                    <td>{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fas fa-moon fa-fw text-primary"></i> Number of Nights</th>
-                                    <td>{{ $booking->check_in && $booking->check_out ? $booking->check_in->diffInDays($booking->check_out) : 0 }} nights</td>
-                                    <th><i class="fas fa-users fa-fw text-primary"></i> Number of Guests</th>
-                                    <td>{{ $booking->guests }} guests</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fas fa-bed fa-fw text-primary"></i> Extra Bed</th>
-                                    <td>
-                                        @if ($booking->extra_bed)
-                                            <span class="extra-bed-tag"><i class="fas fa-check"></i> Yes</span>
-                                        @else
-                                            <span class="text-muted">No</span>
-                                        @endif
-                                    </td>
-                                    <th><i class="fas fa-money-bill-wave fa-fw text-primary"></i> Total Cost</th>
-                                    <td class="amount-highlight">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="booking-details-grid">
+                        <div class="detail-item">
+                            <label>Booking Code</label>
+                            <div class="detail-value">{{ $booking->booking_code }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Booking Date</label>
+                            <div class="detail-value">{{ $booking->created_at ? $booking->created_at->format('d M Y, H:i') : 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Check-in Date</label>
+                            <div class="detail-value">{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Check-out Date</label>
+                            <div class="detail-value">{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Number of Nights</label>
+                            <div class="detail-value">{{ $booking->check_in && $booking->check_out ? $booking->check_in->diffInDays($booking->check_out) : 0 }} nights</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Number of Guests</label>
+                            <div class="detail-value">{{ $booking->guests }} guests</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Extra Bed</label>
+                            <div class="detail-value">
+                                @if($booking->extra_bed)
+                                    <span class="extra-bed-tag"><i class="fas fa-check"></i> Yes</span>
+                                @else
+                                    <span class="text-muted">No</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Total Cost</label>
+                            <div class="detail-value amount-highlight">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -134,23 +133,23 @@
                     <h3>Guest Information</h3>
                 </div>
                 <div class="card-content">
-                    <div class="table-responsive">
-                        <table class="admin-table details-table">
-                            <tbody>
-                                <tr>
-                                    <th><i class="fas fa-user fa-fw text-primary"></i> Guest Name</th>
-                                    <td>{{ $booking->user->name }}</td>
-                                    <th><i class="fas fa-envelope fa-fw text-primary"></i> Email</th>
-                                    <td>{{ $booking->user->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fas fa-phone fa-fw text-primary"></i> Phone</th>
-                                    <td>{{ $booking->user->phone ?? 'Not provided' }}</td>
-                                    <th><i class="fas fa-user-clock fa-fw text-primary"></i> Member Since</th>
-                                    <td>{{ $booking->user->created_at ? $booking->user->created_at->format('d M Y') : 'N/A' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="guest-details-grid">
+                        <div class="detail-item">
+                            <label>Guest Name</label>
+                            <div class="detail-value">{{ $booking->user->name }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Email</label>
+                            <div class="detail-value">{{ $booking->user->email }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Phone</label>
+                            <div class="detail-value">{{ $booking->user->phone ?? 'Not provided' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Member Since</label>
+                            <div class="detail-value">{{ $booking->user->created_at ? $booking->user->created_at->format('d M Y') : 'N/A' }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -162,132 +161,103 @@
                     <h3>Room Information</h3>
                 </div>
                 <div class="card-content">
-                    <div class="table-responsive">
-                        <table class="admin-table details-table">
-                            <tbody>
-                                <tr>
-                                    <th><i class="fas fa-door-open fa-fw text-primary"></i> Room Name</th>
-                                    <td>{{ $booking->room->name }}</td>
-                                    <th><i class="fas fa-tag fa-fw text-primary"></i> Room Type</th>
-                                    <td>{{ $booking->room->type ?? 'Standard' }}</td>
-                                </tr>
-                                <tr>
-                                    <th><i class="fas fa-users fa-fw text-primary"></i> Capacity</th>
-                                    <td>{{ $booking->room->capacity ?? 'N/A' }} persons</td>
-                                    <th><i class="fas fa-tag fa-fw text-primary"></i> Price per Night</th>
-                                    <td class="amount-highlight">Rp {{ number_format($booking->room->price, 0, ',', '.') }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="room-details-grid">
+                        <div class="detail-item">
+                            <label>Room Name</label>
+                            <div class="detail-value">{{ $booking->room->name }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Room Type</label>
+                            <div class="detail-value">{{ $booking->room->type ?? 'Standard' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Capacity</label>
+                            <div class="detail-value">{{ $booking->room->capacity ?? 'N/A' }} persons</div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Price per Night</label>
+                            <div class="detail-value">Rp {{ number_format($booking->room->price, 0, ',', '.') }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Payment Information -->
-            @if ($booking->payment)
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>Payment Information</h3>
-                        <div class="card-actions">
-                            @if ($booking->payment->status == 'verified')
-                                <span class="status-badge status-verified">
-                                    <i class="fas fa-check-circle"></i> Verified
-                                </span>
-                            @elseif($booking->payment->status == 'pending')
-                                <span class="status-badge status-pending">
-                                    <i class="fas fa-clock"></i> Pending
-                                </span>
-                            @else
-                                <span class="status-badge status-rejected">
-                                    <i class="fas fa-times-circle"></i> Rejected
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="table-responsive">
-                            <table class="admin-table details-table">
-                                <tbody>
-                                    <tr>
-                                        <th><i class="fas fa-credit-card fa-fw text-primary"></i> Payment Method</th>
-                                        <td>
-                                            @if ($booking->payment->payment_method == 'qris')
-                                                <i class="fas fa-qrcode"></i> QRIS
-                                            @else
-                                                <i class="fas fa-university"></i> Bank Transfer
-                                            @endif
-                                        </td>
-                                        <th><i class="fas fa-calendar-check fa-fw text-primary"></i> Payment Date</th>
-                                        <td>{{ $booking->payment->created_at ? $booking->payment->created_at->format('d M Y, H:i') : 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th><i class="fas fa-info-circle fa-fw text-primary"></i> Status</th>
-                                        <td>
-                                            <span class="status-badge status-{{ $booking->payment->status }}">
-                                                <i class="fas fa-{{ 
-                                                    $booking->payment->status == 'pending' ? 'clock' : 
-                                                    ($booking->payment->status == 'verified' ? 'check-circle' : 'times-circle')
-                                                }}"></i>
-                                                {{ ucfirst($booking->payment->status) }}
-                                            </span>
-                                        </td>
-                                        @if ($booking->payment->verified_at)
-                                        <th><i class="fas fa-check-circle fa-fw text-primary"></i> Verified Date</th>
-                                        <td>{{ $booking->payment->verified_at->format('d M Y, H:i') }}</td>
-                                        @elseif ($booking->payment->verified_by)
-                                        <th><i class="fas fa-user-check fa-fw text-primary"></i> Verified By</th>
-                                        <td>{{ $booking->payment->verifiedBy->name ?? 'System' }}</td>
-                                        @else
-                                        <th><i class="fas fa-money-bill-wave fa-fw text-primary"></i> Amount</th>
-                                        <td class="amount-highlight">Rp {{ number_format($booking->payment->amount ?? $booking->total_cost, 0, ',', '.') }}</td>
-                                        @endif
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        @if ($booking->payment->payment_proof)
-                            <div class="payment-proof mt-4">
-                                <h4 class="mb-2">Payment Proof</h4>
-                                <div class="proof-image">
-                                    <img src="{{ asset('storage/' . $booking->payment->payment_proof) }}"
-                                        alt="Payment Proof" class="payment-proof-img">
-                                </div>
-                            </div>
+            @if($booking->payment)
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Payment Information</h3>
+                    <div class="card-actions">
+                        @if($booking->payment->status == 'verified')
+                            <span class="status-badge status-verified">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                        @elseif($booking->payment->status == 'pending')
+                            <span class="status-badge status-pending">
+                                <i class="fas fa-clock"></i> Pending
+                            </span>
+                        @else
+                            <span class="status-badge status-rejected">
+                                <i class="fas fa-times-circle"></i> Rejected
+                            </span>
                         @endif
-                    <div class="card-content">
-                        <div class="table-responsive">
-                            <table class="admin-table details-table">
-                                <tbody>
-                                    <tr>
-                                        <th><i class="fas fa-exclamation-circle fa-fw text-primary"></i> Payment Status</th>
-                                        <td colspan="3">
-                                            <div class="empty-state-inline">
-                                                <i class="fas fa-credit-card text-danger"></i>
-                                                <span>No payment has been made for this booking</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><i class="fas fa-money-bill-wave fa-fw text-primary"></i> Expected Amount</th>
-                                        <td class="amount-highlight">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</td>
-                                        <th><i class="fas fa-calendar-alt fa-fw text-primary"></i> Due Date</th>
-                                        <td>{{ $booking->check_in ? $booking->check_in->subDays(1)->format('d M Y') : 'N/A' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>3>Payment Information</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="empty-state">
-                            <i class="fas fa-credit-card"></i>
-                            <h4>No Payment Found</h4>
-                            <p>This booking has not been paid yet.</p>
-                        </div>
                     </div>
                 </div>
+                <div class="card-content">
+                    <div class="payment-details-grid">
+                        <div class="detail-item">
+                            <label>Payment Method</label>
+                            <div class="detail-value">
+                                @if($booking->payment->payment_method == 'qris')
+                                    <i class="fas fa-qrcode"></i> QRIS
+                                @else
+                                    <i class="fas fa-university"></i> Bank Transfer
+                                @endif
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <label>Payment Date</label>
+                            <div class="detail-value">{{ $booking->payment->created_at ? $booking->payment->created_at->format('d M Y, H:i') : 'N/A' }}</div>
+                        </div>
+                        @if($booking->payment->verified_at)
+                        <div class="detail-item">
+                            <label>Verified Date</label>
+                            <div class="detail-value">{{ $booking->payment->verified_at->format('d M Y, H:i') }}</div>
+                        </div>
+                        @endif
+                        @if($booking->payment->verified_by)
+                        <div class="detail-item">
+                            <label>Verified By</label>
+                            <div class="detail-value">{{ $booking->payment->verifiedBy->name ?? 'System' }}</div>
+                        </div>
+                        @endif
+                    </div>
+
+                    @if($booking->payment->payment_proof)
+                    <div class="payment-proof">
+                        <label>Payment Proof</label>
+                        <div class="proof-image">
+                            <img src="{{ asset('storage/' . $booking->payment->payment_proof) }}" alt="Payment Proof" class="payment-proof-img">
+                        </div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @else
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Payment Information</h3>
+                </div>
+                <div class="card-content">
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>No Payment Found</h4>
+                        <p>This booking has not been paid yet.</p>
+                    </div>
+                </div>
+            </div>
             @endif
 
             <!-- Actions -->
@@ -302,12 +272,11 @@
                             <i class="fas fa-arrow-left"></i>
                             Back to Bookings
                         </a>
-                        @if ($booking->payment)
-                            <a href="{{ route('owner.payments.show', $booking->payment->id) }}"
-                                class="action-btn primary">
-                                <i class="fas fa-credit-card"></i>
-                                View Payment Details
-                            </a>
+                        @if($booking->payment)
+                        <a href="{{ route('owner.payments.show', $booking->payment->id) }}" class="action-btn primary">
+                            <i class="fas fa-credit-card"></i>
+                            View Payment Details
+                        </a>
                         @endif
                         <a href="{{ route('owner.users.show', $booking->user->id) }}" class="action-btn outline">
                             <i class="fas fa-user"></i>
@@ -323,7 +292,7 @@
         </main>
     </div>
 
-    @if (session('success'))
+    @if(session('success'))
         <div class="alert alert-success" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
     @endif
 
@@ -359,14 +328,15 @@
         });
     </script>
 
-</body>
-</div>
-@if (session('error'))
-    <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-        <i class="fas fa-exclamation-circle"></i>
-        {{ session('error') }}
-    </div>
-@endif
+</body> </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ session('error') }}
+        </div>
+    @endif
 
 </body>
 

@@ -142,10 +142,11 @@
                                         <span class="admin-role">
                                             <i class="fas fa-tag"></i>
                                             Administrator
-                                        </span>                        <span class="admin-status status-{{ $admin->status ? 'active' : 'inactive' }}">
-                            <i class="fas fa-circle"></i>
-                            {{ $admin->status ? 'Active' : 'Inactive' }}
-                        </span>
+                                        </span>
+                                        <span class="admin-status status-{{ $admin->status ? 'active' : 'inactive' }}">
+                                            <i class="fas fa-circle"></i>
+                                            {{ $admin->status ? 'Active' : 'Inactive' }}
+                                        </span>
                                     </div>
                                     <div class="admin-dates">
                                         <div class="date-item">

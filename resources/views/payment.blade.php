@@ -194,80 +194,88 @@
                                 Belum ada metode pembayaran yang tersedia. Silakan hubungi admin.
                             </div>
                         @else
-                            @foreach($paymentMethods as $index => $method)
-                                @if($method->type == 'qris')
-                                    <!-- QRIS Option -->
-                                    <div class="payment-method-card" data-method="qris-{{ $method->id }}">
-                                        <div class="payment-option">
-                                            <input type="radio" name="payment_method" value="qris-{{ $method->id }}" id="qris-{{ $method->id }}" required {{ $index == 0 ? 'checked' : '' }}>
-                                            <label for="qris-{{ $method->id }}">
-                                                <div class="option-content">
-                                                    <div class="option-header">
-                                                        <i class="fas fa-qrcode"></i>
-                                                        <span>{{ $method->name }}</span>
-                                                    </div>
-                                                    <div class="option-details">
-                                                        <p>{{ $method->description ?? 'Scan QR Code dengan aplikasi: GoPay, DANA, OVO, ShopeePay, Mobile Banking' }}</p>
-                                                    </div>
+                            <!-- Group payment methods by type -->
+                            @php
+                                $qrisMethods = $paymentMethods->where('type', 'qris');
+                                $bankMethods = $paymentMethods->where('type', 'bank');
+                            @endphp
+                            
+                            <!-- QRIS Options -->
+                            @foreach($qrisMethods as $index => $method)
+                                <div class="payment-method-card" data-method="qris-{{ $method->id }}">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="qris-{{ $method->id }}" id="qris-{{ $method->id }}" required {{ $index == 0 && $qrisMethods->count() > 0 ? 'checked' : '' }}>
+                                        <label for="qris-{{ $method->id }}">
+                                            <div class="option-content">
+                                                <div class="option-header">
+                                                    <i class="fas fa-qrcode"></i>
+                                                    <span>{{ $method->name }}</span>
                                                 </div>
-                                            </label>
-                                        </div>
-                                        
-                                        <div class="qr-code-container" style="display: none;">
-                                            <h4>Scan QR Code untuk Pembayaran</h4>
-                                            <div style="border: 2px solid #000; padding: 20px; display: inline-block; margin: 15px;">
-                                                @if($method->qr_image)
-                                                    <img src="{{ asset('storage/' . $method->qr_image) }}" alt="QR Code" style="max-width: 200px;">
-                                                @else
-                                                    <div style="width: 200px; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666;">
-                                                        QR Code<br>{{ $method->name }}<br>Rp{{ number_format($booking->total_cost, 0, ',', '.') }}
-                                                    </div>
-                                                @endif
+                                                <div class="option-details">
+                                                    <p>{{ $method->description ?? 'Scan QR Code dengan aplikasi: GoPay, DANA, OVO, ShopeePay, Mobile Banking' }}</p>
+                                                </div>
                                             </div>
-                                            <p><i class="fas fa-info-circle"></i> Buka aplikasi e-wallet/m-banking Anda dan scan QR code di atas</p>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="qr-code-container" style="display: none;">
+                                        <h4>Scan QR Code untuk Pembayaran</h4>
+                                        <div style="border: 2px solid #000; padding: 20px; display: inline-block; margin: 15px;">
+                                            @if($method->qr_image)
+                                                <img src="{{ asset('storage/' . $method->qr_image) }}" alt="QR Code" style="max-width: 200px;">
+                                            @else
+                                                <div style="width: 200px; height: 200px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #666;">
+                                                    QR Code<br>{{ $method->name }}<br>Rp{{ number_format($booking->total_cost, 0, ',', '.') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <p><i class="fas fa-info-circle"></i> Buka aplikasi e-wallet/m-banking Anda dan scan QR code di atas</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                            
+                            <!-- Bank Transfer Options -->
+                            @foreach($bankMethods as $index => $method)
+                                <div class="payment-method-card" data-method="bank-{{ $method->id }}">
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" value="bank-{{ $method->id }}" id="bank-{{ $method->id }}" required {{ ($qrisMethods->count() == 0 && $index == 0) ? 'checked' : '' }}>
+                                        <label for="bank-{{ $method->id }}">
+                                            <div class="option-content">
+                                                <div class="option-header">
+                                                    <i class="fas fa-university"></i>
+                                                    <span>{{ $method->name }}</span>
+                                                </div>
+                                                <div class="option-details">
+                                                    <p>{{ $method->description ?? 'Transfer ke rekening bank yang tersedia' }}</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="bank-details" style="display: none;">
+                                        <h4>Informasi Rekening</h4>
+                                        
+                                        <div class="account-info">
+                                            <div>
+                                                <strong>{{ $method->bank_name }}</strong><br>
+                                                <span>{{ $method->account_number }}</span><br>
+                                                <span>A.n. {{ $method->account_name }}</span>
+                                            </div>
+                                            <button type="button" class="copy-btn" onclick="copyToClipboard('{{ $method->account_number }}')">
+                                                <i class="fas fa-copy"></i> Copy
+                                            </button>
                                         </div>
                                     </div>
-                                @elseif($method->type == 'bank')
-                                    <!-- Bank Transfer Option -->
-                                    <div class="payment-method-card" data-method="bank-{{ $method->id }}">
-                                        <div class="payment-option">
-                                            <input type="radio" name="payment_method" value="bank-{{ $method->id }}" id="bank-{{ $method->id }}" required {{ $index == 0 ? 'checked' : '' }}>
-                                            <label for="bank-{{ $method->id }}">
-                                                <div class="option-content">
-                                                    <div class="option-header">
-                                                        <i class="fas fa-university"></i>
-                                                        <span>{{ $method->name }}</span>
-                                                    </div>
-                                                    <div class="option-details">
-                                                        <p>{{ $method->description ?? 'Transfer ke rekening bank yang tersedia' }}</p>
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        
-                                        <div class="bank-details" style="display: none;">
-                                            <h4>Informasi Rekening</h4>
-                                            
-                                            <div class="account-info">
-                                                <div>
-                                                    <strong>{{ $method->bank_name }}</strong><br>
-                                                    <span>{{ $method->account_number }}</span><br>
-                                                    <span>A.n. {{ $method->account_name }}</span>
-                                                </div>
-                                                <button type="button" class="copy-btn" onclick="copyToClipboard('{{ $method->account_number }}')">
-                                                    <i class="fas fa-copy"></i> Copy
-                                                </button>
-                                            </div>
-                                @endif
+                                </div>
                             @endforeach
                         @endif
-                                
-                                <p style="margin-top: 15px; color: #666; font-size: 14px;">
-                                    <i class="fas fa-exclamation-triangle"></i> 
-                                    Transfer sesuai nominal: <strong>Rp{{ number_format($booking->total_cost, 0, ',', '.') }}</strong>
-                                </p>
-                            </div>
-                        </div>
+                        
+                        <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            Transfer sesuai nominal: <strong>Rp{{ number_format($booking->total_cost, 0, ',', '.') }}</strong>
+                        </p>
+                    </div>
+                </div>
                     </div>
 
                     <!-- Upload Bukti Pembayaran -->

@@ -208,7 +208,7 @@
                             <span>{{ $payment->booking->user->created_at->format('M Y') }}</span>
                         </div>
                         <div class="action-buttons mt-3">
-                            <a href="{{ route('owner.users.show', $payment->booking->user->id) }}" 
+                            <a href="{{ route('owner.user.show', $payment->booking->user->id) }}" 
                                class="btn btn-sm btn-primary">
                                 <i class="fas fa-user"></i>
                                 View Customer Profile

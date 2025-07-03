@@ -81,27 +81,23 @@
                 <div class="card-content">
                     <form method="POST" action="/owner/admin" class="admin-form">
                         @csrf
-                        
+
                         <!-- Basic Information -->
                         <div class="form-section">
                             <h4 class="section-title">
                                 <i class="fas fa-user"></i>
                                 Basic Information
                             </h4>
-                            
+
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="name" class="form-label">
                                         <i class="fas fa-user"></i>
                                         Full Name
                                     </label>
-                                    <input type="text" 
-                                           id="name" 
-                                           name="name" 
-                                           class="form-input @error('name') error @enderror" 
-                                           value="{{ old('name') }}" 
-                                           required 
-                                           placeholder="Enter administrator's full name">
+                                    <input type="text" id="name" name="name"
+                                        class="form-input @error('name') error @enderror" value="{{ old('name') }}"
+                                        required placeholder="Enter administrator's full name">
                                     @error('name')
                                         <span class="error-message">
                                             <i class="fas fa-exclamation-circle"></i>
@@ -109,19 +105,15 @@
                                         </span>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="email" class="form-label">
                                         <i class="fas fa-envelope"></i>
                                         Email Address
                                     </label>
-                                    <input type="email" 
-                                           id="email" 
-                                           name="email" 
-                                           class="form-input @error('email') error @enderror" 
-                                           value="{{ old('email') }}" 
-                                           required 
-                                           placeholder="Enter email address">
+                                    <input type="email" id="email" name="email"
+                                        class="form-input @error('email') error @enderror" value="{{ old('email') }}"
+                                        required placeholder="Enter email address">
                                     @error('email')
                                         <span class="error-message">
                                             <i class="fas fa-exclamation-circle"></i>
@@ -138,20 +130,16 @@
                                 <i class="fas fa-shield-alt"></i>
                                 Security Settings
                             </h4>
-                            
+
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="password" class="form-label">
                                         <i class="fas fa-lock"></i>
                                         Password
                                     </label>
-                                    <input type="password" 
-                                           id="password" 
-                                           name="password" 
-                                           class="form-input @error('password') error @enderror" 
-                                           required 
-                                           placeholder="Enter secure password"
-                                           minlength="8">
+                                    <input type="password" id="password" name="password"
+                                        class="form-input @error('password') error @enderror" required
+                                        placeholder="Enter secure password" minlength="8">
                                     <div class="form-hint">
                                         <i class="fas fa-info-circle"></i>
                                         Password must be at least 8 characters long
@@ -163,19 +151,14 @@
                                         </span>
                                     @enderror
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="password_confirmation" class="form-label">
                                         <i class="fas fa-lock"></i>
                                         Confirm Password
                                     </label>
-                                    <input type="password" 
-                                           id="password_confirmation" 
-                                           name="password_confirmation" 
-                                           class="form-input" 
-                                           required 
-                                           placeholder="Confirm password"
-                                           minlength="8">
+                                    <input type="password" id="password_confirmation" name="password_confirmation"
+                                        class="form-input" required placeholder="Confirm password" minlength="8">
                                     <div class="form-hint">
                                         <i class="fas fa-info-circle"></i>
                                         Re-enter the password to confirm
@@ -190,7 +173,7 @@
                                 <i class="fas fa-key"></i>
                                 Administrator Permissions
                             </h4>
-                            
+
                             <div class="permissions-preview">
                                 <div class="permission-item">
                                     <i class="fas fa-calendar-check text-green"></i>
@@ -203,7 +186,7 @@
                                         Included
                                     </div>
                                 </div>
-                                
+
                                 <div class="permission-item">
                                     <i class="fas fa-bed text-blue"></i>
                                     <div class="permission-details">
@@ -215,7 +198,7 @@
                                         Included
                                     </div>
                                 </div>
-                                
+
                                 <div class="permission-item">
                                     <i class="fas fa-users text-purple"></i>
                                     <div class="permission-details">
@@ -227,7 +210,7 @@
                                         Included
                                     </div>
                                 </div>
-                                
+
                                 <div class="permission-item">
                                     <i class="fas fa-chart-bar text-orange"></i>
                                     <div class="permission-details">
@@ -239,7 +222,7 @@
                                         Included
                                     </div>
                                 </div>
-                                
+
                                 <div class="permission-item disabled">
                                     <i class="fas fa-crown text-gray"></i>
                                     <div class="permission-details">
@@ -260,15 +243,11 @@
                                 <i class="fas fa-toggle-on"></i>
                                 Account Status
                             </h4>
-                            
+
                             <div class="form-group">
                                 <div class="checkbox-group">
-                                    <input type="checkbox" 
-                                           id="status" 
-                                           name="status" 
-                                           value="1" 
-                                           checked 
-                                           class="form-checkbox">
+                                    <input type="checkbox" id="status" name="status" value="1" checked
+                                        class="form-checkbox">
                                     <label for="status" class="checkbox-label">
                                         <i class="fas fa-user-check"></i>
                                         Activate administrator account immediately
@@ -276,7 +255,8 @@
                                 </div>
                                 <div class="form-hint">
                                     <i class="fas fa-info-circle"></i>
-                                    If unchecked, the admin account will be created but remain inactive until manually activated.
+                                    If unchecked, the admin account will be created but remain inactive until manually
+                                    activated.
                                 </div>
                             </div>
                         </div>
@@ -312,76 +292,109 @@
                             <i class="fas fa-shield-alt text-blue"></i>
                             <div class="note-content">
                                 <h5>Security</h5>
-                                <p>Ensure the email address is valid and secure. The admin will receive login credentials via email.</p>
+                                <p>Ensure the email address is valid and secure. The admin will receive login
+                                    credentials via email.</p>
                             </div>
                         </div>
-                        
+
                         <div class="note-item">
                             <i class="fas fa-key text-orange"></i>
                             <div class="note-content">
                                 <h5>Access Level</h5>
-                                <p>Administrators have full access to booking and room management but cannot access owner-specific functions.</p>
+                                <p>Administrators have full access to booking and room management but cannot access
+                                    owner-specific functions.</p>
                             </div>
                         </div>
-                        
+
                         <div class="note-item">
                             <i class="fas fa-edit text-green"></i>
                             <div class="note-content">
                                 <h5>Account Management</h5>
-                                <p>You can deactivate, edit, or delete administrator accounts at any time from the Admin Management page.</p>
+                                <p>You can deactivate, edit, or delete administrator accounts at any time from the Admin
+                                    Management page.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    @if(session('error'))
-        <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-            <i class="fas fa-exclamation-circle"></i>
-            {{ session('error') }}
-        </div>
-    @endif
 
-    <script>
-        // Mobile menu functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-            const sidebar = document.querySelector('.sidebar');
+            <!-- Information Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Administrator Privileges</h3>
+                </div>
+                <div class="card-content">
+                    <div class="info-content">
+                        <h4><i class="fas fa-shield-alt"></i> What can administrators do?</h4>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> View and manage bookings</li>
+                            <li><i class="fas fa-check"></i> Verify payments</li>
+                            <li><i class="fas fa-check"></i> Respond to customer inquiries</li>
+                            <li><i class="fas fa-check"></i> Generate basic reports</li>
+                        </ul>
 
-            if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    mobileMenuOverlay.classList.toggle('active');
-                    this.classList.toggle('active');
-                });
+                        <h4><i class="fas fa-exclamation-triangle"></i> Limitations</h4>
+                        <ul class="feature-list warning-list">
+                            <li><i class="fas fa-times"></i> Cannot add or remove other administrators</li>
+                            <li><i class="fas fa-times"></i> Cannot access financial reports</li>
+                            <li><i class="fas fa-times"></i> Cannot modify system settings</li>
+                        </ul>
 
-                mobileMenuOverlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    this.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
-                });
+                        <div class="info-note">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>For security reasons, make sure to provide each administrator with their own account. Never share login credentials.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (session('error'))
+                <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
 
-                // Close mobile menu when window resizes to desktop size
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth > 768) {
-                        sidebar.classList.remove('active');
-                        mobileMenuOverlay.classList.remove('active');
-                        mobileMenuToggle.classList.remove('active');
+            <script>
+                // Mobile menu functionality
+                document.addEventListener('DOMContentLoaded', function() {
+                    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+                    const sidebar = document.querySelector('.sidebar');
+
+                    if (mobileMenuToggle && mobileMenuOverlay && sidebar) {
+                        mobileMenuToggle.addEventListener('click', function() {
+                            sidebar.classList.toggle('active');
+                            mobileMenuOverlay.classList.toggle('active');
+                            this.classList.toggle('active');
+                        });
+
+                        mobileMenuOverlay.addEventListener('click', function() {
+                            sidebar.classList.remove('active');
+                            this.classList.remove('active');
+                            mobileMenuToggle.classList.remove('active');
+                        });
+
+                        // Close mobile menu when window resizes to desktop size
+                        window.addEventListener('resize', function() {
+                            if (window.innerWidth > 768) {
+                                sidebar.classList.remove('active');
+                                mobileMenuOverlay.classList.remove('active');
+                                mobileMenuToggle.classList.remove('active');
+                            }
+                        });
                     }
                 });
-            }
-        });
-    </script>
-</body>     {{ session('success') }}
-        </div>
-    @endif
+            </script>
+</body> {{ session('success') }}
+</div>
 
-    @if(session('error'))
-        <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-            <i class="fas fa-exclamation-circle"></i>
-            {{ session('error') }}
-        </div>
-    @endif
+@if (session('error'))
+    <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ session('error') }}
+    </div>
+@endif
 </body>
 
 </html>

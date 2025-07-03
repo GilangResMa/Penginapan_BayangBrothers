@@ -294,7 +294,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('owner.users.show', $user->id) }}" class="action-icon" title="View Customer Profile">
+                                            <a href="{{ route('owner.user.show', $user->id) }}" class="action-icon" title="View Customer Profile">
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>
                                         </td>

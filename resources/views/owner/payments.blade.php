@@ -279,7 +279,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('owner.payments.show', $payment->id) }}" class="action-icon" title="View Details">
+                                            <a href="{{ route('owner.payment.show', $payment->id) }}" class="action-icon" title="View Details">
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>
                                         </td>

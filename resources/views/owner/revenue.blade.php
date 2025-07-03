@@ -136,8 +136,6 @@
                                         <tr>
                                             <th>Month</th>
                                             <th>Revenue</th>
-                                            <th>Bookings</th>
-                                            <th>Avg. per Booking</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -148,18 +146,6 @@
                                             </td>
                                             <td>
                                                 <div class="amount">Rp {{ number_format($month['revenue'], 0, ',', '.') }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="booking-count">
-                                                    {{ $month['bookings_count'] ?? 0 }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @if(($month['bookings_count'] ?? 0) > 0)
-                                                    <div class="amount">Rp {{ number_format($month['revenue'] / $month['bookings_count'], 0, ',', '.') }}</div>
-                                                @else
-                                                    <div class="text-muted">-</div>
-                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

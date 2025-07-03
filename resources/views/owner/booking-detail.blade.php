@@ -83,45 +83,49 @@
                     </div>
                 </div>
                 <div class="card-content">
-                    <div class="booking-details-grid">
-                        <div class="detail-item">
-                            <label>Booking Code</label>
-                            <div class="detail-value">{{ $booking->booking_code }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Booking Date</label>
-                            <div class="detail-value">{{ $booking->created_at ? $booking->created_at->format('d M Y, H:i') : 'N/A' }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Check-in Date</label>
-                            <div class="detail-value">{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Check-out Date</label>
-                            <div class="detail-value">{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Number of Nights</label>
-                            <div class="detail-value">{{ $booking->check_in && $booking->check_out ? $booking->check_in->diffInDays($booking->check_out) : 0 }} nights</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Number of Guests</label>
-                            <div class="detail-value">{{ $booking->guests }} guests</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Extra Bed</label>
-                            <div class="detail-value">
-                                @if($booking->extra_bed)
-                                    <span class="extra-bed-tag"><i class="fas fa-check"></i> Yes</span>
-                                @else
-                                    <span class="text-muted">No</span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Total Cost</label>
-                            <div class="detail-value amount-highlight">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="detail-table">
+                            <tbody>
+                                <tr>
+                                    <th>Booking Code</th>
+                                    <td>{{ $booking->booking_code }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Booking Date</th>
+                                    <td>{{ $booking->created_at ? $booking->created_at->format('d M Y, H:i') : 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Check-in Date</th>
+                                    <td>{{ $booking->check_in ? $booking->check_in->format('d M Y') : 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Check-out Date</th>
+                                    <td>{{ $booking->check_out ? $booking->check_out->format('d M Y') : 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Number of Nights</th>
+                                    <td>{{ $booking->check_in && $booking->check_out ? $booking->check_in->diffInDays($booking->check_out) : 0 }} nights</td>
+                                </tr>
+                                <tr>
+                                    <th>Number of Guests</th>
+                                    <td>{{ $booking->guests }} guests</td>
+                                </tr>
+                                <tr>
+                                    <th>Extra Bed</th>
+                                    <td>
+                                        @if($booking->extra_bed)
+                                            <span class="extra-bed-tag"><i class="fas fa-check"></i> Yes</span>
+                                        @else
+                                            <span class="text-muted">No</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Total Cost</th>
+                                    <td class="amount-highlight">Rp {{ number_format($booking->total_cost, 0, ',', '.') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -133,23 +137,27 @@
                     <h3>Guest Information</h3>
                 </div>
                 <div class="card-content">
-                    <div class="guest-details-grid">
-                        <div class="detail-item">
-                            <label>Guest Name</label>
-                            <div class="detail-value">{{ $booking->user->name }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Email</label>
-                            <div class="detail-value">{{ $booking->user->email }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Phone</label>
-                            <div class="detail-value">{{ $booking->user->phone ?? 'Not provided' }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Member Since</label>
-                            <div class="detail-value">{{ $booking->user->created_at ? $booking->user->created_at->format('d M Y') : 'N/A' }}</div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="detail-table">
+                            <tbody>
+                                <tr>
+                                    <th>Guest Name</th>
+                                    <td>{{ $booking->user->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ $booking->user->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone</th>
+                                    <td>{{ $booking->user->phone ?? 'Not provided' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Member Since</th>
+                                    <td>{{ $booking->user->created_at ? $booking->user->created_at->format('d M Y') : 'N/A' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -161,23 +169,27 @@
                     <h3>Room Information</h3>
                 </div>
                 <div class="card-content">
-                    <div class="room-details-grid">
-                        <div class="detail-item">
-                            <label>Room Name</label>
-                            <div class="detail-value">{{ $booking->room->name }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Room Type</label>
-                            <div class="detail-value">{{ $booking->room->type ?? 'Standard' }}</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Capacity</label>
-                            <div class="detail-value">{{ $booking->room->capacity ?? 'N/A' }} persons</div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Price per Night</label>
-                            <div class="detail-value">Rp {{ number_format($booking->room->price, 0, ',', '.') }}</div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="detail-table">
+                            <tbody>
+                                <tr>
+                                    <th>Room Name</th>
+                                    <td>{{ $booking->room->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Room Type</th>
+                                    <td>{{ $booking->room->type ?? 'Standard' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Capacity</th>
+                                    <td>{{ $booking->room->capacity ?? 'N/A' }} persons</td>
+                                </tr>
+                                <tr>
+                                    <th>Price per Night</th>
+                                    <td>Rp {{ number_format($booking->room->price, 0, ',', '.') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -205,33 +217,37 @@
                     </div>
                 </div>
                 <div class="card-content">
-                    <div class="payment-details-grid">
-                        <div class="detail-item">
-                            <label>Payment Method</label>
-                            <div class="detail-value">
-                                @if($booking->payment->payment_method == 'qris')
-                                    <i class="fas fa-qrcode"></i> QRIS
-                                @else
-                                    <i class="fas fa-university"></i> Bank Transfer
+                    <div class="table-responsive">
+                        <table class="detail-table">
+                            <tbody>
+                                <tr>
+                                    <th>Payment Method</th>
+                                    <td>
+                                        @if($booking->payment->payment_method == 'qris')
+                                            <i class="fas fa-qrcode"></i> QRIS
+                                        @else
+                                            <i class="fas fa-university"></i> Bank Transfer
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Payment Date</th>
+                                    <td>{{ $booking->payment->created_at ? $booking->payment->created_at->format('d M Y, H:i') : 'N/A' }}</td>
+                                </tr>
+                                @if($booking->payment->verified_at)
+                                <tr>
+                                    <th>Verified Date</th>
+                                    <td>{{ $booking->payment->verified_at->format('d M Y, H:i') }}</td>
+                                </tr>
                                 @endif
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <label>Payment Date</label>
-                            <div class="detail-value">{{ $booking->payment->created_at ? $booking->payment->created_at->format('d M Y, H:i') : 'N/A' }}</div>
-                        </div>
-                        @if($booking->payment->verified_at)
-                        <div class="detail-item">
-                            <label>Verified Date</label>
-                            <div class="detail-value">{{ $booking->payment->verified_at->format('d M Y, H:i') }}</div>
-                        </div>
-                        @endif
-                        @if($booking->payment->verified_by)
-                        <div class="detail-item">
-                            <label>Verified By</label>
-                            <div class="detail-value">{{ $booking->payment->verifiedBy->name ?? 'System' }}</div>
-                        </div>
-                        @endif
+                                @if($booking->payment->verified_by)
+                                <tr>
+                                    <th>Verified By</th>
+                                    <td>{{ $booking->payment->verifiedBy->name ?? 'System' }}</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
 
                     @if($booking->payment->payment_proof)
@@ -273,12 +289,12 @@
                             Back to Bookings
                         </a>
                         @if($booking->payment)
-                        <a href="{{ route('owner.payments.show', $booking->payment->id) }}" class="action-btn primary">
+                        <a href="{{ route('owner.payment.show', $booking->payment->id) }}" class="action-btn primary">
                             <i class="fas fa-credit-card"></i>
                             View Payment Details
                         </a>
                         @endif
-                        <a href="{{ route('owner.users.show', $booking->user->id) }}" class="action-btn outline">
+                        <a href="{{ route('owner.user.show', $booking->user->id) }}" class="action-btn outline">
                             <i class="fas fa-user"></i>
                             View Guest Profile
                         </a>
@@ -329,8 +345,6 @@
     </script>
 
 </body> </div>
-    @endif
-
     @if(session('error'))
         <div class="alert alert-error" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
             <i class="fas fa-exclamation-circle"></i>

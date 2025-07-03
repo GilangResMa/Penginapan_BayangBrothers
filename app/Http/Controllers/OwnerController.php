@@ -84,6 +84,7 @@ class OwnerController extends Controller
             'confirmed' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'confirmed')->count(),
             'pending' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'pending')->count(),
             'cancelled' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'cancelled')->count(),
+            'completed' => Booking::whereIn('room_id', $ownerRooms)->where('status', 'completed')->count(),
         ];
 
         $bookingStats['success_rate'] = $bookingStats['total'] > 0
@@ -493,7 +494,10 @@ class OwnerController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('owner.user-detail', compact('user', 'bookings'));
+        $totalBookings = $bookings->count();
+        $totalSpent = $bookings->sum('total_cost');
+
+        return view('owner.user-detail', compact('user', 'bookings', 'totalBookings', 'totalSpent'));
     }
 
     /**

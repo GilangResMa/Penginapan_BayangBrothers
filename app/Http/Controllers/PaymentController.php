@@ -294,7 +294,7 @@ class PaymentController extends Controller
 
         // Validasi input
         $validated = $request->validate([
-            'payment_method' => 'required|in:bank_transfer,cash,digital_wallet',
+            'payment_method' => 'required|string',
             'payment_note' => 'nullable|string|max:500',
         ]);
 

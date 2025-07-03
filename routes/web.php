@@ -16,6 +16,9 @@ Route::get('/', function () {
     return view('homepage');
 })->name('homepage');
 
+// Midtrans notification URL (tidak perlu middleware)
+Route::post('/midtrans/notification', [PaymentController::class, 'handleNotification']);
+
 // Debug route - temporary untuk troubleshooting
 Route::get('/debug', function () {
     try {
@@ -84,8 +87,10 @@ Route::middleware('auth:web')->group(function () {
     // Payment routes
     Route::get('/payment/{booking}', [PaymentController::class, 'show'])->name('payment');
     Route::post('/payment/{booking}/process', [PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/payment/{booking}/upload', [PaymentController::class, 'uploadPayment'])->name('payment.upload');
     Route::get('/payment/success/{booking}', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/cancel/{booking?}', [PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::get('/payment/pending/{booking}', [PaymentController::class, 'paymentPending'])->name('payment.pending');
 });
 
 // Admin routes - with enhanced security
@@ -107,6 +112,11 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/admin/faqs/{id}/edit', [AdminController::class, 'faqEdit'])->name('admin.faqs.edit');
     Route::put('/admin/faqs/{id}', [AdminController::class, 'faqUpdate'])->name('admin.faqs.update');
     Route::delete('/admin/faqs/{id}', [AdminController::class, 'faqDestroy'])->name('admin.faqs.destroy');
+
+    // Payment management routes
+    Route::get('/admin/payments', [AdminController::class, 'paymentIndex'])->name('admin.payments.index');
+    Route::get('/admin/payments/{id}', [AdminController::class, 'paymentShow'])->name('admin.payments.show');
+    Route::post('/admin/payments/{id}/verify', [AdminController::class, 'paymentVerify'])->name('admin.payments.verify');
 });
 
 // Owner routes - with enhanced security  
